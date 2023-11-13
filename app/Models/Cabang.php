@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UserRole extends Model
+class Cabang extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = [
-        'nama_role',
-    
+        'kode_cabang',
+        'nama_cabang',
         'updated_by',
         'created_by',
     ];
@@ -20,6 +20,13 @@ class UserRole extends Model
     {
 
         return $this->hasMany(User::class);
+    }
+
+
+    public function UserGroup()
+    {
+
+        return $this->hasMany(UserGroup::class);
     }
 
 }

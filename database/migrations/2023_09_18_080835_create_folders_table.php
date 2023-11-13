@@ -11,19 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('folders', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('role_id');
-            $table->unsignedBigInteger('cabang_id');
-            $table->string('nama_user');
-            $table->string('no_pegawai');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->unsignedBigInteger('user_group_id');
+            $table->unsignedBigInteger('id_folder_induk');
+            $table->string('nama_folder');
             $table->string('created_by')->nullable();
             $table->string('updated_by')->nullable();
-            
-            $table->rememberToken();
             $table->timestamps();
         });
     }
@@ -33,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('folders');
     }
 };

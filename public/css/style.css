@@ -9021,9 +9021,7 @@ select:disabled {
 button,
 [type="button"],
 [type="reset"],
-[type="submit"] {
-  -webkit-appearance: button;
-}
+
 
 button:not(:disabled),
 [type="button"]:not(:disabled),
@@ -9081,10 +9079,6 @@ legend + * {
   height: auto;
 }
 
-[type="search"] {
-  outline-offset: -2px;
-  -webkit-appearance: textfield;
-}
 
 /* rtl:raw:
 [type="tel"],
@@ -10615,6 +10609,8 @@ progress {
   margin-bottom: 0.5rem;
 }
 
+
+
 .col-form-label {
   padding-top: calc(0.875rem + 1px);
   padding-bottom: calc(0.875rem + 1px);
@@ -10947,7 +10943,6 @@ textarea.form-control-lg {
   background-size: contain;
   border: 1px solid rgba(0, 0, 0, 0.25);
   appearance: none;
-  color-adjust: exact;
 }
 
 .form-check-input[type="checkbox"] {
@@ -27501,7 +27496,6 @@ table.dataTable tbody td.select-checkbox:after {
   border-radius: 4px;
   display: block;
   margin: auto;
-  vertical-align: middle;
   position: absolute;
   top: 6px;
   z-index: -1;
@@ -27529,7 +27523,6 @@ table.dataTable tbody td.select-checkbox:after {
   -moz-box-shadow: 3px 3px 6px 0 rgba(147, 127, 201, 0.43);
   display: block;
   margin: auto;
-  vertical-align: middle;
   position: absolute;
   top: 6px;
   z-index: -1;
@@ -27559,7 +27552,6 @@ table.dataTable tbody td.select-checkbox:after {
   border-radius: 4px;
   display: block;
   margin: auto;
-  vertical-align: middle;
   position: absolute;
   top: 6px;
   z-index: -1;
@@ -27582,7 +27574,6 @@ table.dataTable tbody td.select-checkbox:after {
   border-radius: 4px;
   display: block;
   margin: auto;
-  vertical-align: middle;
   position: absolute;
   top: 6px;
   z-index: -1;
@@ -28673,7 +28664,6 @@ div.tagsinput span.tag a {
   background: rgba(0, 0, 0, 0.8);
   width: 100px;
   margin-left: -50px;
-  -webkit-transition: 0.1s left, 0.1s top;
 }
 
 .wysi-editor .wrap {
@@ -28685,6 +28675,14 @@ div.tagsinput span.tag a {
   outline: 1px dotted #dee2e6;
   position: relative;
 }
+
+.txt-small {
+  font-size: 9pt;
+  color: gray;
+  font-weight: bold;
+}
+
+
 
 .wysi-editor .editable .wysihtml-uneditable-container-right {
   float: right;
@@ -29076,6 +29074,16 @@ flex-shrink: 0;
   border: none;
   border-radius: 8px;
   background: #0267FF;
+  width: 30px;
+height: 30px;
+flex-shrink: 0;
+}
+
+
+.btn-reset {
+    border: none;
+  border-radius: 8px;
+  background: #FF9A02;
   width: 30px;
 height: 30px;
 flex-shrink: 0;

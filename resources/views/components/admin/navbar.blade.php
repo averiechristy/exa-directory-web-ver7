@@ -4,10 +4,10 @@
          
         </div>
         <div>
-          <a class="navbar-brand brand-logo" href="index.html">
+          <a class="navbar-brand brand-logo" href="#">
             <img src="{{asset('img/logodirectory.png')}}" alt="logo" />
           </a>
-          <a class="navbar-brand brand-logo-mini" href="index.html">
+          <a class="navbar-brand brand-logo-mini" href="#">
             <img src="{{asset('img/smalllogo.png')}}" alt="logo" />
           </a>
         </div>
@@ -21,18 +21,15 @@
         </ul>
         <ul class="navbar-nav ms-auto">
          
-         
-          
-          
+        
           <li class="nav-item font-weight-semibold d-none d-lg-block ms-0">
             <h3 class="welcome-sub-text">Welcome, Admin! </h3>
           </li>
           <li class="nav-item dropdown d-none d-lg-block user-dropdown">
             <a class="nav-link" id="UserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
               <img class="img-xs rounded-circle" src="{{asset('img/profil.png')}}" alt="Profile image"> </a>
-            <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
-             
-              <a href="changepassword.html" class="dropdown-item"><i class="dropdown-item-icon mdi mdi-lock-outline text-gray me-2"></i>Change Password</a>
+            <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">   
+              <a href="{{route('admin.changepassowrd')}}" class="dropdown-item"><i class="dropdown-item-icon mdi mdi-lock-outline text-gray me-2"></i>Change Password</a>
               <a href="pages/samples/login.html" class="dropdown-item"><i class="dropdown-item-icon mdi mdi-power text-gray me-2"></i>Sign Out</a>
             </div>
           </li>
@@ -53,9 +50,6 @@
       <!-- partial:partials/_sidebar.html -->
       <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <ul class="nav">
-          
-
-          
           <li class="nav-item {{ Request::is('admin/dashboard') ? 'active' : '' }}  ">
             <a class="nav-link" href="{{route('admin.dashboard')}}">
               <i class="menu-icon mdi mdi-grid-large "></i>
@@ -74,7 +68,6 @@
               <span class="menu-title">User</span>
             </a>
           </li>
-
           <li class="nav-item {{ Request::is('admin/usergroup/index') || Request::is('admin/usergroup/create')? 'active' : '' }} ">
             <a class="nav-link" href="{{route('admin.usergroup.index')}}">
               <i class="menu-icon mdi mdi-account-group"></i>
@@ -96,7 +89,6 @@
         Folder
     </a>
 </li>
-
 <li class="nav-item">
     <a class="nav-link {{ Request::is('admin.file.index') || Request::is('admin/file/create') ? 'active' : '' }}" href="{{route('admin.file.index')}}">
         File
@@ -106,13 +98,6 @@
     </div>
 </li>
 
-
-         
-         
-          
-         
-         
-          
         </ul>
       </nav>
 

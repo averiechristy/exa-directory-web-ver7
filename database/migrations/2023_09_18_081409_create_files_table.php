@@ -11,19 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('files', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('role_id');
-            $table->unsignedBigInteger('cabang_id');
-            $table->string('nama_user');
-            $table->string('no_pegawai');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->unsignedBigInteger('folder_id');
+            $table->string('nama_file');
+            $table->string('type'); // Jenis file (contoh: pdf, jpg, dll)
+            $table->unsignedBigInteger('size'); // Ukuran file dalam byte
+            $table->boolean('is_download')->default(false); // Apakah file dapat diunduh
+            $table->enum('status', ['berlaku', 'tidak_berlaku'])->default('berlaku'); // Status file
             $table->string('created_by')->nullable();
             $table->string('updated_by')->nullable();
-            
-            $table->rememberToken();
+
             $table->timestamps();
         });
     }
@@ -33,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('files');
     }
 };

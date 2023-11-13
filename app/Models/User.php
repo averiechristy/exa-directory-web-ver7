@@ -18,9 +18,14 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'cabang_id',
+        'role_id',
+        'nama_user',
         'email',
         'password',
+        'no_pegawai',
+        'updated_by',
+        'created_by',
     ];
 
     /**
@@ -42,4 +47,22 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+
+    public function Role()
+    {
+
+        return $this->belongsTo(UserRole::class);
+    }
+
+    public function Cabang()
+    {
+        return $this->belongsTo(Cabang::class);
+    }
+
+    public function DetailMember()
+    {
+        return $this->hasMany(DetailMember::class);
+    }
 }
+
