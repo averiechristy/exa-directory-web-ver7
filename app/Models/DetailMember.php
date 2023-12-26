@@ -12,7 +12,7 @@ class DetailMember extends Model
     protected $fillable = [
         'user_id',
         'user_group_id',
-        
+        'cabang_id'
     ];
 
     public function User()

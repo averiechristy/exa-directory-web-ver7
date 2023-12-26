@@ -65,8 +65,9 @@ entries
                           </tr>
                         </thead>
                         <tbody>
-                          @foreach($files as $file)
-                          <tr>
+                        @foreach($filesByFolder as $folder_id => $files)
+                        @foreach($files as $file)
+                         <tr>
                             <td>
                               <a href="#" class="folderlink">
                               <div class="d-flex align-items-center">
@@ -117,14 +118,15 @@ entries
                             <td>{{$file->updated_at}}</td>
                             <td></td>
                             <td>
-                            <a  href="{{route('tampilfile', $file->id)}}"data-toggle="tooltip" title='Edit'><button class="btn-edit"><i class="mdi mdi-pencil" style="color:white" ></i></button></a>        
-                            <form method="POST" action="{{ route('deletefile', $file->id) }}">
+                            <a  href="{{route('admintampilfile', $file->id)}}"data-toggle="tooltip" title='Edit'><button class="btn-edit"><i class="mdi mdi-pencil" style="color:white" ></i></button></a>        
+                            <form method="POST" action="{{ route('admindeletefile', $file->id) }}">
                             @csrf
                             <input name="_method" type="hidden" value="DELETE">
                             <button type="submit" class="btn-delete show_confirm mt-1" data-toggle="tooltip" title='Hapus'><i class="mdi mdi-delete" style="color:white;"></i></button>
                         </form>   
                             </td>
                           </tr>
+@endforeach  
 @endforeach    
                         </tbody>
                       </table>

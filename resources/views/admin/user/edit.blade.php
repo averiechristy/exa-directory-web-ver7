@@ -22,34 +22,22 @@
                    
                   </div>
                   <div class="card-body">
-                      <form action="/updateuser/{{$data->id}}" method="post">
+                      <form action="/adminupdateuser/{{$data->id}}" method="post">
                            @csrf
 
-                           <div class="form-group mb-4">
-                              <label for="" class="form-label" style="font-size: 11pt; font-weight: bold;" >Cabang</label>
-
-                              <select  name="cabang_id"  class="form-select form-select-sm mb-3" aria-label=".form-select-lg example" style="border-color: #01004C;  border-radius: 5px;" required>
-                              <option value="" selected disabled>-- Pilih Akses --</option>
-        @foreach ($cabang as $item)
-            <option value="{{ $item->id }}" {{ old('cabang_id', $data->cabang_id) == $item->id ? 'selected' : '' }}>
-                {{ $item->kode_cabang }}- {{$item->nama_cabang}}
-            </option>
-        @endforeach
-    </select>
-                                </select>
-                              <!-- @if ($errors->has('name'))
-                                  <p class="text-danger">{{$errors->first('name')}}</p>
-                              @endif -->
-                          </div>
+                          
 <div class="form-group mb-4">
                                           <label for="" class="form-label" style="font-size: 11pt; font-weight: bold;">Role</label>
 
                                           <select  name="role_id" class="form-select form-select-sm mb-3" aria-label=".form-select-lg example" style="border-color: #01004C;  border-radius: 5px;" required>
                                               <option selected disabled>Pilih Role</option>
-                                              @foreach ($role as $item)
+                                            
+        @foreach ($role as $item)
+        @if ($item->nama_role === 'Admin' || $item->nama_role === 'User')
             <option value="{{ $item->id }}" {{ old('role_id', $data->role_id) == $item->id ? 'selected' : '' }}>
                 {{ $item->nama_role }}
             </option>
+            @endif
         @endforeach
                                             </select>
                                           <!-- @if ($errors->has('name'))
@@ -100,5 +88,35 @@
   
     
   </div>
+
+  
+<script>
+    function validateForm() {
+    let role = document.forms["saveform"]["role_id"].value;
+    let nopegawai = document.forms["saveform"]["no_pegawai"].value;
+    let nama = document.forms["saveform"]["nama_user"].value;
+    let email = document.forms["saveform"]["email"].value;
+    let password = document.forms["saveform"]["password"].value;
+
+       if ( role == "") {
+            alert("Pilih salah satu role");
+            return false;
+        }
+        else if ( nopegawai == "" ){
+            alert ("No pegawai tidak boleh kosong");
+            return false;
+        }
+        else if ( nama == "" ){
+            alert ("Nama user tidak boleh kosong");
+            return false;
+        }else if ( email == "" ){
+            alert ("Email tidak boleh kosong");
+            return false;
+        }else if ( password == "" ){
+            alert ("Password tidak boleh kosong");
+            return false;
+        }
+    }
+</script>
 
 @endsection

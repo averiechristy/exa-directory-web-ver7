@@ -36,7 +36,6 @@ entries
                           <tr>
                             <th>Nama Group</th>
                             <th>Member</th>
-                            <th>Cabang</th>
                             <th>Created at</th>
                             <th>Created by</th>
                             <th>Updated at</th>
@@ -48,15 +47,14 @@ entries
                           @foreach ($usergroup as $usergroup)
                           <tr>
                             <td>{{$usergroup -> nama_group}}</td>
-                            <td> <a href="{{ route('detailmember', $usergroup->id) }}" class="detail-member">Lihat daftar member</a></td>
-                            <td>{{$usergroup->Cabang->nama_cabang}}</td>
+                            <td> <a href="{{ route('admindetailmember', $usergroup->id) }}" class="detail-member">Lihat daftar member</a></td>
                             <td>{{$usergroup->created_at}}</td>
                             <td></td>
                             <td>{{$usergroup->updated_at}}</td>
                             <td></td>
                             <td>
-                            <a  href="{{route('tampilusergroup', $usergroup->id)}}"data-toggle="tooltip" title='Edit'><button class="btn-edit"><i class="mdi mdi-pencil" style="color:white" ></i></button></a>        
-                            <form method="POST" action="{{ route('deleteusergroup', $usergroup->id) }}">
+                            <a  href="{{route('admintampilusergroup', $usergroup->id)}}"data-toggle="tooltip" title='Edit'><button class="btn-edit"><i class="mdi mdi-pencil" style="color:white" ></i></button></a>        
+                            <form method="POST" action="{{ route('admindeleteusergroup', $usergroup->id) }}">
                             @csrf
                             <input name="_method" type="hidden" value="DELETE">
                             <button type="submit" class="btn-delete show_confirm mt-1" data-toggle="tooltip" title='Hapus'><i class="mdi mdi-delete" style="color:white;"></i></button>

@@ -13,20 +13,24 @@ class Folder extends Model
         'id_folder_induk',
        'nama_folder',
         'updated_by',
+        'user_group_id',
         'created_by',
+        'cabang_id',
     ];
 
     public function UserGroup()
     {
 
-        return $this->belongsTo(UserGroup::class);
+        return $this->belongsTo(UserGroup::class, 'user_group_id');   
+    
     }
 
+    
     public function DetailGroup()
     {
 
-        return $this->hasMany(DetailGroup::class);
-    }
+        return $this->hasMany(DetailGroup::class, 'folder_id');
+        }
 
     public function parentFolder()
     {
@@ -48,8 +52,28 @@ class Folder extends Model
             $parentFolder = Folder::find($this->id_folder_induk);
             $path = $parentFolder->getFolderPath() . '/' . $path;
         }
-
+       
         return $path;
     }
 
+
+    public function subfolders()
+{
+    return $this->hasMany(Folder::class, 'id_folder_induk');
 }
+
+public function groups()
+    {
+        return $this->hasMany(UserGroup::class);
+    }
+    public function files()
+    {
+        return $this->hasMany(File::class);
+    }
+    
+    public function cabang()
+    {
+        return $this->belongsTo(Cabang::class, 'cabang_id');
+    }
+}
+

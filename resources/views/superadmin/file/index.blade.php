@@ -1,19 +1,28 @@
-@extends('layouts.admin.app')
+@extends('layouts.superadmin.app')
+
 @section('content')
+
 <div class="content-wrapper">
+          
+           
+             
           <div class="d-sm-flex align-items-center justify-content-between border-bottom">
+           
+           
+            
           </div>
           <div id="content-wrapper" class="d-flex flex-column">
+
             <!-- Main Content -->
             <div id="content" class="content">
+              
               <div class="card mt-5">
-                  <div class="card-header py-3">
-                      <h4 class="card-title">Cabang</h4>
-                      <a href="{{ route('admin.cabang.create') }}" class="btn btn-warning btn-sm">Add Data</a>
-                  
-                  <div class="card-body">
-                 
+                  <div class="card-body py-3">
+                      <h4 class="card-title">File</h4>
+
+                      <a href="{{route('superadmin.file.create')}}" class="btn btn-warning btn-sm">Add File</a>
                   </div>
+                  <div class="card-body">
                   <div class="dataTables_length " id="myDataTable_length">
 <label for="entries"> Show
 <select id="entries" name="myDataTable_length" aria-controls="myDataTable"  onchange="changeEntries()" class>
@@ -31,39 +40,92 @@ entries
         <input id="search" placeholder>
     </label>
 </div>
-                    <div class="table-responsive" >
-                    @include('components.alert')
-                      <table class="table table-striped">
+
+@include('components.alert')
+                    <div class="table-responsive">
+                      <table class="table table-striped" >
                         <thead>
                           <tr>
-                            <th>Kode Cabang</th>
-                            <th>Nama Cabang</th>
+                          
+                            <th>Nama File</th>
+                            <th>Path Folder</th>
+                            <th>Size </th>
+                            <th>Jenis File </th>
+                            <th>Status</th>
+                            <th>Lihat File</th>
+
                             <th>Created at</th>
+
                             <th>Created by</th>
                             <th>Updated at</th>
                             <th>Updated by</th>
+                            
                             <th>Action</th>
+
                           </tr>
                         </thead>
                         <tbody>
-                        @foreach ($cabang as $cabang)
+                          @foreach($files as $file)
                           <tr>
-                            <td>{{$cabang->kode_cabang}}</td>
-                            <td>{{$cabang->nama_cabang}}</td>
-                            <td>{{$cabang->created_at}}</td>
+                            <td>
+                              <a href="#" class="folderlink">
+                              <div class="d-flex align-items-center">
+                                  <div><i class="mdi mdi-file me-2 font-24 text-warning "></i>
+                                  </div>
+                                  <div class="font-weight-bold ">{{$file -> nama_file}}</div>
+                              </div>
+                          </a>
+                          </td>
+                          
+                          <td>{{ $file->folder->getFolderPath() }}</td>
+                          <td>{{$file -> size}}</td>
+                            <td>{{$file -> type}}</td>
+                            <td>
+                            @if ($file->status === 'berlaku')
+                <span class="badge badge-success">Berlaku</span>
+            @elseif ($file->status === 'tidak_berlaku')
+                <span class="badge badge-danger">Tidak Berlaku</span>
+            @else
+                {{ $file->status }}
+            @endif
+                            </td>
+                           <td>
+    <a href="" data-toggle="modal" data-target="#fileModal{{ $file->id }}" class="see-file">Lihat File</a>
+</td>
+
+<div class="modal fade" id="fileModal{{ $file->id }}" tabindex="-1" role="dialog" aria-labelledby="fileModalLabel{{ $file->id }}" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered modal-xl"  style="margin-top:5px;" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="fileModalLabel{{ $file->id }}"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <iframe src="{{ asset('storage/files/' . $file->file) }}" width="100%" height="600px"></iframe>
+            </div>
+            <div class="modal-footer">
+              
+            </div>
+        </div>
+    </div>
+</div>
+
+                            <td>{{$file->created_at}}</td>
                             <td></td>
-                            <td>{{$cabang->updated_at}}</td>
+                            <td>{{$file->updated_at}}</td>
                             <td></td>
                             <td>
-                              <a  href="{{route('tampilcabang', $cabang->id)}}"data-toggle="tooltip" title='Edit'><button class="btn-edit"><i class="mdi mdi-pencil" style="color:white" ></i></button></a>        
-                              <form method="POST" action="{{ route('deletecabang', $cabang->id) }}">
+                            <a  href="{{route('tampilfile', $file->id)}}"data-toggle="tooltip" title='Edit'><button class="btn-edit"><i class="mdi mdi-pencil" style="color:white" ></i></button></a>        
+                            <form method="POST" action="{{ route('deletefile', $file->id) }}">
                             @csrf
                             <input name="_method" type="hidden" value="DELETE">
                             <button type="submit" class="btn-delete show_confirm mt-1" data-toggle="tooltip" title='Hapus'><i class="mdi mdi-delete" style="color:white;"></i></button>
-                        </form>             
+                        </form>   
                             </td>
                           </tr>
-                        @endforeach
+@endforeach    
                         </tbody>
                       </table>
                       <div class="dataTables_info" id="dataTableInfo" role="status" aria-live="polite">
@@ -80,7 +142,6 @@ entries
     <a href="#" class="paginate_button" id="nextButton" onclick="nextPage()"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
     <a href="#" class="paginate_button" id="doubleNextButton" onclick="doubleNextPage()"><i class="fa fa-angle-double-right" aria-hidden="true"></i></a>
 </div>
-                                             
                     </div>
                   </div>
                 </div>
@@ -88,8 +149,27 @@ entries
         </div>
   </div>
 
-
   <style>
+    .badge-success{
+      background-color : green;
+    }
+
+    .badge-danger{
+      background-color : red;
+    }
+
+    .modal-dialog-tes {
+      margin:20px;
+
+    }
+    .close {
+      background-color :white;
+      border:none;
+    }
+  </style>
+
+  
+<style>
 
 .dataTables_paginate{
   float:right;

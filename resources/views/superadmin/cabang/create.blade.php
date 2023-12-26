@@ -1,4 +1,4 @@
-@extends('layouts.admin.app')
+@extends('layouts.superadmin.app')
 
 @section('content')
 
@@ -23,12 +23,12 @@
                    
                   </div>
                   <div class="card-body">
-                      <form action="{{route('admin.cabang.simpan')}}" method="post">
+                      <form name ="saveform" action="{{route('superadmin.cabang.simpan')}}" method="post" onsubmit="return validateForm()">
                            @csrf
 
                            <div class="form-group mb-4">
                               <label for="" class="form-label" style="font-size: 11pt; font-weight: bold;">Kode Cabang</label>
-                              <input name="kode_cabang" type="text" class="form-control {{$errors->has('name') ? 'is-invalid' : ''}}" style="border-color: #01004C;" value="" required />
+                              <input name="kode_cabang" type="text" class="form-control {{$errors->has('name') ? 'is-invalid' : ''}}" style="border-color: #01004C;" value="" />
                               <!-- @if ($errors->has('name'))
                                   <p class="text-danger">{{$errors->first('name')}}</p>
                               @endif -->
@@ -36,7 +36,7 @@
                      
                            <div class="form-group mb-4">
                                <label for="" class="form-label"style="font-size: 11pt; font-weight: bold;">Nama Cabang</label>
-                               <input name="nama_cabang" type="text" class="form-control {{$errors->has('name') ? 'is-invalid' : ''}}" style="border-color: #01004C;" value="" required />
+                               <input name="nama_cabang" type="text" class="form-control {{$errors->has('name') ? 'is-invalid' : ''}}" style="border-color: #01004C;" value="" />
                                <!-- @if ($errors->has('name'))
                                    <p class="text-danger">{{$errors->first('name')}}</p>
                                @endif -->
@@ -53,9 +53,21 @@
             </div>
 
         </div>
-        
-  
-    
   </div>
+
+  <script>
+function validateForm() {
+  let kodecabang = document.forms["saveform"]["kode_cabang"].value;
+  let namacabang = document.forms["saveform"]["nama_cabang"].value;
+
+   if (kodecabang == "") {
+    alert("Kode cabang tidak boleh kosong");
+    return false;
+  } else   if (namacabang == "") {
+    alert("Nama cabang tidak boleh kosong");
+    return false;
+  }
+}
+</script>
 
   @endsection

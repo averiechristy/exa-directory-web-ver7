@@ -22,41 +22,31 @@
                    
                   </div>
                   <div class="card-body">
-                      <form action="{{route('admin.user.simpan')}}" method="post">
+                      <form name="saveform"  action="{{route('admin.user.simpan')}}" method="post" onsubmit="return validateForm()">
                            @csrf
 
                            <div class="form-group mb-4">
-                              <label for="" class="form-label" style="font-size: 11pt; font-weight: bold;" >Cabang</label>
+    <label for="" class="form-label" style="font-size: 11pt; font-weight: bold;">Role</label>
 
-                              <select  name="cabang_id"  class="form-select form-select-sm mb-3" aria-label=".form-select-lg example" style="border-color: #01004C;  border-radius: 5px;" required>
-                                  <option selected disabled>Pilih Cabang</option>
-                                  @foreach ($cabang as $item)
-            <option value="{{ $item->id }}"{{ old('cabang_id') == $item->id ? 'selected' : '' }}> {{$item->kode_cabang}} - {{ $item->nama_cabang }}</option>
+    <select name="role_id" class="form-select form-select-sm mb-3" aria-label=".form-select-lg example" style="border-color: #01004C;  border-radius: 5px;">
+        <option selected disabled>Pilih Role</option>
+
+        @foreach ($role as $item)
+            @if ($item->nama_role === 'Admin' || $item->nama_role === 'User')
+                <option value="{{ $item->id }}"{{ old('role_id') == $item->id ? 'selected' : '' }}> {{ $item->nama_role }}</option>
+            @endif
         @endforeach
-                                </select>
-                              <!-- @if ($errors->has('name'))
-                                  <p class="text-danger">{{$errors->first('name')}}</p>
-                              @endif -->
-                          </div>
-<div class="form-group mb-4">
-                                          <label for="" class="form-label" style="font-size: 11pt; font-weight: bold;">Role</label>
+    </select>
 
-                                          <select  name="role_id" class="form-select form-select-sm mb-3" aria-label=".form-select-lg example" style="border-color: #01004C;  border-radius: 5px;" required>
-                                              <option selected disabled>Pilih Role</option>
-                                              @foreach ($role as $item)
-            <option value="{{ $item->id }}"{{ old('role_id') == $item->id ? 'selected' : '' }}>  {{ $item->nama_role }}</option>
-        @endforeach
-                                            </select>
-                                          <!-- @if ($errors->has('name'))
-                                              <p class="text-danger">{{$errors->first('name')}}</p>
-                                          @endif -->
-                                      </div>
-
+    <!-- @if ($errors->has('name'))
+        <p class="text-danger">{{$errors->first('name')}}</p>
+    @endif -->
+</div>
 
                                       
                            <div class="form-group mb-4">
                               <label for="" class="form-label" style="font-size: 11pt; font-weight: bold;">No Pegawai</label>
-                              <input name="no_pegawai" type="text" class="form-control" style="border-color: #01004C;" value="" required />
+                              <input name="no_pegawai" type="text" class="form-control" style="border-color: #01004C;" value=""  />
                               <!-- @if ($errors->has('name'))
                                   <p class="text-danger">{{$errors->first('name')}}</p>
                               @endif -->
@@ -64,7 +54,7 @@
 
                           <div class="form-group mb-4">
                               <label for="" class="form-label" style="font-size: 11pt; font-weight: bold;">Nama User</label>
-                              <input name="nama_user" type="text" class="form-control" style="border-color: #01004C;" value="" required />
+                              <input name="nama_user" type="text" class="form-control" style="border-color: #01004C;" value=""  />
                               <!-- @if ($errors->has('name'))
                                   <p class="text-danger">{{$errors->first('name')}}</p>
                               @endif -->
@@ -73,7 +63,7 @@
 
                           <div class="form-group mb-4">
                               <label for="" class="form-label" style="font-size: 11pt; font-weight: bold;">Email</label>
-                              <input name="email" type="email" class="form-control" style="border-color: #01004C;" value="" required />
+                              <input name="email" type="email" class="form-control" style="border-color: #01004C;" value=""  />
                               <!-- @if ($errors->has('name'))
                                   <p class="text-danger">{{$errors->first('name')}}</p>
                               @endif -->
@@ -81,7 +71,7 @@
 
                           <div class="form-group mb-4">
                               <label for="" class="form-label" style="font-size: 11pt; font-weight: bold;">Password</label>
-                              <input name="nama" type="email" class="form-control disable" disabled style="border-color: #01004C;" value="12345678" required />
+                              <input name="password" type="email" class="form-control disable" disabled style="border-color: #01004C;" value="12345678"  />
                               <!-- @if ($errors->has('name'))
                                   <p class="text-danger">{{$errors->first('name')}}</p>
                               @endif -->
@@ -102,5 +92,37 @@
   
     
   </div>
+
+
+<script>
+    function validateForm() {
+    let role = document.forms["saveform"]["role_id"].value;
+    let nopegawai = document.forms["saveform"]["no_pegawai"].value;
+    let nama = document.forms["saveform"]["nama_user"].value;
+    let email = document.forms["saveform"]["email"].value;
+    let password = document.forms["saveform"]["password"].value;
+
+       if ( role == "") {
+            alert("Pilih salah satu role");
+            return false;
+        }
+        else if ( nopegawai == "" ){
+            alert ("No pegawai tidak boleh kosong");
+            return false;
+        }
+        else if ( nama == "" ){
+            alert ("Nama user tidak boleh kosong");
+            return false;
+        }else if ( email == "" ){
+            alert ("Email tidak boleh kosong");
+            return false;
+        }else if ( password == "" ){
+            alert ("Password tidak boleh kosong");
+            return false;
+        }
+    }
+</script>
+
+
 
 @endsection

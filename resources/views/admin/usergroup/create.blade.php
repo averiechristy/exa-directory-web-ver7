@@ -1,6 +1,5 @@
 @extends('layouts.admin.app')
 @section('content')
-
 <div class="content-wrapper">    
           <div class="d-sm-flex align-items-center justify-content-between border-bottom">
           </div>
@@ -14,18 +13,7 @@
                   <div class="card-body">
                       <form action="{{route('admin.usergroup.simpan')}}" method="post">
                            @csrf
-                           <div class="form-group mb-4">
-                              <label for="" class="form-label" style="font-size: 11pt; font-weight: bold;">Cabang</label>
-                              <select name="cabang_id" id ="cabang" class="form-select form-select-sm mb-3" aria-label=".form-select-lg example" style="border-color: #01004C;  border-radius: 5px;" required>
-                                  <option selected disabled>Pilih Cabang</option>
-                                  @foreach ($cabang as $item)
-            <option value="{{ $item->id }}"{{ old('cabang_id') == $item->id ? 'selected' : '' }}> {{$item->kode_cabang}} - {{ $item->nama_cabang }}</option>
-        @endforeach
-                                </select>
-                              <!-- @if ($errors->has('name'))
-                                  <p class="text-danger">{{$errors->first('name')}}</p>
-                              @endif -->
-                          </div>        
+                         
                            <div class="form-group mb-4">
                               <label for="" class="form-label" style="font-size: 11pt; font-weight: bold;">Nama Group</label>
                               <input name="nama_group" type="text" class="form-control {{$errors->has('name') ? 'is-invalid' : ''}}" style="border-color: #01004C;" value="" required />
@@ -39,9 +27,9 @@
     <div class="member-item">
         <select name ="anggota[]" class="form-select form-select-sm mb-3 member-select" aria-label=".form-select-lg example" style="border-color: #01004C;  border-radius: 5px;" required>
             <option selected disabled>Pilih Anggota</option>
-            <!-- @foreach ($users as $user)
-                <option value="{{ $user->id }}">{{ $user->nama_user }} - {{$user->nomor_pegawai}}</option>
-            @endforeach -->
+            @foreach ($users as $user)
+                <option value="{{ $user->id }}">{{ $user->nama_user }} | {{$user->no_pegawai}}</option>
+            @endforeach
         </select>
         
         <div class="form-group mb-4 mt-2">
@@ -49,9 +37,7 @@
         </div>
     </div>
     </div>
-                        
-
-
+                    
     </div>
     <div class="form-group mb-4">
     <button type="button" id="add-member" class="btn btn-sm" style="background-color: #FF9900; color: white; border-radius: 8px;">
@@ -74,28 +60,9 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<script>
-
+<script> 
 $(document).ready(function() {
-        var counter = 0; // Set counter sesuai dengan jumlah produk yang ada
-        
-
-        $('#cabang').change(function() {
-            var cabangId = $(this).val();
-            $.ajax({
-                url: '/getMember/' + cabangId,
-                type: 'GET',
-                success: function(data) {
-                    var memberSelect = $('.member-select');
-                    
-                    memberSelect.empty();
-                    $.each(data, function(key, user) {
-                        memberSelect.append('<option value="'+ user.id +  '">' + user.nama_user + ' | ' + user.no_pegawai + '</option>');                  
-
-                    });
-                }
-            });
-        });
+        var counter = 0;
         $('#add-member').click(function() { // Mengubah selector menjadi '#add-member'
         var memberContainer = $('.member-container'); // Mengubah selector menjadi '.member-container'
         var memberItem = $('<div class="member-item">');
@@ -143,5 +110,5 @@ $(document).ready(function() {
 
     });
 </script>
-@endsection
 
+@endsection

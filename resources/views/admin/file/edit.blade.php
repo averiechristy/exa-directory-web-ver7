@@ -16,7 +16,7 @@
 
                 </div>
                 <div class="card-body">
-                    <form action="/updatefile/{{$data->id}}" method="post" enctype="multipart/form-data">
+                    <form action="/adminupdatefile/{{$data->id}}" method="post" enctype="multipart/form-data">
                         @csrf
 
                         <div class="form-group mb-4">

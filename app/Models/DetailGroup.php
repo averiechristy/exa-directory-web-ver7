@@ -12,6 +12,7 @@ class DetailGroup extends Model
     protected $fillable = [
         'folder_id',
         'user_group_id',
+        'cabang_id',
         
     ];
 
@@ -26,4 +27,11 @@ class DetailGroup extends Model
 
         return $this->belongsTo(UserGroup::class);
     }
+
+    public function detailMembers()
+    {
+        return $this->hasMany(DetailMember::class, 'user_group_id');
+    }
+
+    
 }

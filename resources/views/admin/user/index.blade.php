@@ -80,8 +80,8 @@ entries
                 @csrf
                 <button type="submit" class="btn-reset show_confirm2" data-toggle="tooltip" title='Reset Password'><i class="mdi mdi-refresh"  style="color:white" ></i></button>
             </form>
-                            <a  href="{{route('tampiluser', $users->id)}}"data-toggle="tooltip" title='Edit'><button class="btn-edit mt-1"><i class="mdi mdi-pencil" style="color:white" ></i></button></a>        
-                            <form method="POST" action="{{ route('deleteuser', $users->id) }}">
+                            <a  href="{{route('admintampiluser', $users->id)}}"data-toggle="tooltip" title='Edit'><button class="btn-edit mt-1"><i class="mdi mdi-pencil" style="color:white" ></i></button></a>        
+                            <form method="POST" action="{{ route('admindeleteuser', $users->id) }}">
                             @csrf
                             <input name="_method" type="hidden" value="DELETE">
                             <button type="submit" class="btn-delete mt-1 show_confirm" data-toggle="tooltip" title='Hapus'><i class="mdi mdi-delete" style="color:white;" ></i></button>

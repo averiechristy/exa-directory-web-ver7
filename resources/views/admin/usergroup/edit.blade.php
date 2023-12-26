@@ -1,79 +1,45 @@
 @extends('layouts.admin.app')
-
 @section('content')
-<div class="content-wrapper">
-               
-          <div class="d-sm-flex align-items-center justify-content-between border-bottom">
-            
+<div class="content-wrapper">               
+          <div class="d-sm-flex align-items-center justify-content-between border-bottom">            
           </div>
           <div id="content-wrapper" class="d-flex flex-column">
-
             <!-- Main Content -->
             <div id="content" class="content">
-              
               <div class="card mt-5">
-
                   <div class="card-header">
                     <p class="mt-2" style="font-size: 14pt;">Edit User Group</p>
                   </div>
                   <div class="card-body">
-                      <form action="/updateusergroup/{{$data->id}}" method="post">
+                      <form action="/adminupdateusergroup/{{$data->id}}" method="post">
                            @csrf
-                           <div class="form-group mb-4">
-                              <label for="" class="form-label" style="font-size: 11pt; font-weight: bold;">Cabang</label>
-                              <select name="cabang_id" id="cabang" class="form-select form-select-sm mb-3" aria-label=".form-select-lg example" style="border-color: #01004C;  border-radius: 5px;" required>
-                                  <option selected disabled>Pilih Cabang</option>
-                                
-                                  @php
-        $selectedCabang = old('cabang_id', $data->cabang_id); // Mengambil nilai 'role_id' dari request old atau menggunakan nilai default dari $package
-        $uniqueCabang = $users->unique('Cabang.id'); // Memastikan pilihan unik berdasarkan id Role
-    @endphp
-    @foreach ($uniqueCabang as $item)
-        <option value="{{ $item->Cabang->id }}" @if ($item->Cabang->id == $selectedCabang) selected @endif>
-            {{ $item->Cabang->kode_cabang }} - {{ $item->Cabang->nama_cabang }}
-        </option>
-    @endforeach
-                                </select>
-                              <!-- @if ($errors->has('name'))
-                                  <p class="text-danger">{{$errors->first('name')}}</p>
-                              @endif -->
-                          </div>
                            <div class="form-group mb-4">
                               <label for="" class="form-label" style="font-size: 11pt; font-weight: bold;">Nama Group</label>
                               <input name="nama_group" type="text" value="{{ old('nama_group', $data->nama_group) }}"class="form-control {{$errors->has('name') ? 'is-invalid' : ''}}" style="border-color: #01004C;" value="" required />
                               <!-- @if ($errors->has('name'))
                                   <p class="text-danger">{{$errors->first('name')}}</p>
                               @endif -->
-                          </div>   
-
-                       
+                          </div>                          
                           <div class="form-group mb-4">
     <label for="" class="form-label" style="font-size: 11pt; font-weight: bold;">Anggota</label>
     <div class="member-container">
-       @foreach ($nama as $detailData)
-@foreach(old('anggota', ['']) as $index => $oldAnggota)
+    @foreach ($nama as $detailData)
+    @foreach(old('anggota', ['']) as $index => $oldAnggota)
 <div class="member-item">
         <select name ="anggota[]" class="form-select form-select-sm mb-3 member-select" aria-label=".form-select-lg example" style="border-color: #01004C;  border-radius: 5px;" required>
             <option selected disabled>Pilih Anggota</option>
-
-
-            @foreach ($users as $user)
-            @if ($user->cabang_id == $selectedCabang)
+            @foreach ($users as $user)          
                 <option value="{{ $user->id }}" {{ $detailData->user_id == $user->id ? 'selected' : '' }}>
                     {{ $user->nama_user }} | {{$user->no_pegawai}}
                 </option>
-            @endif
         @endforeach
-        </select>
-        
+        </select>        
         <div class="form-group mb-4 mt-2 ">
             <button type="button" class="btn btn-sm remove-member mb-3" style="float: right; background-color: red; color: white; border-radius: 8px;">Hapus</button>
         </div>
-        </div>
-    </div>
+        </div>        
     @endforeach        
     @endforeach
-    
     <div class="form-group mb-4">
     <button type="button" id="add-member" class="btn btn-sm" style="background-color: #FF9900; color: white; border-radius: 8px;">
         <i class="fa fa-plus" style="font-size: 14px;"></i> Tambah Anggota
@@ -89,13 +55,11 @@
         </div>
   </div>
 
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
 
 <script>
     function saveMemberData() {
@@ -129,24 +93,6 @@ $(document).ready(function() {
 $(document).ready(function() {
         var counter = 0; // Set counter sesuai dengan jumlah produk yang ada
         
-
-        $('#cabang').change(function() {
-            var cabangId = $(this).val();
-            $.ajax({
-                url: '/getMember/' + cabangId,
-                type: 'GET',
-                success: function(data) {
-                    var memberSelect = $('.member-select');
-                    
-                    memberSelect.empty();
-                    $.each(data, function(key, user) {
-                        memberSelect.append('<option value="'+ user.id +  '">' + user.nama_user + ' | ' + user.no_pegawai + '</option>');                  
-
-                    });
-                }
-            });
-        });
-
         $('#add-member').click(function() { // Mengubah selector menjadi '#add-member'
         var memberContainer = $('.member-container'); // Mengubah selector menjadi '.member-container'
         var memberItem = $('<div class="member-item">');

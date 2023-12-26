@@ -14,7 +14,7 @@ class CabangController extends Controller
     public function index()
     {
         $cabang =Cabang::orderBy('created_at', 'desc')->get();
-        return view("admin.cabang.index",[
+        return view("superadmin.cabang.index",[
             "cabang"=> $cabang
         ]);
     }
@@ -24,7 +24,7 @@ class CabangController extends Controller
      */
     public function create()
     {
-        return view("admin.cabang.create");
+        return view("superadmin.cabang.create");
     }
 
     /**
@@ -43,7 +43,7 @@ class CabangController extends Controller
     
         $request->session()->flash('success', 'User Role berhasil ditambahkan.');
     
-        return redirect(route('admin.cabang.index'));   
+        return redirect(route('superadmin.cabang.index'));   
     }
 
 
@@ -56,7 +56,7 @@ class CabangController extends Controller
     {
         $data = Cabang::find($id);
 
-        return view('admin.cabang.edit',[
+        return view('superadmin.cabang.edit',[
             'data'=> $data
         ]);
     }
@@ -84,7 +84,7 @@ class CabangController extends Controller
  
         $data->save();
         $request->session()->flash('success', "Cabang berhasil diupdate.");
-        return redirect(route('admin.cabang.index'));
+        return redirect(route('superadmin.cabang.index'));
     }
 
     /**
@@ -98,6 +98,6 @@ class CabangController extends Controller
         
         $request->session()->flash('error', "Cabang berhasil dihapus.");
         
-        return redirect()->route('admin.cabang.index');
+        return redirect()->route('superadmin.cabang.index');
     }
 }

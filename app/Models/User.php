@@ -64,5 +64,20 @@ class User extends Authenticatable
     {
         return $this->hasMany(DetailMember::class);
     }
+
+    
+
+    public function isAdmin()
+{
+    $jenis_role = $this->Role->nama_role;
+    return strtoupper($jenis_role) === 'ADMIN';
+}
+
+public function isSuperAdmin()
+{
+    $jenis_role = $this->Role->nama_role;
+    return strtoupper($jenis_role) === 'SUPER ADMIN';
+}
+
 }
 

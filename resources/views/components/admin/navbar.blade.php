@@ -1,7 +1,6 @@
 <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row">
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
-        <div class="me-3">
-         
+        <div class="me-3">         
         </div>
         <div>
           <a class="navbar-brand brand-logo" href="#">
@@ -19,18 +18,22 @@
             <h3 class="welcome-sub-text">Exa Directory </h3>
           </li>
         </ul>
-        <ul class="navbar-nav ms-auto">
-         
-        
+        <ul class="navbar-nav ms-auto">         
           <li class="nav-item font-weight-semibold d-none d-lg-block ms-0">
-            <h3 class="welcome-sub-text">Welcome, Admin! </h3>
+            <h3 class="welcome-sub-text">Welcome, {{ auth()->user()->nama_user }}</h3>
           </li>
           <li class="nav-item dropdown d-none d-lg-block user-dropdown">
             <a class="nav-link" id="UserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
               <img class="img-xs rounded-circle" src="{{asset('img/profil.png')}}" alt="Profile image"> </a>
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">   
               <a href="{{route('admin.changepassowrd')}}" class="dropdown-item"><i class="dropdown-item-icon mdi mdi-lock-outline text-gray me-2"></i>Change Password</a>
-              <a href="pages/samples/login.html" class="dropdown-item"><i class="dropdown-item-icon mdi mdi-power text-gray me-2"></i>Sign Out</a>
+            
+              <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                        <i class="dropdown-item-icon mdi mdi-power text-gray me-2"></i>
+                            Logout
+                        </a>
+                    </div>
             </div>
           </li>
         </ul>
@@ -42,8 +45,7 @@
     <!-- partial -->
     <div class="container-fluid page-body-wrapper">
       <!-- partial:partials/_settings-panel.html -->
-      <div class="theme-setting-wrapper">
-       
+      <div class="theme-setting-wrapper">  
       </div>
     
       <!-- partial -->
@@ -56,18 +58,14 @@
               <span class="menu-title">Dashboard</span>
             </a>
           </li>
-          <li class="nav-item {{ Request::is('admin/cabang/index') || Request::is('admin/cabang/create') ? 'active' : '' }}">
-            <a class="nav-link" href="{{route('admin.cabang.index')}}">
-              <i class="menu-icon mdi mdi-office-building"></i>
-              <span class="menu-title">Cabang</span>
-            </a>
-          </li>
+         
           <li class="nav-item {{ Request::is('admin/user/index')|| Request::is('admin/user/create') ? 'active' : '' }} ">
             <a class="nav-link" href="{{route('admin.user.index')}}">
               <i class="menu-icon mdi mdi-account"></i>
               <span class="menu-title">User</span>
             </a>
           </li>
+          
           <li class="nav-item {{ Request::is('admin/usergroup/index') || Request::is('admin/usergroup/create')? 'active' : '' }} ">
             <a class="nav-link" href="{{route('admin.usergroup.index')}}">
               <i class="menu-icon mdi mdi-account-group"></i>
@@ -90,7 +88,7 @@
     </a>
 </li>
 <li class="nav-item">
-    <a class="nav-link {{ Request::is('admin.file.index') || Request::is('admin/file/create') ? 'active' : '' }}" href="{{route('admin.file.index')}}">
+<a class="nav-link {{ Request::is('admin.file.index') || Request::is('admin/file/create') ? 'active' : '' }}" href="{{route('admin.file.index')}}">
         File
     </a>
 </li>

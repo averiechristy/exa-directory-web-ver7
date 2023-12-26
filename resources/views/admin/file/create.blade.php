@@ -1,7 +1,6 @@
 @extends('layouts.admin.app')
 
 @section('content')
-
 <div class="content-wrapper">
           <div class="d-sm-flex align-items-center justify-content-between border-bottom"> 
           </div>
@@ -22,7 +21,7 @@
 
                            <div class="form-group mb-4">
                               <label for="" class="form-label">Path Folder</label>
-                              <select id="path_folder" name="path_folder" class="form-select form-select-sm mb-3" aria-label=".form-select-lg example" style="border-color: #01004C; border-radius: 5px;" required>
+                              <select id="path_folder"  name="path_folder" class="form-select form-select-sm mb-3" aria-label=".form-select-lg example" style="border-color: #01004C; border-radius: 5px;" required>
             <option selected disabled>Pilih Path</option>
             <!-- Loop melalui data folder dari database -->
             @foreach($folders as $folder)
@@ -33,7 +32,7 @@
                                   <p class="text-danger">{{$errors->first('name')}}</p>
                               @endif -->
                           </div>
-                     
+                          
                            <div class="form-group mb-4">
                                <label for="" class="form-label">Nama File</label>
                                <input name="nama_file" type="text" class="form-control {{$errors->has('name') ? 'is-invalid' : ''}}" style="border-color: #01004C;" value="" required />
@@ -72,7 +71,6 @@
                        </form>
                    </div>
                 </div>
-
             </div>
 
         </div>

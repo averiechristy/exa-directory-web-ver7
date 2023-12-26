@@ -21,7 +21,6 @@
   <!-- endinject -->
   <link rel="shortcut icon" href="{{asset('img/smalllogo.png')}}" />
 </head>
-
 <body>
   <div class="container-scroller">
     <div class="container-fluid page-body-wrapper full-page-wrapper">
@@ -32,22 +31,19 @@
               <div class="brand-logo">
                 <img src="{{asset('img/logodirectory.png')}}" style="width: 151px;" alt="logo">
               </div>
+              @include('components.alert')
               <h4>Hello! let's get started</h4>
               <h6 class="fw-light">Sign in to continue.</h6>
-              <form class="pt-3">
-                <div class="form-group">
-                  
-                  <input type="email" class="form-control form-control-lg" id="exampleInputEmail1" placeholder="Email">
-                </div>
-                <div class="form-group">
-                  <input type="password" class="form-control form-control-lg" id="exampleInputPassword1" placeholder="Password">
-                </div>
-                <div class="mt-3">
-                  <a class="btn btn-primary btn-lg font-weight-medium auth-form-btn" href="../../index.html">Sign In</a>
-                </div>
-               
-                
-               
+              <form action="{{route('login')}}" method="post"class="pt-3">
+              @csrf
+              <div class="form-group">
+        <input type="email" name="email" class="form-control form-control-lg" id="exampleInputEmail1" placeholder="Email">
+    </div>
+    <div class="form-group">
+        <input type="password" name="password" class="form-control form-control-lg" id="exampleInputPassword1" placeholder="Password">
+    </div>
+                <button type="submit" class="btn btn-primary btn-lg font-weight-medium auth-form-btn">Sign In</button>
+
               </form>
             </div>
           </div>

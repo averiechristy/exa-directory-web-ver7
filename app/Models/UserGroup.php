@@ -10,7 +10,7 @@ class UserGroup extends Model
     use HasFactory;
     protected $fillable = [
         'role_id',
-        'cabang_id',
+       'cabang_id',
         'nama_group',
         'created_by',
         'updated_by',
@@ -39,4 +39,6 @@ class UserGroup extends Model
 
         return $this->hasMany(DetailGroup::class);
     }
+
+    
 }

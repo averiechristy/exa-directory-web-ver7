@@ -33,6 +33,9 @@
 <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css'>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
+
+
 </head>
 <body>
 
@@ -40,6 +43,27 @@
    
 @yield('content')
 
+<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Yakin untuk logout?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Pilih "logout" jika anda yakin untuk mengakhiri sesi anda.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+    @csrf
+</form>
+                </div>
+            </div>
+        </div>
+    </div>
    
 <script src="{{asset('vendors/js/vendor.bundle.base.js')}}"></script>
   <!-- endinject -->
@@ -110,8 +134,8 @@
 
         // Daftar URL yang harus menampilkan submenu aktif
         const activeURLs = [
-            "{{ route('admin.folder.index') }}",
-            "{{ route('admin.file.index') }}",
+            "{{ route('superadmin.folder.index') }}",
+            "{{ route('superadmin.file.index') }}",
         ];
 
         submenuLinks.forEach(function (link) {
@@ -170,6 +194,14 @@
           });
       });
   
+</script>
+
+<script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
+<script type="text/javascript">
+ $(document).ready(function() {
+     $('.theSelect').select2();
+ });
 </script>
   <!-- End custom js for this page-->
 </body>
