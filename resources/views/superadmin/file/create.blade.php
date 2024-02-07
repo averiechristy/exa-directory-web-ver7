@@ -4,20 +4,15 @@
           <div class="d-sm-flex align-items-center justify-content-between border-bottom"> 
           </div>
           <div id="content-wrapper" class="d-flex flex-column">
-
             <!-- Main Content -->
-            <div id="content" class="content">
-              
-              <div class="card mt-5">
-                  
+            <div id="content" class="content">              
+              <div class="card mt-5">                  
                   <div class="card-header">
                     <p class="mt-2">Tambah File</p>
-                   
                   </div>
                   <div class="card-body">
                       <form action="{{route('superadmin.file.simpan')}}" method="post" enctype="multipart/form-data">
                            @csrf
-
                            <div class="form-group mb-4">
                               <label for="" class="form-label">Path Folder</label>
                               <select id="path_folder"  name="path_folder" class="form-select form-select-sm mb-3" aria-label=".form-select-lg example" style="border-color: #01004C; border-radius: 5px;" required>

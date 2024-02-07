@@ -25,4 +25,15 @@ class File extends Model
 {
     return $this->belongsTo(Folder::class, 'folder_id');
 }
+
+public function pinnedByUser()
+{
+    return $this->belongsTo(User::class, 'pinned_by_user_id');
+}
+
+public function pins()
+{
+    return $this->hasMany(Pin::class);
+}
+
 }

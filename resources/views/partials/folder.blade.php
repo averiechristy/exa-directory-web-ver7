@@ -11,16 +11,14 @@
                 @include('partials.folder', ['folder' => $subfolder])
             @endforeach
         </div>
-    @endif
-
+    @endif       
     {{-- Display files in the current folder --}}
     @foreach($folder->files as $file)
-        <div >
+        <div>
          <a href="" style="margin-left: 20px;" data-toggle="modal" data-target="#fileModal{{ $file->id }}" class="see-file"> {{ $file->nama_file }}</a> 
         </div>
-
         <div class="modal fade" id="fileModal{{ $file->id }}" tabindex="-1" role="dialog" aria-labelledby="fileModalLabel{{ $file->id }}" aria-hidden="true">
-<div class="modal-dialog modal-dialog-centered modal-xl"  style="margin-top:5px;" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-xl"  style="margin-top:5px;" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="fileModalLabel{{ $file->id }}"></h5>
@@ -31,12 +29,10 @@
             <div class="modal-body">
                 <iframe src="{{ asset('storage/files/' . $file->file) }}" width="100%" height="600px"></iframe>
             </div>
-            <div class="modal-footer">
-              
+            <div class="modal-footer">                
             </div>
         </div>
     </div>
 </div>
     @endforeach
 </div>
-

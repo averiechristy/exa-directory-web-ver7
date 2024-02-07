@@ -10,7 +10,6 @@
 <ul class="navbar-nav ml-auto">
 
     <!-- Nav Item - Search Dropdown (Visible Only XS) -->
-
     <!-- Nav Item - User Information -->
     <li class="nav-item dropdown no-arrow">
         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
@@ -22,11 +21,11 @@
         <!-- Dropdown - User Information -->
         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
             aria-labelledby="userDropdown">
-            <a class="dropdown-item" href="{{route('user.editprofil')}}">
+            <!-- <a class="dropdown-item" href="{{route('edit-profile')}}">
                 <i class="fas fa-edit fa-sm fa-fw mr-2 text-gray-400"></i>
                 Edit Profile
-            </a>
-            <a class="dropdown-item" href="{{route('user.changepassword')}}">
+            </a> -->
+            <a class="dropdown-item" href="{{route('user.password')}}">
                 <i class="fas fa-key fa-sm fa-fw mr-2 text-gray-400"></i>
                 Change Password
             </a>

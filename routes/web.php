@@ -4,10 +4,14 @@ use App\Http\Controllers\AdminController\CabangController;
 use App\Http\Controllers\AdminController\DashboardController;
 use App\Http\Controllers\AdminController\FileController;
 use App\Http\Controllers\AdminController\FolderController;
+use App\Http\Controllers\AdminController\PasswordController;
 use App\Http\Controllers\AdminController\UserController;
 use App\Http\Controllers\AdminController\UserGroupController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController\HomeController;
+use App\Http\Controllers\UserController\PinController;
+use App\Http\Controllers\UserController\ProfileController;
+use App\Http\Controllers\UserController\UserPasswordController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -84,18 +88,18 @@ Route::get('admin/dashboard', function () {
 //     return view('user.home');
 // })->name('user.home');
 
-Route::get('admin/changepassword', function () {
-return view('admin.changepassword');
-})->name('admin.changepassowrd');
+// Route::get('admin/changepassword', function () {
+// return view('admin.changepassword');
+// })->name('admin.changepassowrd');
 
-Route::get('user/editprofil', function () {
-return view('user.editprofil');
-})->name('user.editprofil');
+// Route::get('user/editprofil', function () {
+// return view('user.editprofil');
+// })->name('user.editprofil');
 
 
-Route::get('user/changepassword', function () {
-    return view('user.changepassword');
-})->name('user.changepassword');
+// Route::get('user/changepassword', function () {
+//     return view('user.changepassword');
+// })->name('user.changepassword');
 
 
 // LOGIN ROUTE
@@ -104,6 +108,9 @@ Route::post('/login', [AuthController::class,'login']);
 Route::post('/logout', [AuthController::class,'logout'])->name('logout');
 
 // SUPERADMIN ROUTE
+
+Route::middleware('auth')->middleware('ensureUserRole:SUPER ADMIN')->group(function () {
+
 
 Route::get('superadmin/dashboard',[DashboardController::class,'index'])->name('superadmin.dashboard');
 
@@ -167,6 +174,14 @@ Route::get('/get-members/{cabangId}', [UserGroupController::class,'getMembersByC
 Route::post('/superadmin/usergroup/getAnggotaByCabang', [UserGroupController::class,'getAnggotaByCabang'])->name('superadmin.usergroup.getAnggotaByCabang');
 
 
+Route::get('superadmin/file/index',[FileController::class,'index'])->name('superadmin.file.index');
+Route::get('superadmin/changepassword', [PasswordController::class,'showChangePasswordFormSuperAdmin'])->name('superadmin.password');
+Route::post('superadmin/changepassword', [PasswordController::class,'superadminchangePassword'])->name('superadmin-change-password');
+
+});
+
+Route::middleware('auth')->middleware('ensureUserRole:ADMIN')->group(function () {
+
 //ADMIN ROUTE
 Route::get('admin/user/index',[UserController::class,'userindex'])->name('admin.user.index');
 Route::get('admin/user/create',[UserController::class,'usercreate'])->name('admin.user.create');
@@ -206,11 +221,31 @@ Route::get('admintampilfile/{id}',[FileController::class,'fileshow'])->name('adm
 Route::post('/adminupdatefile/{id}',[FileController::class,'fileupdate'])->name('adminupdatefile');
 Route::delete('/admindeletefile/{id}',[FileController::class,'filedestroy'])->name('admindeletefile');
 
+Route::get('admin/changepassword', [PasswordController::class,'showChangePasswordFormAdmin'])->name('admin.password');
+Route::post('admin/changepassword', [PasswordController::class,'adminchangePassword'])->name('admin-change-password');
 
 
+});
 
-
+Route::middleware('auth')->middleware('ensureUserRole:USER')->group(function () {
 // USER ROUTE
 Route::get('user/home',[HomeController::class,'index'])->name('user.home');
+Route::get('/folder/{folderId}', [HomeController::class,'showFolder'])->name('show-folder');
 
 
+Route::post('/pin-folder/{folderId}', [PinController::class, 'pinFolder'])->name('pin-folder');
+
+// Route untuk unpin folder
+Route::post('/unpin-folder/{folderId}', [PinController::class, 'unpinFolder'])->name('unpin-folder');
+
+
+Route::post('/pin-file/{fileId}', [PinController::class, 'pinFile'])->name('pin-file');
+Route::post('/unpin-file/{fileId}', [PinController::class, 'unpinFile'])->name('unpin-file');
+
+
+Route::get('user/changepassword', [UserPasswordController::class,'showChangePasswordFormUser'])->name('user.password');
+Route::post('user/changepassword', [UserPasswordController::class,'userchangePassword'])->name('user-change-password');
+
+
+Route::get('/profile/edit', [ProfileController::class,'editProfileForm'])->name('edit-profile');
+});

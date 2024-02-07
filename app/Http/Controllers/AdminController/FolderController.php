@@ -88,22 +88,27 @@ class FolderController extends Controller
         ]);
     }
 
+
     /**
      * Store a newly created resource in storage.
      */
- public function store(Request $request)
+public function store(Request $request)
 {
     $folder = new Folder;
+    
     $folder->nama_folder = $request->nama_folder;
+
+    
     $folder->save();
 
     $detailGroup = [];
 
     if ($request->has('group')) {
+
         foreach ($request->group as $index => $groupId) {
             // Ambil semua cabang_id dari DetailMember yang sesuai dengan user_group_id
             $cabangIds = DetailMember::where('user_group_id', $groupId)->pluck('cabang_id')->toArray();
-
+                
             foreach ($cabangIds as $cabangId) {
                 $detailGroup[] = [
                     'user_group_id' => $groupId,
@@ -262,9 +267,9 @@ public function delete($id, Request $request)
 
     // Hapus folder dari database setelah menghapus DetailGroup
     $folder->delete();
-
+    
     // Set flash message
-    $request->session()->flash('success', 'Folder berhasil dihapus.');
+    $request->session()->flash('error', 'Folder berhasil dihapus.');
     return redirect(route('superadmin.folder.index'));
 }
 
@@ -281,7 +286,7 @@ public function deleteadmin($id, Request $request)
     // Hapus folder dari database
     $folder->delete();
 
-    $request->session()->flash('success', 'Folder berhasil dihapus.');
+    $request->session()->flash('error', 'Folder berhasil dihapus.');
     return redirect(route('admin.folder.index'));
 }
 
@@ -296,7 +301,7 @@ public function createSubfolder(Request $request, $id)
     $parentFolder = Folder::find($id);
  
     $userGroupId = $parentFolder->user_group_id;
-
+        
     // Buat subfolder
     $subfolder = new Folder([
         'id_folder_induk' => $parentFolder->id,

@@ -25,6 +25,10 @@ class Folder extends Model
     
     }
 
+    public function pins()
+    {
+        return $this->hasMany(Pin::class);
+    }
     
     public function DetailGroup()
     {
@@ -62,6 +66,36 @@ class Folder extends Model
     return $this->hasMany(Folder::class, 'id_folder_induk');
 }
 
+
+public function parent_folder()
+{
+    return $this->belongsTo(Folder::class, 'id_folder_induk');
+}
+
+public function pinnedByUser()
+{
+    return $this->belongsTo(User::class, 'pinned_by_user_id');
+}
+
+public function getFullFolderPath()
+{
+    $path = [];
+
+    $currentFolder = $this;
+
+    while ($currentFolder) {
+        $path[] = [
+            'id' => $currentFolder->id,
+            'nama_folder' => $currentFolder->nama_folder,
+        ];
+
+        $currentFolder = $currentFolder->parent_folder;
+    }
+
+    return array_reverse($path);
+}
+
+
 public function groups()
     {
         return $this->hasMany(UserGroup::class);
@@ -75,5 +109,9 @@ public function groups()
     {
         return $this->belongsTo(Cabang::class, 'cabang_id');
     }
+
+  
+
+    
 }
 

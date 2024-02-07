@@ -1,4 +1,4 @@
-@extends('layouts.superadmin.app')
+@extends('layouts.admin.app')
 
 @section('content')
 
@@ -25,9 +25,11 @@
     <div class="user-info">
     <img src="{{asset('img/profil.png')}}" style="height: 100px; width: 100px;">
     <h3>{{ Auth::user()->nama_user }}</h3>
-</div>                         
+</div>
+
+                            
                  
-<form method="POST" action="{{ route('superadmin-change-password') }}">
+<form method="POST" action="{{ route('admin-change-password') }}">
         @csrf
 
             <hr>

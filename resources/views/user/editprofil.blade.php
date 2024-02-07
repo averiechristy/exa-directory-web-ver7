@@ -29,46 +29,57 @@
                         <div class="row mt-5">
                            
                                 <img src="{{asset('img/undraw_profile.svg')}}" style="height: 80px; width: 100px;">
-                                <h3 class="ml-2 mt-4">Amanda</h3>
-                                
-    
-                               
+                                <h3 class="ml-2 mt-4">Amanda</h3>     
                            
                         </div>
-                        <form class="mt-3">
+                    
+            <form method="POST" action="" enctype="multipart/form-data">
+        @csrf
 
-                           
-                        <div class="mb-3">
-  <label for="formFileSm" class="form-label">Foto Profil</label><br>
-  <input class="form-control-sm" id="formFileSm" type="file">
+        @if (session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+
+<div class="mb-3">
+<label for="name">Profil Foto</label>
+
+<input type="file" class="form-control" name="avatar"  style="width: 80%;" id="avatar-input" accept=".png, .jpg, .jpeg" 
+               title="Hanya file dengan ekstensi .png, .jpg, atau .jpeg yang diterima" 
+               size="5000000">
+                    <div class="mt-2">
+                        <img id="avatar-preview" src="{{ asset('img/' . auth()->user()->avatar) }}" alt="Preview" style="max-width: 100px; max-height: 100px;">
+                    </div>
+                    @if($errors->has('avatar'))
+                        <p class="text-danger">{{ $errors->first('avatar') }}</p>
+                    @endif
+          </div>
+
+<div class="mb-3">
+    <label for="name">Nama</label>
+    <input id="nama" type="text" name="nama" value="{{ $user->nama_user }}" style="width: 80%;" class="form-control" oninput="removeExtraSpaces(this)">
+
+<script>
+function removeExtraSpaces(inputElement) {
+    // Menghapus spasi berlebihan dengan menggunakan regex
+    inputElement.value = inputElement.value.replace(/\s+/g, ' ');
+}
+</script>
+    @if ($errors->has('nama'))
+        <p class="text-danger">{{ $errors->first('nama') }}</p>
+    @endif
 </div>
 
-                            <div class="mb-3">
-                              <label for="exampleInputEmail1" class="form-label">Nama</label>
-                              <input type="text" class="form-control" id="exampleInputEmail1" value="Anita" aria-describedby="emailHelp" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="exampleInputEmail1" class="form-label">Email</label>
-                                <input type="email" value ="anita@gmail.com" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
-                              </div>
-                          
-    
-                            <button type="submit" class="btn btn-primary">Simpan</button>
-                          </form>
+          <div class="mb-3">
+            <button type="submit" class="btn btn-primary me-md-2">Update Profile</button>
+        </div>
+    </form>
                     </div>
-
                 </div>
                 <!-- /.container-fluid -->
-
             </div>
             <!-- End of Main Content -->
-
-          
-
         </div>
         <!-- End of Content Wrapper -->
-
     </div>
     <!-- End of Page Wrapper -->
 

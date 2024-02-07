@@ -66,6 +66,10 @@ class User extends Authenticatable
     }
 
     
+    public function pins()
+    {
+        return $this->hasMany(Pin::class);
+    }
 
     public function isAdmin()
 {
@@ -77,6 +81,16 @@ public function isSuperAdmin()
 {
     $jenis_role = $this->Role->nama_role;
     return strtoupper($jenis_role) === 'SUPER ADMIN';
+}
+
+public function isFolderPinned($folderId)
+{
+    return $this->pins()->where('folder_id', $folderId)->exists();
+}
+
+public function isFilePinned($fileId)
+{
+    return $this->pins()->where('file_id', $fileId)->exists();
 }
 
 }
