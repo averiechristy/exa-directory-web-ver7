@@ -17,15 +17,6 @@
             <h3 class="welcome-sub-text">Exa Directory </h3>          </li>
         </ul>
         <ul class="navbar-nav ms-auto">
-
-
-        <li class="nav-item dropdown">
-            <a class="nav-link count-indicator" id="notificationDropdown" href="#" data-bs-toggle="dropdown">
-             <h6>Welcome, {{ auth()->user()->nama_user }}</h6>
-            </a>
-          </li>
-
-
         <li class="nav-item dropdown"> 
     <a class="nav-link count-indicator" id="countDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
     <img class="img-xs rounded-circle" src="{{asset('img/profil.png')}}" alt="Profile image"> </a>
@@ -47,13 +38,9 @@
         </button>
       </div>
     </nav>
-    <!-- partial -->
-    <div class="container-fluid page-body-wrapper">
-      <!-- partial:partials/_settings-panel.html -->
     
-      <!-- partial -->
-      <!-- partial:partials/_sidebar.html -->
-      <nav class="sidebar sidebar-offcanvas" id="sidebar">
+
+    <nav class="sidebar sidebar-offcanvas" id="sidebar">
     <ul class="nav">
         <li class="nav-item {{ Request::is('superadmin/dashboard') ? 'active' : '' }}  ">
           <a class="nav-link" href="{{route('superadmin.dashboard')}}">
@@ -73,10 +60,6 @@
             <span class="menu-title">User</span>
           </a>
         </li>
-
-
-
-
         <li class="nav-item {{ Request::is('superadmin/usergroup/index') || Request::is('superadmin/usergroup/create')? 'active' : '' }} ">
           <a class="nav-link" href="{{route('superadmin.usergroup.index')}}">
             <i class="menu-icon mdi mdi-account-group"></i>
@@ -109,4 +92,3 @@
 
       </ul>
   </nav>
-      

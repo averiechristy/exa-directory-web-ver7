@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController\ApprovalController;
 use App\Http\Controllers\AdminController\CabangController;
 use App\Http\Controllers\AdminController\DashboardController;
 use App\Http\Controllers\AdminController\FileController;
@@ -7,8 +8,10 @@ use App\Http\Controllers\AdminController\FolderController;
 use App\Http\Controllers\AdminController\PasswordController;
 use App\Http\Controllers\AdminController\UserController;
 use App\Http\Controllers\AdminController\UserGroupController;
+use App\Http\Controllers\ApprovalController\ApprovalDashboardController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController\HomeController;
+use App\Http\Controllers\UserController\KontenReadController;
 use App\Http\Controllers\UserController\PinController;
 use App\Http\Controllers\UserController\ProfileController;
 use App\Http\Controllers\UserController\UserPasswordController;
@@ -42,6 +45,11 @@ Route::get('admin/dashboard', function () {
     return view('admin.dashboard');
 })->name('admin.dashboard');
 
+
+
+// Route::get('approval/dashboard', function () {
+//     return view('approval.dashboard');
+// })->name('approval.dashboard');
 
 // Route::get('admin/cabang/index', function () {
 //     return view('admin.cabang.index');
@@ -178,6 +186,9 @@ Route::get('superadmin/file/index',[FileController::class,'index'])->name('super
 Route::get('superadmin/changepassword', [PasswordController::class,'showChangePasswordFormSuperAdmin'])->name('superadmin.password');
 Route::post('superadmin/changepassword', [PasswordController::class,'superadminchangePassword'])->name('superadmin-change-password');
 
+
+Route::get('/tampilkonten/{id}',[FileController::class,'tampilkonten'])->name('tampilkonten');
+
 });
 
 Route::middleware('auth')->middleware('ensureUserRole:ADMIN')->group(function () {
@@ -248,4 +259,20 @@ Route::post('user/changepassword', [UserPasswordController::class,'userchangePas
 
 
 Route::get('/profile/edit', [ProfileController::class,'editProfileForm'])->name('edit-profile');
+
+Route::get('user/kontenread/{id}',[KontenReadController::class,'index'])->name('user.kontenread');
+
+
+});
+
+// APPROVAl ROUTE
+
+Route::middleware('auth')->middleware('ensureUserRole:APPROVAL')->group(function () {
+
+    Route::get('approval/dashboard',[ApprovalDashboardController::class,'index'])->name('approval.dashboard');
+    Route::post('/updatestatus/{id}',[FileController::class,'updatestatus'])->name('updatestatus');
+    Route::get('/tampilkontenapproval/{id}',[FileController::class,'tampilkontenapproval'])->name('tampilkontenapproval');
+
+    Route::get('approval/viewkonten',[ApprovalDashboardController::class,'viewkonten'])->name('approval.viewkonten');
+
 });

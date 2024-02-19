@@ -19,6 +19,10 @@ class File extends Model
         'created_by',
         'updated_by',
         'file',
+        'status_persetujuan',
+        'konten',
+        'cabang_id_user',
+        'catatan',
     ];
 
     public function folder()

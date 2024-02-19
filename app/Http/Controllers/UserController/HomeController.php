@@ -22,24 +22,21 @@ class HomeController extends Controller
         // Mendapatkan informasi user login
         $user = Auth::user();
 
-
         // Mendapatkan semua detail member yang memiliki user_id sama dengan user login
         $memberDetails = DetailMember::where('user_id', $user->id)->get();
 
-       
         $userPins = Pin::where('user_id', auth()->user()->id)->get();
 
-       
         // Mendapatkan semua folder dari database yang memiliki cabang_id yang sama dengan user login
         $folders = Folder::whereNull('id_folder_induk')
-            ->whereHas('DetailGroup', function ($query) use ($memberDetails) {
-                $query->whereIn('user_group_id', $memberDetails->pluck('user_group_id')->toArray());
-            })
-            ->orderBy('created_at', 'desc')
-            ->get();
+        ->whereHas('DetailGroup', function ($query) use ($memberDetails) {
+             $query->whereIn('user_group_id', $memberDetails->pluck('user_group_id')->toArray());
+        })
+        ->orderBy('created_at', 'desc')
+        ->get();
     
         // Mendapatkan semua file yang memiliki status "berlaku" dari database
-        $files = File::where('status', 'berlaku')->get();
+        $files = File::where('status_persetujuan', 'Disetujui')->get();
     
         return view("user.home", [
             "folders" => $folders,
@@ -73,7 +70,7 @@ public function pinFolder($folderId)
     ->get();
 
 // Mendapatkan semua file yang memiliki status "berlaku" dari database
-$files = File::where('status', 'berlaku')->get();
+$files = File::where('status_persetujuan', 'Disetujui')->get();
     $folder = Folder::find($folderId);
 
     if (!$folder) {
@@ -94,9 +91,9 @@ $files = File::where('status', 'berlaku')->get();
 public function pinFile($fileId)
 {
     $user = Auth::user();
-
     // Mendapatkan semua detail member yang memiliki user_id sama dengan user login
     $memberDetails = DetailMember::where('user_id', $user->id)->get();
+
     $folders = Folder::whereNull('id_folder_induk')
     ->whereHas('DetailGroup', function ($query) use ($memberDetails) {
         $query->whereIn('user_group_id', $memberDetails->pluck('user_group_id')->toArray());
@@ -105,20 +102,18 @@ public function pinFile($fileId)
     ->get();
 
 // Mendapatkan semua file yang memiliki status "berlaku" dari database
-$files = File::where('status', 'berlaku')->get();
+    $files = File::where('status_persetujuan', 'Disetujui')->get();
     $file = File::find($fileId);
 
     if (!$file) {
         // Handle file not found
     }
-
+        
     // Pin the file for the authenticated user
     $file->pinned_by_user_id = auth()->user()->id;
     $file->save();
 
     // Redirect or respond as needed
-
-    
     return view("user.home", [
         "folders" => $folders,
         "files" => $files,

@@ -47,12 +47,13 @@ entries
                         <thead>
                           <tr>
                           
-                            <th>Nama File</th>
+                            <th>Judul Konten</th>
                             <th>Path Folder</th>
-                            <th>Size </th>
-                            <th>Jenis File </th>
+                           <th>Isi Konten</th>
+                            <th>Status Persetujuan</th>
+                            <th>Catatan</th>
                             <th>Status</th>
-                            <th>Lihat File</th>
+                            <!-- <th>Lihat File</th> -->
 
                             <th>Created at</th>
 
@@ -65,33 +66,43 @@ entries
                           </tr>
                         </thead>
                         <tbody>
-                          @foreach($files as $file)
+                        @foreach($files as $file)
                           <tr>
-                            <td>
-                              <a href="#" class="folderlink">
+                        <td>
+                        <a href="#" class="folderlink">
                               <div class="d-flex align-items-center">
                                   <div><i class="mdi mdi-file me-2 font-24 text-warning "></i>
                                   </div>
                                   <div class="font-weight-bold ">{{$file -> nama_file}}</div>
                               </div>
-                          </a>
-                          </td>
-                          
+                        </a>
+                        </td>
                           <td>{{ $file->folder->getFolderPath() }}</td>
-                          <td>{{$file -> size}}</td>
-                            <td>{{$file -> type}}</td>
+                          <td> <a href="{{ route('tampilkonten', $file->id) }}">Lihat isi konten</a>
+</td>
+                         
                             <td>
-                            @if ($file->status === 'berlaku')
+            @if ($file->status_persetujuan === 'Disetujui')
+                <span class="badge badge-success">Disetujui</span>
+            @elseif ($file->status_persetujuan === 'Ditolak')
+                <span class="badge badge-danger">Ditolak</span>
+                @elseif ($file->status_persetujuan === 'Menunggu Persetujuan')
+                <span class="badge badge-warning">Menunggu Persetujuan</span>
+            @endif
+                            </td>
+                            <td>{{$file -> catatan}}</td>
+                            <td>
+            @if ($file->status === 'berlaku')
                 <span class="badge badge-success">Berlaku</span>
             @elseif ($file->status === 'tidak_berlaku')
                 <span class="badge badge-danger">Tidak Berlaku</span>
             @else
                 {{ $file->status }}
             @endif
-                            </td>
-                           <td>
+    </td>
+    <!-- <td>
     <a href="" data-toggle="modal" data-target="#fileModal{{ $file->id }}" class="see-file">Lihat File</a>
-</td>
+</td> -->
 
 <div class="modal fade" id="fileModal{{ $file->id }}" tabindex="-1" role="dialog" aria-labelledby="fileModalLabel{{ $file->id }}" aria-hidden="true">
 <div class="modal-dialog modal-dialog-centered modal-xl"  style="margin-top:5px;" role="document">
@@ -103,19 +114,21 @@ entries
                 </button>
             </div>
             <div class="modal-body">
+            @if($file->file)
                 <iframe src="{{ asset('storage/files/' . $file->file) }}" width="100%" height="600px"></iframe>
+            @else 
+                <p>Tidak Ada File Tersimpan</p>
+            @endif
             </div>
-            <div class="modal-footer">
-              
+            <div class="modal-footer">           
             </div>
         </div>
     </div>
 </div>
-
                             <td>{{$file->created_at}}</td>
-                            <td></td>
+                            <td>{{$file->created_by}}</td>
                             <td>{{$file->updated_at}}</td>
-                            <td></td>
+                            <td>{{$file->updated_by}}</td>
                             <td>
                             <a  href="{{route('tampilfile', $file->id)}}"data-toggle="tooltip" title='Edit'><button class="btn-edit"><i class="mdi mdi-pencil" style="color:white" ></i></button></a>        
                             <form method="POST" action="{{ route('deletefile', $file->id) }}">
@@ -125,7 +138,7 @@ entries
                         </form>   
                             </td>
                           </tr>
-@endforeach    
+                @endforeach    
                         </tbody>
                       </table>
                       <div class="dataTables_info" id="dataTableInfo" role="status" aria-live="polite">
@@ -152,6 +165,10 @@ entries
   <style>
     .badge-success{
       background-color : green;
+    }
+
+    .badge-warning {
+        background-color : orange;
     }
 
     .badge-danger{

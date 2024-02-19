@@ -4,6 +4,10 @@ namespace App\Http\Controllers\AdminController;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cabang;
+use App\Models\DetailGroup;
+use App\Models\DetailMember;
+use App\Models\File;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class CabangController extends Controller
@@ -32,10 +36,13 @@ class CabangController extends Controller
      */
     public function store(Request $request)
     {
+
+        $loggedInUser = auth()->user();
+        $loggedInUsername = $loggedInUser->nama_user; 
         Cabang::create([
             'kode_cabang'=> $request->kode_cabang,
             'nama_cabang'=> $request->nama_cabang,
-           
+           'created_by' => $loggedInUsername,
             
             
             
@@ -75,10 +82,15 @@ class CabangController extends Controller
     public function update(Request $request, string $id)
     {
         $data = Cabang::find($id);
+        $loggedInUser = auth()->user();
+        $loggedInUsername = $loggedInUser->nama_user; 
 
-        $data->kode_cabang    = $request->kode_cabang;
-        $data->nama_cabang = $request->nama_cabang;
-        
+        $data->fill($request->except('kode_cabang'));
+        $kode_cabang_existing = $data->kode_cabang;
+        // Mengatur kode cabang kembali ke nilai yang ada sebelumnya
+        $data->kode_cabang = $kode_cabang_existing;
+            $data->nama_cabang = $request->nama_cabang;
+        $data->updated_by = $loggedInUsername;
 
        
  
@@ -93,6 +105,26 @@ class CabangController extends Controller
     public function destroy(Request $request, $id)
     {
         $cabang = Cabang::find($id);
+        
+        if (User::where('cabang_id', $cabang->id)->exists()) {
+            $request->session()->flash('error', "Tidak dapat menghapus cabang, karena masih ada data user account yang berhubungan.");
+            return redirect()->route('superadmin.cabang.index');
+        }
+
+        if (File::where('cabang_id', $cabang->id)->exists()) {
+            $request->session()->flash('error', "Tidak dapat menghapus cabang, karena masih ada data File yang berhubungan.");
+            return redirect()->route('superadmin.cabang.index');
+        }
+
+        if (DetailMember::where('cabang_id', $cabang->id)->exists()) {
+            $request->session()->flash('error', "Tidak dapat menghapus cabang, karena masih ada data Member Group yang berhubungan.");
+            return redirect()->route('superadmin.cabang.index');
+        }
+
+        if (DetailGroup::where('cabang_id', $cabang->id)->exists()) {
+            $request->session()->flash('error', "Tidak dapat menghapus cabang, karena masih ada data Group yang berhubungan.");
+            return redirect()->route('superadmin.cabang.index');
+        }
 
         $cabang->delete();
         

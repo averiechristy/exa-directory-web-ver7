@@ -71,6 +71,11 @@ public function userindex()
      */
     public function store(Request $request)
     {
+
+        
+        $loggedInUser = auth()->user();
+        $loggedInUsername = $loggedInUser->nama_user; 
+
         User::create([
             'cabang_id'=> $request->cabang_id,
             'role_id'=> $request->role_id,
@@ -78,10 +83,12 @@ public function userindex()
             'no_pegawai'=>$request->no_pegawai,
             'email'=> $request->email,
             'password' => Hash::make('12345678'),
-
-            
+            'created_by' => $loggedInUsername,
 
         ]);
+
+
+
         $request->session()->flash('success', 'Akun User berhasil ditambahkan');
 
         return redirect(route('superadmin.user.index'));
@@ -92,6 +99,8 @@ public function userindex()
     {
         // Mendapatkan pengguna yang saat ini login
         $loggedInUser = Auth::user();
+       
+        $loggedInUsername = $loggedInUser->nama_user; 
     
         User::create([
             'cabang_id' => $loggedInUser->cabang_id,
@@ -100,6 +109,7 @@ public function userindex()
             'no_pegawai' => $request->no_pegawai,
             'email' => $request->email,
             'password' => Hash::make('12345678'),
+            'created_by' => $loggedInUsername,
         ]);
     
         $request->session()->flash('success', 'Akun User berhasil ditambahkan');
@@ -148,12 +158,16 @@ public function userindex()
      */
     public function update(Request $request, string $id)
     {
+        
+        $loggedInUser = auth()->user();
+        $loggedInUsername = $loggedInUser->nama_user; 
         $data = User::find($id);
         $data->role_id = $request->role_id;
         $data->cabang_id = $request->cabang_id;
         $data->nama_user = $request->nama_user;
         $data->no_pegawai = $request->no_pegawai;
         $data->email = $request->email;
+        $data->updated_by = $loggedInUsername;
           
         $data->save();
     
@@ -164,14 +178,16 @@ public function userindex()
 
     public function userupdate(Request $request, string $id)
     {
-         $loggedInUser = Auth::user();
-    
+        $loggedInUser = Auth::user();
+        $loggedInUsername = $loggedInUser->nama_user; 
+
         $data = User::find($id);
         $data->role_id = $request->role_id;
         $data->cabang_id = $loggedInUser->cabang_id;
         $data->nama_user = $request->nama_user;
         $data->no_pegawai = $request->no_pegawai;
         $data->email = $request->email;
+        $data->updated_by = $loggedInUsername;
           
         $data->save();
     
@@ -191,13 +207,14 @@ public function userindex()
 
         return redirect()->route('superadmin.user.index');
     }
+
     public function userdestroy(Request $request, $id)
     {
         $user = User::find($id);
         $user->delete();
 
         $request->session()->flash('error', "Akun User Berhasil dihapus.");
-
+        
         return redirect()->route('admin.user.index');
     }
 
@@ -206,11 +223,11 @@ public function userindex()
     $user->update([
         'password' => Hash::make('12345678'), // Ganti 'password_awal' dengan password yang Anda inginkan
     ]);
-
+    
     $request->session()->flash('success', 'Password berhasil direset');
 
     return redirect()->route('superadmin.user.index');
-}
+}   
 
 public function userresetPassword(User $user, Request $request)
 {

@@ -33,5 +33,8 @@ class DetailGroup extends Model
         return $this->hasMany(DetailMember::class, 'user_group_id');
     }
 
-    
+    public function members()
+    {
+        return $this->belongsToMany(User::class, 'detail_members', 'user_group_id', 'user_id');
+    }
 }

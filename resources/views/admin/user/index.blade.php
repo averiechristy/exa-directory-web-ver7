@@ -71,9 +71,9 @@ entries
                             <td>{{$users->Cabang->nama_cabang}}</td>
                             <td>{{$users->Role->nama_role}}</td>
                             <td>{{$users->created_at}}</td>
-                            <td></td>
+                            <td>{{$users->created_by}}</td>
                             <td>{{$users->updated_at}}</td>
-                            <td></td>
+                            <td>{{$users->updated_by}}</td>
                             <td>
 
                             <form action="{{ route('admin.reset-password', ['user' => $users->id]) }}" method="POST">

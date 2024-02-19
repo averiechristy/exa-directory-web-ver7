@@ -360,6 +360,7 @@ h1, h2, h3, h4, h5, h6,
   margin-bottom: 0.5rem;
   font-weight: 400;
   line-height: 1.2;
+  
 }
 
 h1, .h1 {
@@ -9791,7 +9792,7 @@ a:focus {
 }
 
 #wrapper #content-wrapper {
-  background-color: #f8f9fc;
+  
   width: 100%;
   overflow-x: hidden;
 }

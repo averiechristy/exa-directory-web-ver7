@@ -51,9 +51,7 @@
                                               <p class="text-danger">{{$errors->first('name')}}</p>
                                           @endif -->
                                       </div>
-
-
-                                      
+                                    
                            <div class="form-group mb-4">
                               <label for="" class="form-label" style="font-size: 11pt; font-weight: bold;">No Pegawai</label>
                               <input name="no_pegawai" type="text" class="form-control" style="border-color: #01004C;" value=""  />
@@ -70,7 +68,6 @@
                               @endif -->
                           </div>
                      
-
                           <div class="form-group mb-4">
                               <label for="" class="form-label" style="font-size: 11pt; font-weight: bold;">Email</label>
                               <input name="email" type="email" class="form-control" style="border-color: #01004C;" value=""  />
@@ -78,7 +75,7 @@
                                   <p class="text-danger">{{$errors->first('name')}}</p>
                               @endif -->
                           </div>
-
+                          
                           <div class="form-group mb-4">
                               <label for="" class="form-label" style="font-size: 11pt; font-weight: bold;">Password</label>
                               <input name="password" type="email" class="form-control disable" disabled style="border-color: #01004C;" value="12345678"  />
@@ -86,8 +83,7 @@
                                   <p class="text-danger">{{$errors->first('name')}}</p>
                               @endif -->
                           </div>
-                      
-                           
+
                            <div class="form-group mb-4">
                                <button type="submit" class="btn " style="width:80px; height: 30px; background-color: #01004C; color: white; font-size: 12px;">Save</button>
                            </div>
@@ -99,8 +95,6 @@
 
         </div>
         
-  
-    
   </div>
 
 
@@ -127,10 +121,12 @@ if (selectedCabang === "1") {
     roleDropdown.innerHTML += '<option value="" selected disabled>Pilih Role</option>';
     roleDropdown.innerHTML += '<option value="1">Super Admin</option>';
     roleDropdown.innerHTML += '<option value="2">Admin</option>';
+    roleDropdown.innerHTML += '<option value="4">Approval</option>';
     roleDropdown.innerHTML += '<option value="3">User</option>';
 } else {
     roleDropdown.innerHTML += '<option value="" selected disabled>Pilih Role</option>';
     roleDropdown.innerHTML += '<option value="2">Admin</option>';
+    roleDropdown.innerHTML += '<option value="4">Approval</option>';
     roleDropdown.innerHTML += '<option value="3">User</option>';
 }
         });

@@ -1,0 +1,75 @@
+<nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row">
+      <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
+       
+        <div>
+          <a class="navbar-brand brand-logo" href="index.html">
+          <img src="{{asset('img/logodirectory.png')}}" alt="logo" />
+          </a>
+          <a class="navbar-brand brand-logo-mini" href="index.html">
+          <img src="{{asset('img/smalllogo.png')}}" alt="logo" />
+          </a>
+        </div>
+      </div>
+      <div class="navbar-menu-wrapper d-flex align-items-top"> 
+        <ul class="navbar-nav">
+          <li class="nav-item font-weight-semibold d-none d-lg-block ms-0">
+          <h1 class="welcome-text">Website Approval<span class="text-black fw-bold"></span></h1>
+            <h3 class="welcome-sub-text">Exa Directory </h3>          </li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+
+
+        <li class="nav-item dropdown">
+            <a class="nav-link count-indicator" id="notificationDropdown" href="#" data-bs-toggle="dropdown">
+             <h6>Welcome, {{ auth()->user()->nama_user }}</h6>
+            </a>
+          </li>
+
+
+        <li class="nav-item dropdown"> 
+    <a class="nav-link count-indicator" id="countDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+    <img class="img-xs rounded-circle" src="{{asset('img/profil.png')}}" alt="Profile image"> </a>
+      <span class="count"></span>
+    </a>
+    <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0" aria-labelledby="countDropdown">
+    <a href="" class="dropdown-item"><i class="dropdown-item-icon mdi mdi-lock-outline text-gray me-2"></i>Change Password
+            </a>
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                        <i class="dropdown-item-icon mdi mdi-power text-gray me-2"></i>
+                            Logout
+                        </a>
+    </div>
+  </li>
+        </ul>
+        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-bs-toggle="offcanvas">
+          <span class="mdi mdi-menu"></span>
+        </button>
+      </div>
+    </nav>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+      <!-- partial:partials/_settings-panel.html -->
+    
+      <!-- partial -->
+      <!-- partial:partials/_sidebar.html -->
+    <nav class="sidebar sidebar-offcanvas" id="sidebar">
+    <ul class="nav">
+
+        <li class="nav-item {{ Request::is('approval/dashboard') ? 'active' : '' }}  ">
+          <a class="nav-link" href="{{route('approval.dashboard')}}">
+            <i class="menu-icon mdi mdi-grid-large "></i>
+            <span class="menu-title">Dashboard</span>
+          </a>
+        </li>
+
+        <!-- <li class="nav-item {{ Request::is('approval/viewkonten') ? 'active' : '' }}  ">
+        <a class="nav-link" href="{{route('approval.viewkonten')}}">
+            <i class="menu-icon mdi mdi-file-find "></i>
+            <span class="menu-title">View Konten</span>
+          </a>
+        </li> -->
+      
+      </ul>
+  </nav>
+      

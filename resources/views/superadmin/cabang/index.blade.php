@@ -51,9 +51,9 @@ entries
                             <td>{{$cabang->kode_cabang}}</td>
                             <td>{{$cabang->nama_cabang}}</td>
                             <td>{{$cabang->created_at}}</td>
-                            <td></td>
+                            <td>{{$cabang->created_by}}</td>
                             <td>{{$cabang->updated_at}}</td>
-                            <td></td>
+                            <td>{{$cabang->updated_by}}</td>
                             <td>
                               <a  href="{{route('tampilcabang', $cabang->id)}}"data-toggle="tooltip" title='Edit'><button class="btn-edit"><i class="mdi mdi-pencil" style="color:white" ></i></button></a>        
                               <form method="POST" action="{{ route('deletecabang', $cabang->id) }}">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\AdminController;
 use App\Http\Controllers\Controller;
 use App\Models\File;
 use App\Models\Folder;
+use App\Models\Pin;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -20,9 +21,34 @@ class FileController extends Controller
         $files = File::with('folder')
         ->orderBy('created_at', 'desc')
         ->get();
+
         return view("superadmin.file.index",[
             "files"=> $files
         ]);
+    }
+
+
+    public function updatestatus(Request $request, $id){
+
+        $file = File::find($id);
+        
+        $statuspersetujuan = $file-> status_persetujuan;
+
+        $statuspersetujuanbaru = $request->status_persetujuan;
+
+        $catatan = $request->catatan;
+
+        $file->status_persetujuan = $request->status_persetujuan;
+        $file->catatan = $request->catatan;
+
+
+
+        $file->save();
+
+        $request->session()->flash('success', "Perubahan Berhasil Disimpan");
+
+        return redirect(route('approval.dashboard'));
+
     }
 
 
@@ -103,8 +129,18 @@ class FileController extends Controller
             'nama_file' => 'required|string',
             'inlineRadioOptions' => 'required|in:berlaku,tidak_berlaku',
             'flexCheckIndeterminate' => 'nullable|boolean',
-            'formFileSm' => 'required|mimes:pdf', // Hanya menerima file PDF
+            'formFileSm' => 'mimes:pdf', // Hanya menerima file PDF
         ]);
+
+        $Cabang = Auth::user()->cabang_id; 
+
+        $loggedInUser = auth()->user();
+       
+        $cabanglogged = $loggedInUser->cabang_id;
+
+        
+        $loggedInUsername = $loggedInUser->nama_user; 
+
 
         // Process the form data and store it in the database
         $folderId = $validatedData['path_folder'];
@@ -112,11 +148,16 @@ class FileController extends Controller
         $status = $validatedData['inlineRadioOptions'];
         $canDownload = $request->has('flexCheckIndeterminate');
         $uploadedFile = $request->file('formFileSm');
+        $konten =   $request->input('konten');
+        $cabang_id_user = $Cabang;
 
+        
+        if ($uploadedFile){
         if ($uploadedFile->getClientOriginalExtension() != 'pdf') {
             // File yang diunggah bukan PDF, atur pesan kesalahan dan redirect kembali
             return redirect()->back()->withErrors(['formFileSm' => 'Hanya file PDF yang diperbolehkan.']);
         }
+
         // Handle file upload
         $uploadedFileName = $uploadedFile->getClientOriginalName();
         $uploadedFileType = $uploadedFile->getClientOriginalExtension();
@@ -125,17 +166,21 @@ class FileController extends Controller
         
         // Store the file in the storage path (you may need to configure storage in your app)
         $uploadedFile->storeAs('public/files', $uploadedFileName);
-                     
+    }
+                 
         // Create a new File instance
         $file = new File([
             'folder_id' => $folderId,
             'nama_file' => $namaFile,
-            'type' => $uploadedFileType,
-            'size' => $uploadedFileSize,
+            'type' => $uploadedFileType ?? null,
+'size' => $uploadedFileSize ?? null,
             'is_download' => $canDownload,
             'status' => $status,
-            'file' => $uploadedFileName,
-            // Add 'created_by' and 'updated_by' if needed
+            'file' => $uploadedFileName ?? null,
+            'status_persetujuan' => 'Menunggu Persetujuan',
+            'konten' =>$konten,
+            'cabang_id_user' => $cabang_id_user,
+            'created_by' => $loggedInUsername,
         ]);
     
         // Save the file to the database
@@ -155,41 +200,60 @@ class FileController extends Controller
               'nama_file' => 'required|string',
               'inlineRadioOptions' => 'required|in:berlaku,tidak_berlaku',
               'flexCheckIndeterminate' => 'nullable|boolean',
-              'formFileSm' => 'required|mimes:pdf', // Hanya menerima file PDF
+              'formFileSm' => 'mimes:pdf', // Hanya menerima file PDF
           ]);
+
+          $loggedInUser = auth()->user();
+          $loggedInUsername = $loggedInUser->nama_user; 
   
+          $Cabang = Auth::user()->cabang_id; 
           // Process the form data and store it in the database
           $folderId = $validatedData['path_folder'];
           $namaFile = $validatedData['nama_file'];
           $status = $validatedData['inlineRadioOptions'];
           $canDownload = $request->has('flexCheckIndeterminate');
           $uploadedFile = $request->file('formFileSm');
-  
-          if ($uploadedFile->getClientOriginalExtension() != 'pdf') {
-              // File yang diunggah bukan PDF, atur pesan kesalahan dan redirect kembali
-              return redirect()->back()->withErrors(['formFileSm' => 'Hanya file PDF yang diperbolehkan.']);
-          }
-          // Handle file upload
-          $uploadedFileName = $uploadedFile->getClientOriginalName();
-          $uploadedFileType = $uploadedFile->getClientOriginalExtension();
-          $uploadedFileSize = $uploadedFile->getSize();
-  
-          
-          // Store the file in the storage path (you may need to configure storage in your app)
-          $uploadedFile->storeAs('public/files', $uploadedFileName);
-                       
-          // Create a new File instance
-          $file = new File([
-              'folder_id' => $folderId,
-              'nama_file' => $namaFile,
-              'type' => $uploadedFileType,
-              'size' => $uploadedFileSize,
-              'is_download' => $canDownload,
-              'status' => $status,
-              'file' => $uploadedFileName,
-              // Add 'created_by' and 'updated_by' if needed
-          ]);
+          $folderId = $validatedData['path_folder'];
+        $namaFile = $validatedData['nama_file'];
+        $status = $validatedData['inlineRadioOptions'];
+        $canDownload = $request->has('flexCheckIndeterminate');
+        $uploadedFile = $request->file('formFileSm');
+        $konten =   $request->input('konten');
+        $cabang_id_user = $Cabang;
+        
 
+        
+        if ($uploadedFile){
+            if ($uploadedFile->getClientOriginalExtension() != 'pdf') {
+                // File yang diunggah bukan PDF, atur pesan kesalahan dan redirect kembali
+                return redirect()->back()->withErrors(['formFileSm' => 'Hanya file PDF yang diperbolehkan.']);
+            }
+    
+            // Handle file upload
+            $uploadedFileName = $uploadedFile->getClientOriginalName();
+            $uploadedFileType = $uploadedFile->getClientOriginalExtension();
+            $uploadedFileSize = $uploadedFile->getSize();
+    
+            
+            // Store the file in the storage path (you may need to configure storage in your app)
+            $uploadedFile->storeAs('public/files', $uploadedFileName);
+        }
+                     
+            // Create a new File instance
+            $file = new File([
+                'folder_id' => $folderId,
+                'nama_file' => $namaFile,
+                'type' => $uploadedFileType ?? null,
+    'size' => $uploadedFileSize ?? null,
+                'is_download' => $canDownload,
+                'status' => $status,
+                'file' => $uploadedFileName ?? null,
+                'status_persetujuan' => 'Menunggu Persetujuan',
+                'konten' =>$konten,
+                'created_by' => $loggedInUsername,
+                'cabang_id_user' => $cabang_id_user,
+            ]);
+        
           
       
           // Save the file to the database
@@ -254,13 +318,18 @@ class FileController extends Controller
     
         // Ambil data file yang akan diupdate
         $file = File::find($id);
-    
+
+        $loggedInUser = auth()->user();
+        $loggedInUsername = $loggedInUser->nama_user; 
         // Update data berdasarkan input form
         $file->folder_id = $request->input('path_folder');
         $file->nama_file = $request->input('nama_file');
         $file->status = $request->input('inlineRadioOptions');
         $file->is_download = $request->has('flexCheckIndeterminate') ? 1 : 0;
-    
+        $file->status_persetujuan = 'Menunggu Persetujuan';
+        $file->konten = $request->input('konten');
+        $file->updated_by = $loggedInUsername;
+      
         // Proses upload file jika ada file yang diunggah
         if ($request->hasFile('formFileSm')) {
             // Hapus file lama sebelum menggantinya dengan yang baru
@@ -302,13 +371,18 @@ class FileController extends Controller
         // Ambil data file yang akan diupdate
         $file = File::find($id);
     
+        $loggedInUser = auth()->user();
+        $loggedInUsername = $loggedInUser->nama_user;     
         // Update data berdasarkan input form
         $file->folder_id = $request->input('path_folder');
         $file->nama_file = $request->input('nama_file');
         $file->status = $request->input('inlineRadioOptions');
         $file->is_download = $request->has('flexCheckIndeterminate') ? 1 : 0;
+        $file->konten = $request->input('konten');
+        $file->status_persetujuan = 'Menunggu Persetujuan';
+        $file->updated_by = $loggedInUsername;
+      
     
-        // Proses upload file jika ada file yang diunggah
         if ($request->hasFile('formFileSm')) {
             // Hapus file lama sebelum menggantinya dengan yang baru
             Storage::disk('public')->delete($file->file);
@@ -336,6 +410,22 @@ class FileController extends Controller
     
         return redirect()->route('admin.file.index');
     }
+
+
+    public function tampilkonten($id){
+        $data = File::find($id);
+        return view('superadmin.file.detail',[
+            'data'=> $data,
+        ]);
+    }
+
+    public function tampilkontenapproval($id){
+        $data = File::find($id);
+        return view('approval.detail',[
+            'data'=> $data,
+        ]);
+
+    }
     
     /**
      * Remove the specified resource from storage.
@@ -343,7 +433,19 @@ class FileController extends Controller
     public function destroy(Request $request, $id)
     {
         $file = File::find($id);
-        $file->delete();
+        if (!empty($file)) {
+            // Cetak IDs yang akan dihapus
+    
+            File::whereIn('id', $file)->delete();
+    
+            // Cetak SQL yang dihasilkan
+    
+            Pin::whereIn('file_id', $file)->delete();
+    
+            // Cetak SQL yang dihasilkan
+    
+          
+        }
 
         $request->session()->flash('error', "File Berhasil dihapus.");
 
@@ -354,7 +456,21 @@ class FileController extends Controller
     public function filedestroy(Request $request, $id)
     {
         $file = File::find($id);
-        $file->delete();
+
+        if (!empty($file)) {
+            // Cetak IDs yang akan dihapus
+    
+            File::whereIn('id', $file)->delete();
+    
+            // Cetak SQL yang dihasilkan
+    
+            Pin::whereIn('file_id', $file)->delete();
+    
+            // Cetak SQL yang dihasilkan
+    
+          
+        }
+      
 
         $request->session()->flash('error', "File Berhasil dihapus.");
 

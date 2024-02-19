@@ -13,7 +13,7 @@
                     </div>
                     
                     <div class="card-body">    
-                    <div class="dataTables_length " id="myDataTable_length">
+<!-- <div class="dataTables_length " id="myDataTable_length">
 <label for="entries"> Show
 <select id="entries" name="myDataTable_length" aria-controls="myDataTable"  onchange="changeEntries()" class>
 <option value="10">10</option>
@@ -23,13 +23,15 @@
 </select>
 entries
 </label>
-</div>
+</div> -->
 
-<div id="myDataTable_filter" class="dataTables_filter mb-3" >
+<!-- <div id="myDataTable_filter" class="dataTables_filter mb-3" >
     <label for="search">Search
         <input id="search" placeholder>
     </label>
-</div>                    
+</div> -->
+
+
                         @include('components.alert')
                         <div class="folder-list">
                         @foreach ($folders as $folder)
@@ -41,7 +43,10 @@ entries
                 </div>
                 <div class="font-weight-bold folder-name">{{$folder->nama_folder}} </div>
             </div>
-            <div class="folder-actions">
+           
+        </div>
+
+        <div class="folder-actions" style="float:right; margin-top:-30px;">
                 @if (!isset($folder) || !$folder->id_folder_induk)
                     <div class="btn-group">
                         <button type="button" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -74,7 +79,6 @@ entries
                     </div>
                 @endif
             </div>
-        </div>
         <div class="subfolders collapse" id="subfolders{{$folder->id}}">
             @if(count($folder->subfolders) > 0)
                 <div class="subfolder-list">

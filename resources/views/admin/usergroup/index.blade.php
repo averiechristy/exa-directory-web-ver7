@@ -47,11 +47,13 @@ entries
                           @foreach ($usergroup as $usergroup)
                           <tr>
                             <td>{{$usergroup -> nama_group}}</td>
-                            <td> <a href="{{ route('admindetailmember', $usergroup->id) }}" class="detail-member">Lihat daftar member</a></td>
+                            <td> 
+                                <a href="{{ route('admindetailmember', $usergroup->id) }}" class="detail-member">Lihat daftar member</a>
+                            </td>
                             <td>{{$usergroup->created_at}}</td>
-                            <td></td>
+                            <td>{{$usergroup->created_by}}</td>
                             <td>{{$usergroup->updated_at}}</td>
-                            <td></td>
+                            <td>{{$usergroup->updated_by}}</td>
                             <td>
                             <a  href="{{route('admintampilusergroup', $usergroup->id)}}"data-toggle="tooltip" title='Edit'><button class="btn-edit"><i class="mdi mdi-pencil" style="color:white" ></i></button></a>        
                             <form method="POST" action="{{ route('admindeleteusergroup', $usergroup->id) }}">
@@ -59,7 +61,7 @@ entries
                             <input name="_method" type="hidden" value="DELETE">
                             <button type="submit" class="btn-delete show_confirm mt-1" data-toggle="tooltip" title='Hapus'><i class="mdi mdi-delete" style="color:white;"></i></button>
                           </form>                       
-                                 </td>
+                          </td>
                           </tr>
                           @endforeach
                         </tbody>
@@ -69,7 +71,6 @@ entries
 </div>
         
 <div class="dataTables_paginate paging_simple_numbers" id="myDataTable_paginate">
-    
     <a href="#" class="paginate_button" id="doublePrevButton" onclick="doublePreviousPage()"><i class="fa fa-angle-double-left" aria-hidden="true"></i></a>
     <a href="#" class="paginate_button" id="prevButton" onclick="previousPage()"><i class="fa fa-angle-left" aria-hidden="true"></i></a>
     <span>

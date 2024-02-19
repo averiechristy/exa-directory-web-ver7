@@ -5,7 +5,9 @@ namespace App\Http\Controllers\AdminController;
 use App\Http\Controllers\Controller;
 use App\Models\DetailGroup;
 use App\Models\DetailMember;
+use App\Models\File;
 use App\Models\Folder;
+use App\Models\Pin;
 use App\Models\UserGroup;
 use Auth;
 use Illuminate\Http\Request;
@@ -248,6 +250,46 @@ public function addFolder(Request $request)
 
 
 
+public function deleteFolderAndChildren($folder)
+{
+    // Temukan semua folder anak
+    $childFolders = Folder::where('id_folder_induk', $folder->id)->get();
+
+    // Hapus semua folder anak secara rekursif
+    foreach ($childFolders as $childFolder) {
+        $this->deleteFolderAndChildren($childFolder);
+    }
+
+    // Hapus semua DetailGroup terkait dengan folder
+    $detailGroups = DetailGroup::where('folder_id', $folder->id)->get();
+    foreach ($detailGroups as $detailGroup) {
+        // Hapus semua file terkait dengan DetailGroup
+       
+        // Hapus DetailGroup
+        $detailGroup->delete();
+    }
+
+    $files = File::where('folder_id', $folder->id)->get();
+    foreach ($files as $file) {
+        $file->delete();
+    }
+    // Hapus semua pin terkait dengan folder
+    $pins = Pin::where('folder_id', $folder->id)->get();
+    foreach ($pins as $pin) {
+        // Hapus semua file terkait dengan pin
+        $files = File::where('pin_id', $pin->id)->get();
+        foreach ($files as $file) {
+            $file->delete();
+        }
+        // Hapus pin
+        $pin->delete();
+    }
+
+    // Hapus folder
+    $folder->delete();
+}
+
+
 public function delete($id, Request $request)
 {
     // Temukan folder berdasarkan ID
@@ -257,21 +299,14 @@ public function delete($id, Request $request)
         return redirect()->route('superadmin.folder.index')->with('error', 'Folder not found.');
     }
 
-    // Temukan DetailGroup yang memiliki folder_id yang sama dengan Folder yang akan dihapus
-    $detailGroups = DetailGroup::where('folder_id', $folder->id)->get();
-
-    // Hapus semua DetailGroup yang ditemukan
-    foreach ($detailGroups as $detailGroup) {
-        $detailGroup->delete();
-    }
-
-    // Hapus folder dari database setelah menghapus DetailGroup
-    $folder->delete();
+    // Hapus folder dan semua folder anak secara rekursif
+    $this->deleteFolderAndChildren($folder);
     
     // Set flash message
     $request->session()->flash('error', 'Folder berhasil dihapus.');
     return redirect(route('superadmin.folder.index'));
 }
+
 
 
 public function deleteadmin($id, Request $request)
@@ -282,10 +317,9 @@ public function deleteadmin($id, Request $request)
     if (!$folder) {
         return redirect()->route('admin.folder.index')->with('error', 'Folder not found.');
     }
-
+    $this->deleteFolderAndChildren($folder);
     // Hapus folder dari database
-    $folder->delete();
-
+   
     $request->session()->flash('error', 'Folder berhasil dihapus.');
     return redirect(route('admin.folder.index'));
 }
@@ -391,6 +425,7 @@ public function getGroupData($folderId)
 public function tampilfoldergroup ($id) {
 
     $folder = Folder::find($id);
+   
     $usergroup = UserGroup::all();
 
     $nama = DetailGroup::with('UserGroup')->where('folder_id', $id)->get();
@@ -433,9 +468,6 @@ public function tampilfoldergroupadmin ($id) {
 
 public function updatefoldergroup(Request $request, $id) {
    
-  
-    
-
     $folder = Folder::findOrFail($id);
     $folder->nama_folder = $request->nama_folder;
     $folder->save();
@@ -459,7 +491,6 @@ public function updatefoldergroup(Request $request, $id) {
                 ];
             }
         }
-
         DetailGroup::insert($detailGroup);
     }
 

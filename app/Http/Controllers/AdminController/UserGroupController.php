@@ -79,8 +79,11 @@ class UserGroupController extends Controller
      */
     public function store(Request $request)
 {
+    $loggedInUser = auth()->user();
+    $loggedInUsername = $loggedInUser->nama_user; 
     $usergroup = new UserGroup;
     $usergroup->nama_group = $request->nama_group;
+    $usergroup->created_by = $loggedInUsername;
     $usergroup->save();
 
     $detailmember = [];
@@ -112,7 +115,9 @@ class UserGroupController extends Controller
 
         $usergroup = new UserGroup;
         $loggedInUser = Auth::user();
+        $loggedInUsername = $loggedInUser->nama_user; 
         $usergroup->nama_group = $request->nama_group;
+        $usergroup->created_by = $loggedInUsername;
       
         $usergroup->save();
     
@@ -248,7 +253,11 @@ class UserGroupController extends Controller
     
         // Update UserGroup
         $usergroup = UserGroup::findOrFail($id);
+        $loggedInUser = auth()->user();
+        $loggedInUsername = $loggedInUser->nama_user; 
+        
         $usergroup->nama_group = $request->nama_group;
+        $usergroup->updated_by = $loggedInUsername;
         $usergroup->save();
     
         // Update or create DetailMember records
@@ -286,9 +295,11 @@ class UserGroupController extends Controller
                // Ambil data paket berdasarkan ID
             $dtPackage = UserGroup::find($id);
             $loggedInUser = Auth::user();
+            
+            $loggedInUsername = $loggedInUser->nama_user; 
             // Update data paket dengan nilai baru dari form
             $dtPackage->nama_group = $request->nama_group;
-        
+            $dtPackage->updated_by = $loggedInUsername;
             
             $dtPackage->save();
         

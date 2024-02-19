@@ -38,20 +38,20 @@
                                         <td>{{$subfolder->updated_at}}</td>
                                         <td>Folder</td>
                                         <td>
-    @if(auth()->user()->isFolderPinned($subfolder->id))
-        <button class="btn btn-sm btn-danger" onclick="unpinFolder({{ $subfolder->id }}, 'folder')">Unpin Folder</button>
-    @else
-        <button class="btn btn-sm btn-info" onclick="pinFolder({{ $subfolder->id }}, 'folder')">Pin Folder</button>
-    @endif
-</td>
+                                    @if(auth()->user()->isFolderPinned($subfolder->id))
+                                        <button class="btn btn-sm btn-danger" onclick="unpinFolder({{ $subfolder->id }}, 'folder')">Unpin Folder</button>
+                                    @else
+                                        <button class="btn btn-sm btn-info" onclick="pinFolder({{ $subfolder->id }}, 'folder')">Pin Folder</button>
+                                    @endif
+                                        </td>
                                     </tr>
                                 @endforeach
 
                                 {{-- Display files --}}
-                                @foreach($folder->files as $file)
+                                @foreach($folder->files->where('status_persetujuan', 'Disetujui')  as $file)
                                     <tr>
                                         <td>
-                                            <a href="" style="" data-toggle="modal" data-target="#fileModal{{ $file->id }}" class="see-file">
+                                            <a href="{{ route('user.kontenread', $file->id) }}" style=""  class="see-file">
                                                 <i class="fas fa-file"></i>
                                                 {{ $file->nama_file }}
                                             </a>
@@ -73,7 +73,7 @@
 
                     {{-- File Modals --}}
                     @foreach($folder->files as $file)
-                        <div class="modal fade" id="fileModal{{ $file->id }}" tabindex="-1" role="dialog" aria-labelledby="fileModalLabel{{ $file->id }}" aria-hidden="true">
+                        <!-- <div class="modal fade" id="fileModal{{ $file->id }}" tabindex="-1" role="dialog" aria-labelledby="fileModalLabel{{ $file->id }}" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered modal-xl" style="margin-top:5px;" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -90,7 +90,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     @endforeach
                 </div>
             </div>

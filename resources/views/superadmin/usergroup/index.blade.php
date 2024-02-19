@@ -48,12 +48,11 @@ entries
                           @foreach ($usergroup as $usergroup)
                           <tr>
                             <td>{{$usergroup -> nama_group}}</td>
-                            <td> <a href="{{ route('detailmember', $usergroup->id) }}" class="detail-member">Lihat daftar member</a></td>
-                            
+                            <td> <a href="{{ route('detailmember', $usergroup->id) }}" class="detail-member">Lihat daftar member</a></td>                            
                             <td>{{$usergroup->created_at}}</td>
-                            <td></td>
+                            <td>{{$usergroup->created_by}}</td>
                             <td>{{$usergroup->updated_at}}</td>
-                            <td></td>
+                            <td>{{$usergroup->updated_by}}</td>
                             <td>
                             <a  href="{{route('tampilusergroup', $usergroup->id)}}"data-toggle="tooltip" title='Edit'><button class="btn-edit"><i class="mdi mdi-pencil" style="color:white" ></i></button></a>        
                             <form method="POST" action="{{ route('deleteusergroup', $usergroup->id) }}">

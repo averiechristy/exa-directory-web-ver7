@@ -55,6 +55,17 @@
         </label>
     </div>
 </div>
+
+
+
+<div class="form-group mb-4">
+                                <label>Konten</label>
+                                <div class="form-group">
+                                <!-- <textarea name="isi_artikel" class="my-editor form-control {{$errors->has('konten') ? 'is-invalid' : ''}}" style="border-color: #01004C;" id="my-editor" cols="30" rows="10" required>{{old('konten')}}</textarea>                                             -->
+                        <textarea name="konten" class="my-editor form-control {{$errors->has('konten') ? 'is-invalid' : ''}} " id="my-editor"cols="30" rows="10" style="border-color: #01004C;" value="" required oninvalid="this.setCustomValidity('Isi artikel tidak boleh kosong')" oninput="setCustomValidity('')">{{ old('konten') }}
+                                {{$data->konten}}
+                    </textarea>                                           
+</div>
 <div class="mb-3">
     <label for="formFileSm" class="form-label">Upload File</label>
     <input class="form-control form-control-sm" id="formFileSm" type="file" name="formFileSm" accept=".pdf">

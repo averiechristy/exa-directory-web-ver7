@@ -33,6 +33,8 @@ class AuthController extends Controller
                 return redirect()->route('superadmin.dashboard'); // Adjust the route accordingly
             } elseif ($user->isAdmin()) {
                 return redirect()->route('admin.dashboard'); // Adjust the route accordingly
+            } elseif ($user->isApproval()) {
+                return redirect()->route('approval.dashboard'); // Adjust the route accordingly
             } else {
                 return redirect()->route('user.home'); // Adjust the route accordingly
             }

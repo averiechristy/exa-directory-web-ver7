@@ -8745,6 +8745,7 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
   margin-bottom: 0.5rem;
   font-weight: 500;
   line-height: 1.2;
+
 }
 
 h1, .h1 {
@@ -9274,8 +9275,11 @@ progress {
   color: #6c757d;
 }
 
+.container-fluid {
+  background: #F4F5F7;
+}
+
 .container,
-.container-fluid,
 .container-sm,
 .container-md,
 .container-lg,
@@ -28920,6 +28924,8 @@ flex-shrink: 0;
   flex-grow: 1;
 }
 
+
+
 @media (max-width: 767px) {
   .content-wrapper {
     padding: 0 1.5rem 1.5rem 1.5rem;
@@ -29075,10 +29081,20 @@ flex-shrink: 0;
   border-radius: 8px;
   background: #0267FF;
   width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+}
+
+
+.btn-disabled {
+  border: none;
+  border-radius: 8px;
+   pointer-events: none;
+  background: gray;
+  width: 30px;
 height: 30px;
 flex-shrink: 0;
 }
-
 
 .btn-reset {
     border: none;

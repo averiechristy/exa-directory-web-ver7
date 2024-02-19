@@ -4,64 +4,54 @@
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
                 <div class="container-fluid">
-                <h4>Your Pins</h4>
-                    <hr>
-
+                <h4 style="color:#000;">Your Pins</h4>
+                    <hr style="border-color:gray;">
                     <div class="row">
                     @foreach($userPins as $pin)
-                    <div class="col-md-4 mb-4">
-                                <div class="card">
-                                    <div class="card-body">
-
-                                    @if($pin->folder_id)
-
-                                    <h5 class="card-title">
-                                    <a href="{{ route('show-folder', ['folderId' => $pin->folder_id]) }}">                                                   
-                                     <i class="fas fa-folder" style="color:#FFC107"></i>
-                                                    {{ $pin->folder->nama_folder }}
-                                                </a>
-                                            </h5>
-                                         
-
-
-                                    @elseif($pin->file_id)
-                                    <h5 class="card-title">
-                                    <a href="" style="" data-toggle="modal" data-target="#fileModal{{ $pin->file_id }}" class="see-file">
-                                                <i class="fas fa-file"></i>
-                                                {{ $pin->file->nama_file }}
-                                            </a>
-                                            </h5>
-                                          
-                                            <div class="modal fade" id="fileModal{{ $pin->file_id }}" tabindex="-1" role="dialog" aria-labelledby="fileModalLabel{{ $pin->file_id }}" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered modal-xl" style="margin-top:5px;" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="fileModalLabel{{ $pin->file_id }}"></h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <iframe src="{{ asset('storage/files/' . $pin-> file->file) }}" width="100%" height="600px"></iframe>
-                                    </div>
-                                    <div class="modal-footer">
-                                        {{-- Footer content --}}
-                                    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card bg-white shadow">
+            <div class="card-body">
+                @if($pin->folder_id)
+                    <h5 class="card-title">
+                        <a href="{{ route('show-folder', ['folderId' => $pin->folder_id]) }}">
+                            <i class="fas fa-folder" style="color:#FFC107"></i>
+                            {{ $pin->folder->nama_folder }}
+                        </a>
+                    </h5>
+                @elseif($pin->file_id)
+                    <h5 class="card-title">
+                        <a href="" style="" data-toggle="modal" data-target="#fileModal{{ $pin->file_id }}" class="see-file">
+                            <i class="fas fa-file"></i>
+                            {{ $pin->file->nama_file }}
+                        </a>
+                    </h5>
+                    <div class="modal fade" id="fileModal{{ $pin->file_id }}" tabindex="-1" role="dialog" aria-labelledby="fileModalLabel{{ $pin->file_id }}" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-xl" style="margin-top:5px;" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="fileModalLabel{{ $pin->file_id }}"></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <iframe src="{{ asset('storage/files/' . $pin->file->file) }}" width="100%" height="600px"></iframe>
+                                </div>
+                                <div class="modal-footer">
+                                    {{-- Footer content --}}
                                 </div>
                             </div>
                         </div>
-                                    @endif
-
-                                    
-                                    </div>
-                                    </div>
-                                    </div>
-
-                    @endforeach
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+@endforeach
 </div>
-                    <h4>List Folders and Files</h4>
+                    <h4 style="color:#000;">List Folders and Files</h4>
                     <div class="table-responsive">
-                        <table class="table">
+                    <table class="table">
                             <thead>
                                 <tr>
                                     <th>Nama</th>
@@ -71,17 +61,14 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            @foreach($folders as $folder)
+@foreach($folders as $folder)
     <tr>
         <td>
-            <a href="{{ route('show-folder', ['folderId' => $folder->id]) }}">
-            
+            <a href="{{ route('show-folder', ['folderId' => $folder->id]) }}">            
                     <i class="fas fa-folder" style="color:#FFC107"></i>
                     {{ $folder->nama_folder }}
-            
-               
             </a>
-        </td>
+        </td>       
         <td>{{$folder->updated_at}}</td>
         <td>Folder</td>
         <td>
@@ -93,14 +80,13 @@
         </td>
     </tr>
 @endforeach
-
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+        </tbody>
+        </table>
         </div>
-    </div>
+        </div>
+        </div>
+        </div>
+        </div>
 @endsection
 
 <script>

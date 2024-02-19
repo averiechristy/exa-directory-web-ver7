@@ -13,6 +13,16 @@
                   <div class="card-body">
                       <form action="{{route('superadmin.file.simpan')}}" method="post" enctype="multipart/form-data">
                            @csrf
+
+
+                           <div class="form-group mb-4">
+                               <label for="" class="form-label">Judul</label>
+                               <input name="nama_file" type="text" class="form-control {{$errors->has('nama_file') ? 'is-invalid' : ''}}" style="border-color: #01004C;" value="" required />
+                               <!-- @if ($errors->has('nama_file'))
+                                   <p class="text-danger">{{$errors->first('nama_file')}}</p>
+                               @endif -->
+                           </div>
+
                            <div class="form-group mb-4">
                               <label for="" class="form-label">Path Folder</label>
                               <select id="path_folder"  name="path_folder" class="form-select form-select-sm mb-3" aria-label=".form-select-lg example" style="border-color: #01004C; border-radius: 5px;" required>
@@ -27,13 +37,7 @@
                               @endif -->
                           </div>
 
-                           <div class="form-group mb-4">
-                               <label for="" class="form-label">Nama File</label>
-                               <input name="nama_file" type="text" class="form-control {{$errors->has('name') ? 'is-invalid' : ''}}" style="border-color: #01004C;" value="" required />
-                               <!-- @if ($errors->has('name'))
-                                   <p class="text-danger">{{$errors->first('name')}}</p>
-                               @endif -->
-                           </div>
+                           
                            <div class="form-group mb-4">
                            <div class="form-check form-check-inline">
                               <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="berlaku">
@@ -54,11 +58,22 @@
                             </div>
                           </div>
                            
+                          <div class="form-group mb-4">
+                                              <label>Konten</label>
+                                              <div class="form-group">
+                                              <!-- <textarea name="isi_artikel" class="my-editor form-control {{$errors->has('konten') ? 'is-invalid' : ''}}" style="border-color: #01004C;" id="my-editor" cols="30" rows="10" required>{{old('konten')}}</textarea>                                             -->
+                                              <textarea name="konten" class="my-editor form-control {{$errors->has('konten') ? 'is-invalid' : ''}} " id="my-editor"cols="30" rows="10" style="border-color: #01004C;" value="" required oninvalid="this.setCustomValidity('Isi artikel tidak boleh kosong')" oninput="setCustomValidity('')">{{ old('konten') }}
+                                            
+                                            
+                                            </textarea>
+
+                                            
+</div>
+
                           <div class="mb-3">
     <label for="formFileSm" class="form-label">Upload File</label>
     <input class="form-control form-control-sm" id="formFileSm" type="file" name="formFileSm" accept=".pdf">
-</div>
-
+    </div>
                            <div class="form-group mb-4">
                                <button type="submit" class="btn " style="width:80px; height: 30px; background-color: #01004C; color: white; font-size: 12px;">Save</button>
                            </div>

@@ -1,21 +1,15 @@
 @extends('layouts.superadmin.app')
-
 @section('content')
 
 <div class="content-wrapper">
           
-           
-             
           <div class="d-sm-flex align-items-center justify-content-between border-bottom">
-           
-           
             
           </div>
           <div id="content-wrapper" class="d-flex flex-column">
 
             <!-- Main Content -->
-            <div id="content" class="content">
-              
+            <div id="content" class="content">              
               <div class="card mt-5">
                   <div class="card-body py-3">
                       <h4 class="card-title">User</h4>
@@ -23,7 +17,7 @@
                       <a href="{{route('superadmin.user.create')}}" class="btn btn-warning btn-sm">Add Data</a>
                   </div>
                   <div class="card-body">
-                  <div class="dataTables_length " id="myDataTable_length">
+<div class="dataTables_length " id="myDataTable_length">
 <label for="entries"> Show
 <select id="entries" name="myDataTable_length" aria-controls="myDataTable"  onchange="changeEntries()" class>
 <option value="10">10</option>
@@ -40,57 +34,49 @@ entries
         <input id="search" placeholder>
     </label>
 </div>
-                  @include('components.alert')
+                @include('components.alert')
                     <div class="table-responsive">
                       <table class="table table-striped">
                         <thead>
                           <tr>
-                           
                             <th>Nama</th>
                             <th>No. Pegawai</th>
                             <th>Email</th>
                             <th>Cabang</th>
                             <th>Role</th>
                             <th>Created at</th>
-
                             <th>Created by</th>
                             <th>Updated at</th>
                             <th>Updated by</th>
-                            
                             <th>Action</th>
-
                           </tr>
                         </thead>
-                        <tbody>
-                          @foreach ($users as $users)
-                          <tr>
-                           
+                        <tbody> 
+                @foreach ($users as $users)
+                          <tr>     
                             <td>{{$users->nama_user}}</td>
                             <td>{{$users->no_pegawai}}</td>
                             <td>{{$users->email}}</td>
                             <td>{{$users->Cabang->nama_cabang}}</td>
                             <td>{{$users->Role->nama_role}}</td>
                             <td>{{$users->created_at}}</td>
-                            <td></td>
+                            <td>{{ $users->created_by}}</td>
                             <td>{{$users->updated_at}}</td>
                             <td></td>
                             <td>
-
                             <form action="{{ route('superadmin.reset-password', ['user' => $users->id]) }}" method="POST">
                 @csrf
                 <button type="submit" class="btn-reset show_confirm2" data-toggle="tooltip" title='Reset Password'><i class="mdi mdi-refresh"  style="color:white" ></i></button>
-            </form>
+                </form>
                             <a  href="{{route('tampiluser', $users->id)}}"data-toggle="tooltip" title='Edit'><button class="btn-edit mt-1"><i class="mdi mdi-pencil" style="color:white" ></i></button></a>        
                             <form method="POST" action="{{ route('deleteuser', $users->id) }}">
-                            @csrf
+                @csrf
                             <input name="_method" type="hidden" value="DELETE">
                             <button type="submit" class="btn-delete mt-1 show_confirm" data-toggle="tooltip" title='Hapus'><i class="mdi mdi-delete" style="color:white;" ></i></button>
                         </form>                             
                             </td>
                           </tr>
-@endforeach
-                          
-                        
+                @endforeach        
                         </tbody>
                       </table>
 
@@ -111,13 +97,8 @@ entries
                     </div>
                   </div>
                 </div>
-
             </div>
-
-        </div>
-        
-  
-    
+        </div>          
   </div>
 
   <style>

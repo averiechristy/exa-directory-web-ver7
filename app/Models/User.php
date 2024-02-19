@@ -26,6 +26,7 @@ class User extends Authenticatable
         'no_pegawai',
         'updated_by',
         'created_by',
+        'is_approved',
     ];
 
     /**
@@ -81,6 +82,14 @@ public function isSuperAdmin()
 {
     $jenis_role = $this->Role->nama_role;
     return strtoupper($jenis_role) === 'SUPER ADMIN';
+}
+
+
+
+public function isApproval()
+{
+    $jenis_role = $this->Role->nama_role;
+    return strtoupper($jenis_role) === 'APPROVAL';
 }
 
 public function isFolderPinned($folderId)
