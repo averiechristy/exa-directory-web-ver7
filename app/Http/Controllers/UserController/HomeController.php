@@ -37,6 +37,8 @@ class HomeController extends Controller
     
         // Mendapatkan semua file yang memiliki status "berlaku" dari database
         $files = File::where('status_persetujuan', 'Disetujui')->get();
+
+        
     
         return view("user.home", [
             "folders" => $folders,

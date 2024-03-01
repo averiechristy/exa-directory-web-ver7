@@ -37,9 +37,30 @@
             <div class="form-check" style="display: inline-block; margin-right: 10px;">
                 <input class="form-check-input cabang-checkbox" name="cabang[]" type="checkbox" value="{{ $item->id }}" id="flexCheckIndeterminate{{ $key }}" @if(in_array($item->id, $selectedGroup)) checked @endif>
                 <label class="form-check-label" style="margin-left: 5px;" for="flexCheckIndeterminate{{ $key }}">
-                {{ $item->nama_group }} 
+                <a href="" class="detail-member" data-toggle="modal" data-target="#exampleModal" data-group-id="{{ $item->id }}">
+    {{ $item->nama_group }} 
+</a>
                 </label>
             </div>
+
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Detail  Member</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       
+      </div>
+      <div class="modal-footer">
+
+      </div>
+    </div>
+  </div>
+</div>
         @endforeach
     </div>
 </div>
@@ -69,5 +90,29 @@
   </div>
 
   
+  <script>
+$(document).ready(function() {
+    $('.detail-member').click(function(e) {
+        e.preventDefault();
+        var groupId = $(this).attr('data-group-id');
+        $.ajax({
+            url: '/group/' + groupId + '/membersedit',
+            type: 'GET',
+            success: function(response) {
+                // Bersihkan konten modal sebelum menambahkan data baru
+                $('.modal-body').empty();
+                // Tambahkan data anggota grup ke dalam modal
+                $.each(response, function(index, member) {
+                    $('.modal-body').append('<li>' + member.user.nama_user + '</li>');
+                });
+                // Tampilkan modal
+             
+            },
+          
+        });
+    });
+   
+});
+</script>
 
 @endsection

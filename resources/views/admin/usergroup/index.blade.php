@@ -1,5 +1,6 @@
 @extends('layouts.admin.app')
 @section('content')
+<div class="main-panel">
 <div class="content-wrapper">  
           <div class="d-sm-flex align-items-center justify-content-between border-bottom">
           </div>
@@ -85,7 +86,7 @@ entries
             </div>
         </div>  
   </div>
-
+  </div>
 
   <style>
     .detail-member {

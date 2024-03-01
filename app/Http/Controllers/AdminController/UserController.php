@@ -4,6 +4,7 @@ namespace App\Http\Controllers\AdminController;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cabang;
+use App\Models\DetailMember;
 use App\Models\User;
 use App\Models\UserRole;
 use Auth;
@@ -30,8 +31,11 @@ public function userindex()
 
     // Menyaring data berdasarkan role pengguna
     $users = User::where('cabang_id', $Cabang)
-                  ->orderBy('created_at', 'desc')
-                  ->get();
+    ->whereDoesntHave('Role', function ($query) {
+        $query->where('role_id', '4');
+    })
+    ->orderBy('created_at', 'desc')
+    ->get();
 
     return view('admin.user.index', [
         'users' => $users,
@@ -125,7 +129,7 @@ public function userindex()
        $role = UserRole::all();
        $cabang = Cabang::all();
 
-        return view('admin.user.edit',[
+        return view('superadmin.user.edit',[
             'data'=> $data,
             'role'=> $role,
             'cabang'=> $cabang,
@@ -201,6 +205,25 @@ public function userindex()
     public function destroy(Request $request, $id)
     {
         $user = User::find($id);
+
+        if ($user->Role->nama_role === 'Super Admin') {
+            if ($user->id === Auth::id()) {
+                return redirect()->route('superadmin.user.index')->with('error', 'Tidak dapat menghapus akun anda sendiri.');
+            }
+
+            $adminCount = User::whereHas('Role', function ($query) {
+                $query->where('nama_role', 'Super Admin');
+            })->count();
+
+            if ($adminCount <= 1) {
+                return redirect()->route('superadmin.user.index')->with('error', 'Tidak dapat menghapus akun admin terakhir.');
+            }
+        }
+
+        if (DetailMember::where('user_id', $user->id)->exists()) {
+            $request->session()->flash('error', "Tidak dapat menghapus user, karena masih ada data user group yang berhubungan.");
+            return redirect()->route('superadmin.user.index');
+        }
         $user->delete();
 
         $request->session()->flash('error', "Akun User Berhasil dihapus.");
@@ -211,6 +234,24 @@ public function userindex()
     public function userdestroy(Request $request, $id)
     {
         $user = User::find($id);
+
+        if ($user->Role->nama_role === 'Admin') {
+            if ($user->id === Auth::id()) {
+                return redirect()->route('admin.user.index')->with('error', 'Tidak dapat menghapus akun anda sendiri.');
+            }
+
+            $adminCount = User::whereHas('Role', function ($query) {
+                $query->where('nama_role', 'Admin');
+            })->count();
+
+            if ($adminCount <= 1) {
+                return redirect()->route('admin.user.index')->with('error', 'Tidak dapat menghapus akun admin terakhir.');
+            }
+        }
+        if (DetailMember::where('user_id', $user->id)->exists()) {
+            $request->session()->flash('error', "Tidak dapat menghapus user, karena masih ada data user group yang berhubungan.");
+            return redirect()->route('admin.user.index');
+        }
         $user->delete();
 
         $request->session()->flash('error', "Akun User Berhasil dihapus.");

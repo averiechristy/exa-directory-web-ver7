@@ -20,23 +20,44 @@
                            @csrf
                           
                            <label for="" class="form-label"style="font-size: 11pt; font-weight: bold;">Pilih Group</label>
-
-                           <div class="form-group mb-4">
-    @foreach ($usergroup as $key => $item)
+                           
+<div class="form-group mb-4">
+@foreach ($usergroup as $key => $item)
         @if ($key % 5 == 0 && $key != 0)
             </div><div class="form-group mb-4">
         @endif
         <div class="form-check" style="display: inline-block; margin-right: 10px;">
             <input class="form-check-input" name="group[]" type="checkbox" value="{{ $item->id }}" id="flexCheckIndeterminate{{ $key }}">
             <label class="form-check-label" style="margin-left: 5px;" for="flexCheckIndeterminate{{ $key }}">
-                {{ $item->nama_group }} 
+            <a href="" class="detail-member" data-toggle="modal" data-target="#exampleModal" data-group-id="{{ $item->id }}">
+    {{ $item->nama_group }} 
+</a>
+
             </label>
         </div>
+
+        <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Detail  Member</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       
+      </div>
+      <div class="modal-footer">
+
+      </div>
+    </div>
+  </div>
+</div>
     @endforeach
 </div>
 
-
-                          
                            <div class="form-group mb-4">
                                <label for="" class="form-label"style="font-size: 11pt; font-weight: bold;">Nama Folder</label>
                                <input name="nama_folder" type="text" class="form-control {{$errors->has('name') ? 'is-invalid' : ''}}" style="border-color: #01004C;" value="" required />
@@ -62,5 +83,29 @@
   </div>
 
  
+  <script>
+$(document).ready(function() {
+    $('.detail-member').click(function(e) {
+        e.preventDefault();
+        var groupId = $(this).attr('data-group-id');
+        $.ajax({
+            url: '/group/' + groupId + '/members',
+            type: 'GET',
+            success: function(response) {
+                // Bersihkan konten modal sebelum menambahkan data baru
+                $('.modal-body').empty();
+                // Tambahkan data anggota grup ke dalam modal
+                $.each(response, function(index, member) {
+                    $('.modal-body').append('<li>' + member.user.nama_user + '</li>');
+                });
+                // Tampilkan modal
+             
+            },
+          
+        });
+    });
+   
+});
+</script>
 
 @endsection

@@ -106,12 +106,13 @@ class CabangController extends Controller
     {
         $cabang = Cabang::find($id);
         
+        
         if (User::where('cabang_id', $cabang->id)->exists()) {
             $request->session()->flash('error', "Tidak dapat menghapus cabang, karena masih ada data user account yang berhubungan.");
             return redirect()->route('superadmin.cabang.index');
         }
 
-        if (File::where('cabang_id', $cabang->id)->exists()) {
+        if (File::where('cabang_id_user', $cabang->id)->exists()) {
             $request->session()->flash('error', "Tidak dapat menghapus cabang, karena masih ada data File yang berhubungan.");
             return redirect()->route('superadmin.cabang.index');
         }

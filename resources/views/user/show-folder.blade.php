@@ -14,14 +14,21 @@
         /
     @endforeach
 </h5>
+<div id="myDataTable_filter" class="dataTables_filter mb-3" >
+    <label for="search">Search
+        <input id="search" placeholder oninput="applySearchFilter()">
+    </label>
+</div>
                     <!-- {{-- Display subfolders and files in a single table --}} -->
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
                                 <tr>
                                     <th scope="col">Nama</th>
+                                    <th scope="col">Status</th>
                                     <th scope="col">Date Modified</th>
                                     <th scope="col">Type</th>
+
                                     <th scope="col">Action</th>
                                 </tr>
                             </thead>
@@ -56,6 +63,15 @@
                                                 {{ $file->nama_file }}
                                             </a>
                                         </td>
+                                        <td>
+            @if ($file->status === 'berlaku')
+                <span class="badge badge-success">Berlaku</span>
+            @elseif ($file->status === 'tidak_berlaku')
+                <span class="badge badge-danger">Tidak Berlaku</span>
+            @else
+                {{ $file->status }}
+            @endif
+    </td>
                                         <td>{{$file->updated_at}}</td>
                                         <td>File</td>
                                         <td>
@@ -154,5 +170,67 @@ function pinFile(fileId) {
         });
     }
     
+</script>
+
+<style>
+
+.dataTables_paginate{
+  float:right;
+  text-align:
+}
+
+
+.paginate_button {box-sizing:border-box;
+    display:inline-block;
+    min-width:1.5em;
+    text-align:center;
+    text-decoration:none !important;
+    cursor:pointer;color:inherit !important;
+    border:1px solid transparent;
+    border-radius:2px;
+    background:transparent}
+
+  
+.dataTables_length{
+  float:left;
+}
+
+
+.dataTables_wrapper 
+.dataTables_length select{border:1px solid #aaa;border-radius:3px;padding:5px;background-color:transparent;color:inherit;padding:4px}
+.dataTables_info{clear:both;float:left;padding-top:.755em}    
+.dataTables_filter{text-align:right;}
+.dataTables_filter input{border:1px solid #aaa;border-radius:3px;padding:5px;background-color:transparent;color:inherit;margin-left:3px}
+
+
+</style>
+
+
+<script>
+    function applySearchFilter() {
+    var searchInput = document.getElementById('search');
+    var filter = searchInput.value.toLowerCase();
+    
+    // Mencari data yang sesuai dengan filter
+    var filteredRows = Array.from(document.querySelectorAll("table tbody tr"));
+
+    filteredRows.forEach(function(row) {
+        var rowText = row.textContent.toLowerCase();
+        if (rowText.includes(filter)) {
+            row.style.display = ""; // Menampilkan baris yang sesuai dengan filter
+        } else {
+            row.style.display = "none"; // Menyembunyikan baris yang tidak sesuai dengan filter
+        }
+    });
+
+    // Menangani kasus khusus jika tidak ada hasil pencarian
+    var noResultsMessage = document.getElementById('no-results-message');
+    if (filteredRows.length === 0) {
+        noResultsMessage.style.display = ""; // Menampilkan pesan jika tidak ada hasil pencarian
+    } else {
+        noResultsMessage.style.display = "none"; // Menyembunyikan pesan jika ada hasil pencarian
+    }
+}
+
 </script>
 @endsection

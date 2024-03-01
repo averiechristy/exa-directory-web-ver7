@@ -22,10 +22,12 @@
                    
                   </div>
                   <div class="card-body">
-                      <form id="saveform" name="saveform" action="/adminupdateuser/{{$data->id}}" method="post" onsubmit="return validateForm()">
+                      <form name="saveform"   action="/adminupdateuser/{{$data->id}}" method="post" onsubmit="return validateForm()">
+
                            @csrf
 
-                           <div class="form-group mb-4">
+                          
+<div class="form-group mb-4">
                                           <label for="" class="form-label" style="font-size: 11pt; font-weight: bold;">Role</label>
 
                                           <select  name="role_id" class="form-select form-select-sm mb-3" aria-label=".form-select-lg example" style="border-color: #01004C;  border-radius: 5px;" required>
@@ -87,26 +89,36 @@
   
     
   </div>
-  <script>
-   
-    function validateForm() {
-        let nopegawai = document.forms["saveform"]["no_pegawai"].value;
-        let nama = document.forms["saveform"]["nama_user"].value;
-        let email = document.forms["saveform"]["email"].value;
 
-        if (nopegawai == "") {
-            alert("No pegawai tidak boleh kosong");
+  
+
+  <script>
+    function validateForm() {
+    let role = document.forms["saveform"]["role_id"].value;
+    let nopegawai = document.forms["saveform"]["no_pegawai"].value;
+    let nama = document.forms["saveform"]["nama_user"].value;
+    let email = document.forms["saveform"]["email"].value;
+    let password = document.forms["saveform"]["password"].value;
+
+       if ( role == "") {
+            alert("Pilih salah satu role");
             return false;
-        } else if (nama == "") {
-            alert("Nama user tidak boleh kosong");
+        }
+        else if ( nopegawai == "" ){
+            alert ("No pegawai tidak boleh kosong");
             return false;
-        } else if (email == "") {
-            alert("Email tidak boleh kosong");
+        }
+        else if ( nama == "" ){
+            alert ("Nama user tidak boleh kosong");
+            return false;
+        }else if ( email == "" ){
+            alert ("Email tidak boleh kosong");
+            return false;
+        }else if ( password == "" ){
+            alert ("Password tidak boleh kosong");
             return false;
         }
     }
 </script>
 
 @endsection
-
-

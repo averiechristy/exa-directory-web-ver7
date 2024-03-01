@@ -14,16 +14,12 @@
 
                 </div>
                 <div class="card-body">
-                    <form  name="saveform" id ="saveform" action="/updatefile/{{$data->id}}" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+                    <form action="/updatefile/{{$data->id}}" method="post" enctype="multipart/form-data">
                         @csrf
-                        <div class="form-group mb-4">
-                            <label for="" class="form-label">Judul</label>
-                            <input name="nama_file" type="text" class="form-control {{$errors->has('name') ? 'is-invalid' : ''}}" style="border-color: #01004C;" value="{{ $data->nama_file }}"  />
-                        </div>
 
                         <div class="form-group mb-4">
                             <label for="" class="form-label">Path Folder</label>
-                            <select id="path_folder" name="path_folder" class="form-select form-select-sm mb-3" aria-label=".form-select-lg example" style="border-color: #01004C; border-radius: 5px;" >
+                            <select id="path_folder" name="path_folder" class="form-select form-select-sm mb-3" aria-label=".form-select-lg example" style="border-color: #01004C; border-radius: 5px;" required>
                                 <option disabled>Pilih Path</option>
                                 <!-- Loop melalui data folder dari database -->
                                 @foreach ($folders as $item)
@@ -34,7 +30,11 @@
                             </select>
                         </div>
 
-                      
+                        <div class="form-group mb-4">
+                            <label for="" class="form-label">Nama File</label>
+                            <input name="nama_file" type="text" class="form-control {{$errors->has('name') ? 'is-invalid' : ''}}" style="border-color: #01004C;" value="{{ $data->nama_file }}" required />
+                        </div>
+
                         <div class="form-group mb-4">
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="berlaku" {{ $data->status == 'berlaku' ? 'checked' : '' }}>
@@ -58,7 +58,7 @@
     <label>Konnten</label>
     <div class="form-group">
      <!-- <textarea name="isi_artikel" class="my-editor form-control {{$errors->has('konten') ? 'is-invalid' : ''}}" style="border-color: #01004C;" id="my-editor" cols="30" rows="10" required>{{old('konten')}}</textarea>                                             -->
-        <textarea name="konten" class="my-editor form-control {{$errors->has('konten') ? 'is-invalid' : ''}} " id="my-editor"cols="30" rows="10" style="border-color: #01004C;" value=""  oninvalid="this.setCustomValidity('Isi artikel tidak boleh kosong')" oninput="setCustomValidity('')">{{ old('konten') }}
+        <textarea name="konten" class="my-editor form-control {{$errors->has('konten') ? 'is-invalid' : ''}} " id="my-editor"cols="30" rows="10" style="border-color: #01004C;" value="" required oninvalid="this.setCustomValidity('Isi artikel tidak boleh kosong')" oninput="setCustomValidity('')">{{ old('konten') }}
             {{$data->konten}}
         </textarea>                                           
 </div>
@@ -67,22 +67,12 @@
     <label for="formFileSm" class="form-label">Upload File</label>
     <input class="form-control form-control-sm" id="formFileSm" type="file" name="formFileSm" accept=".pdf">
 </div> -->
-
-
-@if ($nama->count() > 0)
 <div class="upload-container">
 @foreach ($nama as $nama)
-    <div class="upload-item">
-        <div class="form-input-item">
-            <label for="formFileSm" class="form-label mt-5">Upload File / Video / Image / Audio</label>
-            <div id="fileInputs">
-            <input class="upload-input form-control form-control-sm mb-2" type="file" name="formFileSm[]" value="{{ asset('storage/files/') }}/{{ $nama->file }}" onchange="previewFile(this)">
-            <input type="hidden" name="exisiting_file[]" value="{{ $nama->id }}">
 
 
-
-            <div class="preview-container">
-                    <!-- Menampilkan pratinjau dari file yang sudah ada -->
+<label for="formFileSm" class="form-label">Upload File / Video / Image / Audio</label>
+<div class="preview-sudah-ada">  
         @php
             $extension = pathinfo($nama->file, PATHINFO_EXTENSION);
         @endphp
@@ -106,33 +96,22 @@
             <!-- Tipe file tidak didukung -->
             <p>Tipe file tidak didukung.</p>
         @endif
-                </div>
-            </div>
-
-            <button type="button" class="btn btn-sm btn-danger mb-3 removeFileInput" id="removeFileInput" style="float:right;"> Remove </button>
-
-        </div>
-    </div>
-@endforeach
-
 </div>
-@else
-<div class="upload-container">
-    <div class="upload-item">
-
+        <div class="upload-item">
     <div class="form-input-item">
-        <label for="formFileSm" class="form-label">Upload File / Video / Image / Audio</label>
+       
         <div id="fileInputs">
-            <input class="form-control form-control-sm mb-2" type="file" name="formFileSm[]" onchange="previewFile(this)">
-            <div class="preview-container"></div>
+        <input  class="upload-input form-control form-control-sm mb-2 " type="file" name="formFileSm[]" onchange="previewFile(this)">
+          
+        <div class="preview-container"></div>
         </div>
-        <button type="button" class="btn btn-sm btn-danger mb-3" id="removeFileInput" style="float:right;"> Remove </button>
+        <button type="button" class="btn btn-sm btn-danger mb-3 removeFileInput" id="removeFileInput" style="float:right;"> Remove </button>
     </div>
-
 </div>
 
+@endforeach
 </div>
-@endif
+
 <button type="button" class="btn btn-sm btn-primary mb-3 addFileInput" id="addFileInput">Add More</button>
 
                         <div class="form-group mb-4">
@@ -147,36 +126,7 @@
 </div>
 
 <script>
-    function validateForm() {
-    var pathFolder = document.getElementById('path_folder').value;
-    var namaFile = document.getElementsByName('nama_file')[0].value;
 
-    var inlineRadioOptions = document.forms["saveform"]["inlineRadioOptions"].value;
-    // Validasi jika nama file belum diisi
-    if (namaFile === "") {
-        alert("Judul tidak boleh kosong.");
-        return false;
-    }
-    // Validasi jika path folder belum dipilih
-    if (pathFolder === null || pathFolder === "") {
-        alert("Mohon pilih path folder.");
-        return false;
-    }
-
-    if (inlineRadioOptions == null || inlineRadioOptions === '') {
-        alert("Pilihan status file harus dipilih");
-        return false;
-    }
-
-    // Validasi jika konten belum diisi
-   
-
-    // Jika semua validasi berhasil, return true
-    return true;
-}
-
-</script>
-<script>
 
 $(document).ready(function () {
 
@@ -193,11 +143,9 @@ $('#addFileInput').click(function () {
 
     // Menambah item insentif baru ke dalam kontainer
     insentifContainer.append(newInsentifItem);
-    
+    saveProductData();
 });
  
-
-// Fungsi untuk menghapus insentif
 // Fungsi untuk menghapus insentif
 $(document).on('click', '#removeFileInput', function () {
     var insentifContainer = $('.upload-container');
@@ -214,10 +162,7 @@ $(document).on('click', '#removeFileInput', function () {
     saveProductData();
 });
 
-
-
-
-function previewFile(input, previewContainer) {
+function previewFile(input) {
     const file = input.files[0];
     const preview = document.createElement('div');
     preview.style.marginTop = '10px';
@@ -250,22 +195,20 @@ function previewFile(input, previewContainer) {
         preview.appendChild(fileName);
     }
     
-    // Menghapus pratinjau yang ada sebelumnya pada kontainer pratinjau
-    while (previewContainer.firstChild) {
-        previewContainer.removeChild(previewContainer.firstChild);
+    const existingPreview = input.parentElement.querySelector('.preview-container');
+    if (existingPreview) {
+        input.parentElement.removeChild(existingPreview); // Menghapus pratinjau dari form sebelumnya
     }
     
-    // Menambahkan pratinjau baru ke dalam kontainer pratinjau
-    preview.classList.add('preview-container');
-    previewContainer.appendChild(preview);
+    preview.classList.add('preview-container'); // Menghapus tanda "." dari ".preview-container"
+    input.parentElement.appendChild(preview);
 }
+
 
     // Memanggil fungsi previewFile saat ada perubahan pada input file
     $(document).on('change', 'input[type="file"]', function () {
-    const previewContainer = $(this).closest('.upload-item').find('.preview-container');
-    previewFile(this, previewContainer[0]);
-});
-
+        previewFile(this);
+    });
 
 });
 

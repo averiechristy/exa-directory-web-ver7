@@ -8,7 +8,7 @@
                 <div class="font-weight-bold folder-name">{{$subfolder->nama_folder}}</div>
             </div>
             <div class="folder-actions">
-                @if (!isset($subfolder) || !$subfolder->id_folder_induk)
+                    @if (!isset($subfolder) || !$subfolder->id_folder_induk)
                     <div class="btn-group-vertical">
                         <button type="button" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Actions
@@ -16,7 +16,7 @@
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addSubfolderModal{{$subfolder->id}}">Add Subfolder</a>
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#renameFolderModal{{$subfolder->id}}">Rename Folder</a>      
-                            <form action="{{ route('folder.delete', ['id' => $subfolder->id]) }}" method="POST" style="display: inline;">
+                            <form action="{{ route('folder.deleteadmin', ['id' => $subfolder->id]) }}" method="POST" style="display: inline;">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="dropdown-item" onclick="return confirm('Yakin menghapus folder ini?')">Delete Folder</button>
@@ -24,7 +24,7 @@
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#editgroup{{$subfolder->id}}">Edit Group</a>
                         </div>
                     </div>
-                @else 
+                    @else 
                     <div class="btn-group">
                         <button type="button" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Actions
@@ -32,14 +32,14 @@
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addSubfolderModal{{$subfolder->id}}">Add Subfolder </a>
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#renameFolderModal{{$subfolder->id}}">Rename Folder</a>      
-                            <form action="{{ route('folder.delete', ['id' => $subfolder->id]) }}" method="POST" style="display: inline;">
+                            <form action="{{ route('folder.deleteadmin', ['id' => $subfolder->id]) }}" method="POST" style="display: inline;">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="dropdown-item" onclick="return confirm('Yakin menghapus folder ini?')">Delete Folder</button>
                             </form>
                         </div>
                     </div>
-                @endif
+                 @endif
             </div>
         </div>
         <!-- Rename Folder -->
@@ -54,13 +54,13 @@
                     </div>
                     <div class="modal-body">
                         <!-- Form for renaming a folder -->
-                        <form action="{{ route('folder.rename', ['id' => $subfolder->id]) }}" method="POST">
+                    <form action="{{ route('folder.renameadmin', ['id' => $subfolder->id]) }}" method="POST">
                             @csrf <!-- Untuk melindungi dari serangan CSRF -->
-                            <div class="form-group">
-                                <label for="newFolderName{{$subfolder->id}}">Nama Folder</label>
-                                <input type="text" class="form-control" id="newFolderName{{$subfolder->id}}" name="new_folder_name" value="{{$subfolder->nama_folder}}">
-                            </div>
+                    <div class="form-group">
+                    <label for="newFolderName{{$subfolder->id}}">Nama Folder</label>
+                    <input type="text" class="form-control" id="newFolderName{{$subfolder->id}}" name="new_folder_name" value="{{$subfolder->nama_folder}}">
                     </div>
+                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Rename</button>
                     </form>
@@ -80,7 +80,7 @@
                     </div>
                     <div class="modal-body">
                         <!-- Form for adding a subfolder -->
-                        <form action="{{ route('folder.createSubfolder', ['id' => $subfolder->id]) }}" method="POST">
+                        <form action="{{ route('folder.createSubfolderadmin', ['id' => $subfolder->id]) }}" method="POST">
                             @csrf 
                             <!-- Untuk melindungi dari serangan CSRF -->
                             <div class="form-group">
@@ -100,7 +100,7 @@
             @if ($subfolder->subfolders->count() > 0)
                 <div class="subfolder-list">
                     {{-- Recursively include subfolders --}}
-                    @include('partials.folder_recursive', ['subfolders' => $subfolder->subfolders])
+                    @include('partials.admin_folder_recursive', ['subfolders' => $subfolder->subfolders])
                 </div>
             @else 
                 <p>Folder ini kosong</p>

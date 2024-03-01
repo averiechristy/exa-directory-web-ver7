@@ -11,18 +11,18 @@
                     <p class="mt-2">Tambah File</p>
                   </div>
                   <div class="card-body">
-                      <form name="saveform" id ="saveform" action="{{route('superadmin.file.simpan')}}" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+                      <form action="{{route('superadmin.file.simpan')}}" method="post" enctype="multipart/form-data">
                            @csrf
                            <div class="form-group mb-4">
                                <label for="" class="form-label">Judul</label>
-                               <input name="nama_file" type="text" class="form-control {{$errors->has('nama_file') ? 'is-invalid' : ''}}" style="border-color: #01004C;" value=""  />
+                               <input name="nama_file" type="text" class="form-control {{$errors->has('nama_file') ? 'is-invalid' : ''}}" style="border-color: #01004C;" value="" required />
                                <!-- @if ($errors->has('nama_file'))
                                    <p class="text-danger">{{$errors->first('nama_file')}}</p>
                                @endif -->
                            </div>
                            <div class="form-group mb-4">
   <label for="" class="form-label">Path Folder</label>
-      <select id="path_folder"  name="path_folder" class="form-select form-select-sm mb-3" aria-label=".form-select-lg example" style="border-color: #01004C; border-radius: 5px;" >
+      <select id="path_folder"  name="path_folder" class="form-select form-select-sm mb-3" aria-label=".form-select-lg example" style="border-color: #01004C; border-radius: 5px;" required>
             <option selected disabled>Pilih Path</option>
             <!-- Loop melalui data folder dari database -->
             @foreach($folders as $folder)
@@ -57,7 +57,7 @@
          <label>Konten</label>
                  <div class="form-group">
      <!-- <textarea name="isi_artikel" class="my-editor form-control {{$errors->has('konten') ? 'is-invalid' : ''}}" style="border-color: #01004C;" id="my-editor" cols="30" rows="10" required>{{old('konten')}}</textarea>                                             -->
-<textarea name="konten" class="my-editor form-control {{$errors->has('konten') ? 'is-invalid' : ''}} " id="my-editor"cols="30" rows="10" style="border-color: #01004C;" value=""  oninvalid="this.setCustomValidity('Isi artikel tidak boleh kosong')" oninput="setCustomValidity('')">{{ old('konten') }}
+<textarea name="konten" class="my-editor form-control {{$errors->has('konten') ? 'is-invalid' : ''}} " id="my-editor"cols="30" rows="10" style="border-color: #01004C;" value="" required oninvalid="this.setCustomValidity('Isi artikel tidak boleh kosong')" oninput="setCustomValidity('')">{{ old('konten') }}
 
 </textarea>        
 </div>
@@ -66,102 +66,23 @@
     <label for="formFileSm" class="form-label">Upload File</label>
     <input class="form-control form-control-sm" id="formFileSm" type="file" name="formFileSm" accept=".pdf">
     </div> -->
-
-    <div class="upload-container">
-    <div class="upload-item">
-
-    <div class="form-input-item">
+    <div id="formInputsContainer">
+    <div class="mb-3 forminputs">
+        <div class="form-input-item">
         <label for="formFileSm" class="form-label">Upload File / Video / Image / Audio</label>
-        <div id="fileInputs">
-            <input class="form-control form-control-sm mb-2" type="file" name="formFileSm[]" onchange="previewFile(this)">
-            <div class="preview-container"></div>
-        </div>
-        <button type="button" class="btn btn-sm btn-danger mb-3" id="removeFileInput" style="float:right;"> Remove </button>
+    <div id="fileInputs">
+        <input class="form-control form-control-sm mb-2" type="file" name="formFileSm[]" onchange="previewFile(this)">
     </div>
-
-</div>
-
+            <button type="button" class="btn btn-sm btn-danger mb-3 remove-file-input" style="float:right;"> Remove </button>
+        </div>
+    </div>
 </div>
 
 <button type="button" class="btn btn-sm btn-primary mt-3 mb-3" id="addFileInput">Add More</button>
 
-  <div class="form-group mb-4">
-        <button type="submit" class="btn " style="width:80px; height: 30px; background-color: #01004C; color: white; font-size: 12px;">Save</button>
-  </div>
-                </form>
-            </div>
-        </div>
-      </div>
-  </div>
-</div>
 
 
 <script>
-function validateForm() {
-    // Mendapatkan nilai judul
-    var judul = document.forms["saveform"]["nama_file"].value;
-    var selectElement = document.getElementById("path_folder");
-var pathFolder = selectElement.options[selectElement.selectedIndex].value;
-
-
-
-    var inlineRadioOptions = document.forms["saveform"]["inlineRadioOptions"].value;
-    
-    if (judul == "") {
-        alert("Judul tidak boleh kosong");
-        return false;
-    }
-
-    if (pathFolder === "" || pathFolder === null) {
-    alert("Path Folder harus dipilih");
-    return false;
-}
-
-    if (inlineRadioOptions == null || inlineRadioOptions === '') {
-        alert("Pilihan status file harus dipilih");
-        return false;
-    }
-
-    // Mendapatkan nilai status berlaku
-  
-
-    // Jika validasi berhasil, kembalikan true
-    return true;
-}
-</script>
-
-
-<script>
-    
-$(document).ready(function () {
-
-    // Fungsi untuk menambah insentif
-    $('#addFileInput').click(function () {
-    var insentifContainer = $('.upload-container');
-    var newInsentifItem = $('.upload-item').eq(0).clone();
-
-    // Menghapus kontainer pratinjau file sebelum menambahkan item baru
-    newInsentifItem.find('.preview-container').html('');
-
-    // Menambah item insentif baru ke dalam kontainer
-    insentifContainer.append(newInsentifItem);
-});
-
-    // Fungsi untuk menghapus insentif
-    $(document).on('click', '#removeFileInput', function () {
-        var insentifContainer = $('.upload-container');
-        var insentifItems = insentifContainer.find('.upload-item');
-
-        // Memastikan ada lebih dari satu item sebelum menghapus
-        if (insentifItems.length > 1) {
-            $(this).closest('.upload-item').remove();
-        } else {
-            alert("Anda tidak dapat menghapus form pertama.");
-        }
-    });
-
-    // Fungsi untuk menampilkan pratinjau file
-  // Fungsi untuk menampilkan pratinjau file
 function previewFile(input) {
     const file = input.files[0];
     const preview = document.createElement('div');
@@ -195,23 +116,103 @@ function previewFile(input) {
         preview.appendChild(fileName);
     }
     
-    const existingPreview = input.parentElement.querySelector('.preview-container');
+    const existingPreview = input.parentElement.querySelector('.preview');
     if (existingPreview) {
-        input.parentElement.removeChild(existingPreview); // Menghapus pratinjau dari form sebelumnya
+        input.parentElement.removeChild(existingPreview);
     }
-    
-    preview.classList.add('preview-container'); // Menghapus tanda "." dari ".preview-container"
+    preview.classList.add('preview');
     input.parentElement.appendChild(preview);
 }
-
-
-    // Memanggil fungsi previewFile saat ada perubahan pada input file
-    $(document).on('change', 'input[type="file"]', function () {
-        previewFile(this);
-    });
-
-});
 </script>
 
+  <div class="form-group mb-4">
+        <button type="submit" class="btn " style="width:80px; height: 30px; background-color: #01004C; color: white; font-size: 12px;">Save</button>
+  </div>
+                </form>
+            </div>
+        </div>
+      </div>
+  </div>
+</div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const formInputsContainer = document.getElementById('formInputsContainer');
+        const addFileInputButton = document.getElementById('addFileInput');
+
+        // Tambahkan event listener untuk tombol "Add More"
+        addFileInputButton.addEventListener('click', function() {
+            const newFormInput = document.createElement('div');
+            newFormInput.className = 'mb-3 forminputs';
+            newFormInput.innerHTML = `
+                <div class="form-input-item">
+                    <label for="formFileSm" class="form-label">Upload File / Video / Image / Audio</label>
+                    <div class="file-inputs">
+                        <input class="form-control form-control-sm mb-2" type="file" name="formFileSm[]" onchange="previewFile(this)">
+                    </div>
+                    <button type="button" class="btn btn-sm btn-danger mb-3 remove-file-input" style="float:right;"> Remove </button>
+                </div>
+            `;
+            formInputsContainer.appendChild(newFormInput);
+        });
+
+        // Tambahkan event listener untuk tombol "Remove"
+        document.addEventListener('click', function(event) {
+            if (event.target.classList.contains('remove-file-input')) {
+                const formInputs = formInputsContainer.querySelectorAll('.form-input-item');
+                if (formInputs.length > 1) {
+                    event.target.parentElement.parentElement.remove();
+                } else {
+                    alert("Anda tidak dapat menghapus satu-satunya formulir yang tersisa.");
+                    // Ubah pesan error menjadi JSON jika Anda inginkan
+                    // const errorMessage = { error: "Anda tidak dapat menghapus satu-satunya formulir yang tersisa." };
+                    // alert(JSON.stringify(errorMessage));
+                }
+            }
+        });
+    });
+
+    function previewFile(input) {
+    const file = input.files[0];
+    const preview = document.createElement('div');
+    preview.style.marginTop = '10px';
+    
+    const fileType = file.type.split('/')[0];
+    
+    if (fileType === 'image') {
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(file);
+        img.style.maxWidth = '100%';
+        img.style.height = 'auto';
+        preview.appendChild(img);
+    } else if (fileType === 'audio') {
+        const audio = document.createElement('audio');
+        audio.controls = true;
+        audio.src = URL.createObjectURL(file);
+        preview.appendChild(audio);
+    } else if (fileType === 'video') {
+        const video = document.createElement('video');
+        video.controls = true;
+        video.style.maxWidth = '100%';
+        video.style.height = 'auto';
+        const source = document.createElement('source');
+        source.src = URL.createObjectURL(file);
+        source.type = file.type;
+        video.appendChild(source);
+        preview.appendChild(video);
+    } else {
+        const fileName = document.createTextNode(file.name);
+        preview.appendChild(fileName);
+    }
+    
+    const existingPreview = input.parentElement.querySelector('.preview');
+    if (existingPreview) {
+        input.parentElement.removeChild(existingPreview);
+    }
+    preview.classList.add('preview');
+    input.parentElement.appendChild(preview);
+}
+</script>
 
 @endsection

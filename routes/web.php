@@ -189,6 +189,16 @@ Route::post('superadmin/changepassword', [PasswordController::class,'superadminc
 
 Route::get('/tampilkonten/{id}',[FileController::class,'tampilkonten'])->name('tampilkonten');
 
+Route::get('/get-group-members/{groupId}', [FolderController::class, 'getGroupMembers'])->name('get_group_members');
+
+Route::get('/group/{id}/members', [FolderController::class,'getGroupMembers'])->name('group.members');
+
+Route::get('/group/{id}/membersedit', [FolderController::class,'getGroupMembersedit'])->name('group.membersedit');
+
+
+Route::get('/tampilgrup/{id}',[FolderController::class,'tampilgrup'])->name('tampilgrup');
+
+
 });
 
 Route::middleware('auth')->middleware('ensureUserRole:ADMIN')->group(function () {
@@ -235,6 +245,12 @@ Route::delete('/admindeletefile/{id}',[FileController::class,'filedestroy'])->na
 Route::get('admin/changepassword', [PasswordController::class,'showChangePasswordFormAdmin'])->name('admin.password');
 Route::post('admin/changepassword', [PasswordController::class,'adminchangePassword'])->name('admin-change-password');
 
+Route::get('/admintampilkonten/{id}',[FileController::class,'admintampilkonten'])->name('admintampilkonten');
+
+Route::get('/group/{id}/membersadmin', [FolderController::class,'getGroupMembersadmin'])->name('group.membersadmin');
+
+
+Route::get('/tampilgrupadmin/{id}',[FolderController::class,'tampilgrupadmin'])->name('tampilgrupadmin');
 
 });
 
@@ -274,5 +290,6 @@ Route::middleware('auth')->middleware('ensureUserRole:APPROVAL')->group(function
     Route::get('/tampilkontenapproval/{id}',[FileController::class,'tampilkontenapproval'])->name('tampilkontenapproval');
 
     Route::get('approval/viewkonten',[ApprovalDashboardController::class,'viewkonten'])->name('approval.viewkonten');
+    Route::get('/detailmemberapproval/{id}',[ApprovalDashboardController::class,'detailmemberapproval'])->name('detailmemberapproval');
 
 });

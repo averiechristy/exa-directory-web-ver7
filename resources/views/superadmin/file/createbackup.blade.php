@@ -1,4 +1,4 @@
-@extends('layouts.admin.app')
+@extends('layouts.superadmin.app')
 @section('content')
 <div class="content-wrapper">
           <div class="d-sm-flex align-items-center justify-content-between border-bottom"> 
@@ -11,18 +11,18 @@
                     <p class="mt-2">Tambah File</p>
                   </div>
                   <div class="card-body">
-                      <form name="saveform" id ="saveform" action="{{route('admin.file.simpan')}}" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+                      <form action="{{route('superadmin.file.simpan')}}" method="post" enctype="multipart/form-data">
                            @csrf
                            <div class="form-group mb-4">
                                <label for="" class="form-label">Judul</label>
-                               <input name="nama_file" type="text" class="form-control {{$errors->has('nama_file') ? 'is-invalid' : ''}}" style="border-color: #01004C;" value=""  />
+                               <input name="nama_file" type="text" class="form-control {{$errors->has('nama_file') ? 'is-invalid' : ''}}" style="border-color: #01004C;" value="" required />
                                <!-- @if ($errors->has('nama_file'))
                                    <p class="text-danger">{{$errors->first('nama_file')}}</p>
                                @endif -->
                            </div>
                            <div class="form-group mb-4">
   <label for="" class="form-label">Path Folder</label>
-      <select id="path_folder"  name="path_folder" class="form-select form-select-sm mb-3" aria-label=".form-select-lg example" style="border-color: #01004C; border-radius: 5px;" >
+      <select id="path_folder"  name="path_folder" class="form-select form-select-sm mb-3" aria-label=".form-select-lg example" style="border-color: #01004C; border-radius: 5px;" required>
             <option selected disabled>Pilih Path</option>
             <!-- Loop melalui data folder dari database -->
             @foreach($folders as $folder)
@@ -56,8 +56,8 @@
     <div class="form-group mb-4">
          <label>Konten</label>
                  <div class="form-group">
-     <!-- <textarea name="isi_artikel" class="my-editor form-control {{$errors->has('konten') ? 'is-invalid' : ''}}" style="border-color: #01004C;" id="my-editor" cols="30" rows="10" >{{old('konten')}}</textarea>                                             -->
-<textarea name="konten" class="my-editor form-control {{$errors->has('konten') ? 'is-invalid' : ''}} " id="my-editor"cols="30" rows="10" style="border-color: #01004C;" value=""  oninvalid="this.setCustomValidity('Isi artikel tidak boleh kosong')" oninput="setCustomValidity('')">{{ old('konten') }}
+     <!-- <textarea name="isi_artikel" class="my-editor form-control {{$errors->has('konten') ? 'is-invalid' : ''}}" style="border-color: #01004C;" id="my-editor" cols="30" rows="10" required>{{old('konten')}}</textarea>                                             -->
+<textarea name="konten" class="my-editor form-control {{$errors->has('konten') ? 'is-invalid' : ''}} " id="my-editor"cols="30" rows="10" style="border-color: #01004C;" value="" required oninvalid="this.setCustomValidity('Isi artikel tidak boleh kosong')" oninput="setCustomValidity('')">{{ old('konten') }}
 
 </textarea>        
 </div>
@@ -66,92 +66,17 @@
     <label for="formFileSm" class="form-label">Upload File</label>
     <input class="form-control form-control-sm" id="formFileSm" type="file" name="formFileSm" accept=".pdf">
     </div> -->
-
-    <div class="upload-container">
-    <div class="upload-item">
-
-    <div class="form-input-item">
-        <label for="formFileSm" class="form-label">Upload File / Video / Image / Audio</label>
-        <div id="fileInputs">
-            <input class="form-control form-control-sm mb-2" type="file" name="formFileSm[]" onchange="previewFile(this)">
-            <div class="preview-container"></div>
-        </div>
-        <button type="button" class="btn btn-sm btn-danger mb-3" id="removeFileInput" style="float:right;"> Remove </button>
+    <div class="mb-3">
+    <label for="formFileSm" class="form-label">Upload File / Video / Image / Audio</label>
+    <div id="fileInputs">
+        <input class="form-control form-control-sm mb-2" type="file" name="formFileSm[]" onchange="previewFile(this)">
     </div>
-
+    <button type="button" class="btn btn-sm btn-primary" id="addFileInput">Add More</button>
 </div>
 
-</div>
 
-<button type="button" class="btn btn-sm btn-primary mt-3 mb-3" id="addFileInput">Add More</button>
-
-  <div class="form-group mb-4">
-        <button type="submit" class="btn " style="width:80px; height: 30px; background-color: #01004C; color: white; font-size: 12px;">Save</button>
-  </div>
-                </form>
-            </div>
-        </div>
-      </div>
-  </div>
-</div>
 
 <script>
-function validateForm() {
-    var namaFile = document.forms["saveform"]["nama_file"].value;
-    var pathFolder = document.forms["saveform"]["path_folder"].value;
-    var inlineRadioOptions = document.forms["saveform"]["inlineRadioOptions"].value;
-    
-    if (namaFile == "") {
-        alert("Judul file harus diisi");
-        return false;
-    }
-    
-    if (pathFolder == null || pathFolder === 'Pilih Path') {
-        alert("Path folder harus dipilih");
-        return false;
-    }
-    
-    if (inlineRadioOptions == null || inlineRadioOptions === '') {
-        alert("Pilihan status file harus dipilih");
-        return false;
-    }
-
-    // Tambahkan validasi tambahan di sini sesuai kebutuhan
-
-    return true; // Form valid
-}
-</script>
-
-<script>
-$(document).ready(function () {
-
-    // Fungsi untuk menambah insentif
-    $('#addFileInput').click(function () {
-    var insentifContainer = $('.upload-container');
-    var newInsentifItem = $('.upload-item').eq(0).clone();
-
-    // Menghapus kontainer pratinjau file sebelum menambahkan item baru
-    newInsentifItem.find('.preview-container').html('');
-
-    // Menambah item insentif baru ke dalam kontainer
-    insentifContainer.append(newInsentifItem);
-});
-
-    // Fungsi untuk menghapus insentif
-    $(document).on('click', '#removeFileInput', function () {
-        var insentifContainer = $('.upload-container');
-        var insentifItems = insentifContainer.find('.upload-item');
-
-        // Memastikan ada lebih dari satu item sebelum menghapus
-        if (insentifItems.length > 1) {
-            $(this).closest('.upload-item').remove();
-        } else {
-            alert("Anda tidak dapat menghapus form pertama.");
-        }
-    });
-
-    // Fungsi untuk menampilkan pratinjau file
-  // Fungsi untuk menampilkan pratinjau file
 function previewFile(input) {
     const file = input.files[0];
     const preview = document.createElement('div');
@@ -185,23 +110,65 @@ function previewFile(input) {
         preview.appendChild(fileName);
     }
     
-    const existingPreview = input.parentElement.querySelector('.preview-container');
+    const existingPreview = input.parentElement.querySelector('.preview');
     if (existingPreview) {
-        input.parentElement.removeChild(existingPreview); // Menghapus pratinjau dari form sebelumnya
+        input.parentElement.removeChild(existingPreview);
     }
-    
-    preview.classList.add('preview-container'); // Menghapus tanda "." dari ".preview-container"
+    preview.classList.add('preview');
     input.parentElement.appendChild(preview);
 }
-
-
-    // Memanggil fungsi previewFile saat ada perubahan pada input file
-    $(document).on('change', 'input[type="file"]', function () {
-        previewFile(this);
-    });
-
-});
 </script>
 
+  <div class="form-group mb-4">
+        <button type="submit" class="btn " style="width:80px; height: 30px; background-color: #01004C; color: white; font-size: 12px;">Save</button>
+  </div>
+                </form>
+            </div>
+        </div>
+      </div>
+  </div>
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const addFileButton = document.getElementById('addFileInput');
+        const fileInputsContainer = document.getElementById('fileInputs');
+
+        addFileButton.addEventListener('click', function() {
+            const newInput = document.createElement('input');
+            newInput.setAttribute('type', 'file');
+            newInput.setAttribute('class', 'form-control form-control-sm mb-2');
+            newInput.setAttribute('name', 'formFileSm[]');
+
+            // Create delete button
+            const deleteButton = document.createElement('button');
+            deleteButton.setAttribute('type', 'button');
+            deleteButton.setAttribute('class', 'btn btn-sm btn-danger delete-file mb-3');
+            deleteButton.innerText = 'Remove';
+
+            // Append new input and delete button
+            const inputContainer = document.createElement('div');
+            inputContainer.appendChild(newInput);
+            inputContainer.appendChild(deleteButton);
+            fileInputsContainer.appendChild(inputContainer);
+
+            // Add event listener for delete button
+            deleteButton.addEventListener('click', function() {
+                inputContainer.remove();
+            });
+        });
+
+        // Optional: Add functionality to remove file inputs
+        fileInputsContainer.addEventListener('change', function(event) {
+            if (event.target.tagName === 'INPUT' && event.target.getAttribute('type') === 'file') {
+                const files = event.target.files;
+                if (files.length === 0) {
+                    event.target.parentElement.remove();
+                }
+            }
+        });
+    });
+</script>
 
 @endsection

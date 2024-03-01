@@ -1,28 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\UserController;
+namespace App\Http\Controllers\AdminController;
 
 use App\Http\Controllers\Controller;
-use App\Models\DetailFile;
 use Illuminate\Http\Request;
-use App\Models\File;
 
-class KontenReadController extends Controller
+class DetailFileController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index($id)
+    public function index()
     {
-
-        $data = File::find($id);
-        $detailFiles = DetailFile::with('File')->where('file_id', $id)->get();
-
-        return view ('user.kontenread',[
-            'data' => $data,
-            'detailFiles' => $detailFiles,
-        ]);
-
+        //
     }
 
     /**

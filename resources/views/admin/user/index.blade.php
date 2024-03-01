@@ -1,7 +1,7 @@
 @extends('layouts.admin.app')
 
 @section('content')
-
+<div class="main-panel">
 <div class="content-wrapper">
           
            
@@ -119,7 +119,7 @@ entries
   
     
   </div>
-
+  </div>
   <style>
 
 .dataTables_paginate{

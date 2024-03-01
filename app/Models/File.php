@@ -40,4 +40,8 @@ public function pins()
     return $this->hasMany(Pin::class);
 }
 
+public function detailfiles()
+{
+    return $this->hasMany(DetailFile::class);
+}
 }

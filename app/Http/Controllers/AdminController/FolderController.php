@@ -8,6 +8,7 @@ use App\Models\DetailMember;
 use App\Models\File;
 use App\Models\Folder;
 use App\Models\Pin;
+use App\Models\User;
 use App\Models\UserGroup;
 use Auth;
 use Illuminate\Http\Request;
@@ -21,6 +22,7 @@ class FolderController extends Controller
     {
         $folders = Folder::whereNull('id_folder_induk')->orderBy('created_at', 'desc')->get();       
         $usergroup = UserGroup::all();
+
 
         
         return view("superadmin.folder.index",[
@@ -44,20 +46,17 @@ class FolderController extends Controller
     // ->orderBy('folders.created_at', 'desc')
     // ->get(); 
     
-    
-    
-    $folders = Folder::join('detail_groups', 'folders.id', '=', 'detail_groups.folder_id')
-    ->where('detail_groups.cabang_id', $Cabang)
-    ->whereNull('id_folder_induk')
-    ->orderBy('detail_groups.created_at', 'desc')
-    ->select('folders.*') // Ambil semua kolom dari tabel usergroups
-    ->distinct('detail_groups.id', 'detail_groups.cabang_id')
-    ->get();
+    // $folders = Folder::join('detail_groups', 'folders.id', '=', 'detail_groups.folder_id')
+    // ->where('detail_groups.cabang_id', $Cabang)
+    // ->whereNull('id_folder_induk')
+    // ->orderBy('detail_groups.created_at', 'desc')
+    // ->select('folders.*') // Ambil semua kolom dari tabel usergroups
+    // ->distinct('detail_groups.id', 'detail_groups.cabang_id')
+    // ->get();
 
-
-
-   
     
+    $folders = Folder::where('cabang_id', $Cabang)->whereNull('id_folder_induk')->get();
+
     return view("admin.folder.index", [
         "folders" => $folders,
         "usergroup"=> $usergroup
@@ -70,6 +69,7 @@ class FolderController extends Controller
     public function create()
     {
         $usergroup = UserGroup::all();
+        
         return view("superadmin.folder.create",[
             "usergroup"=> $usergroup
         ]);
@@ -80,27 +80,50 @@ class FolderController extends Controller
         $cabang = Auth::user()->cabang_id;
     
         // Menyaring data berdasarkan role pengguna
-        $usergroup = UserGroup::join('detail_members', 'user_groups.id', '=', 'detail_members.user_group_id')
-            ->where('detail_members.cabang_id', $cabang)
-            ->orderBy('user_groups.created_at', 'desc')
-            ->get(['user_groups.*']);
+        // $usergroup = UserGroup::join('detail_members', 'user_groups.id', '=', 'detail_members.user_group_id')
+        //     ->where('detail_members.cabang_id', $cabang)
+        //     ->orderBy('user_groups.created_at', 'desc')
+        //     ->get(['user_groups.*']);
+
+
+        $usergroup = UserGroup::where('cabang_id', $cabang)->get();
 
         return view("admin.folder.create",[
             "usergroup"=> $usergroup
         ]);
     }
+    public function getGroupMembers($id) {
+        
+        $members = DetailMember::with('user')->where('user_group_id', $id)->get();
+        return response()->json($members);
+    }
 
+    public function getGroupMembersedit($id) {
+        
+        $members = DetailMember::with('user')->where('user_group_id', $id)->get();
+        return response()->json($members);
+    }
+    public function getGroupMembersadmin($id) {
+        
+        $members = DetailMember::with('user')->where('user_group_id', $id)->get();
+        return response()->json($members);
+    }
 
+ 
     /**
      * Store a newly created resource in storage.
      */
 public function store(Request $request)
 {
     $folder = new Folder;
+    $Cabang = Auth::user()->cabang_id; 
+    $loggedInUser = auth()->user();
+    $loggedInUsername = $loggedInUser->nama_user; 
     
     $folder->nama_folder = $request->nama_folder;
+    $folder -> cabang_id = $Cabang;
+    $folder -> created_by = $loggedInUsername;
 
-    
     $folder->save();
 
     $detailGroup = [];
@@ -133,9 +156,12 @@ public function store(Request $request)
     {
         $folder = new Folder;
         $loggedInUser = Auth::user();
-       
+        $Cabang = Auth::user()->cabang_id; 
+        $loggedInUser = auth()->user();
+    $loggedInUsername = $loggedInUser->nama_user; 
         $folder->nama_folder = $request->nama_folder;
-    
+        $folder -> cabang_id = $Cabang;
+        $folder -> created_by = $loggedInUsername;
         // Ambil group dari request
       
         $folder->save();
@@ -163,19 +189,52 @@ public function store(Request $request)
     
 
 
-    public function detailgroup($id) {
+    public function tampilgrup($id) {
 
         $data = Folder::find($id);
 
         
-        $group = DetailGroup::with('Folder')->where('folder_id', $id)->get();
-        
+        $group = DetailGroup::where('folder_id', $id)->distinct()->pluck('user_group_id');
+       
+        $namaGroups = [];
+
+        foreach ($group as $userGroupId) {
+            $userGroup = UserGroup::find($userGroupId); // Mencari UserGroup berdasarkan user_group_id
+            if ($userGroup) {
+                $namaGroups[] = $userGroup->nama_group; // Mengumpulkan nama grup
+            }
+        }
+
+      
         return view('superadmin.folder.detail', [
             'data'=> $data,
-            'group'=> $group
+            'group'=> $group,
+            'namaGroups' => $namaGroups,
         ]);
     }
+    public function tampilgrupadmin($id) {
 
+        $data = Folder::find($id);
+
+        
+        $group = DetailGroup::where('folder_id', $id)->distinct()->pluck('user_group_id');
+       
+        $namaGroups = [];
+
+        foreach ($group as $userGroupId) {
+            $userGroup = UserGroup::find($userGroupId); // Mencari UserGroup berdasarkan user_group_id
+            if ($userGroup) {
+                $namaGroups[] = $userGroup->nama_group; // Mengumpulkan nama grup
+            }
+        }
+
+      
+        return view('admin.folder.detail', [
+            'data'=> $data,
+            'group'=> $group,
+            'namaGroups' => $namaGroups,
+        ]);
+    }
     public function rename(Request $request, $id)
 {
     // Validasi data yang diterima dari formulir
@@ -185,6 +244,7 @@ public function store(Request $request)
 
     // Temukan folder berdasarkan ID
     $folder = Folder::find($id);
+   
 
     if (!$folder) {
         return redirect()->back()->with('error', 'Folder not found.');
@@ -195,7 +255,7 @@ public function store(Request $request)
     $folder->save();
 
     $request->session()->flash('success', 'Folder berhasil direname.');
-    return redirect(route('admin.folder.index'));
+    return redirect(route('superadmin.folder.index'));
 }
 
 public function renameadmin(Request $request, $id)
@@ -313,6 +373,7 @@ public function deleteadmin($id, Request $request)
 {
     // Temukan folder berdasarkan ID
     $folder = Folder::find($id);
+  
 
     if (!$folder) {
         return redirect()->route('admin.folder.index')->with('error', 'Folder not found.');
@@ -445,13 +506,16 @@ public function tampilfoldergroup ($id) {
 public function tampilfoldergroupadmin ($id) {
 
     $folder = Folder::find($id);
+   
     $cabang = Auth::user()->cabang_id;
     
         // Menyaring data berdasarkan role pengguna
-        $usergroup = UserGroup::join('detail_members', 'user_groups.id', '=', 'detail_members.user_group_id')
-            ->where('detail_members.cabang_id', $cabang)
-            ->orderBy('user_groups.created_at', 'desc')
-            ->get(['user_groups.*']);
+        // $usergroup = UserGroup::join('detail_members', 'user_groups.id', '=', 'detail_members.user_group_id')
+        //     ->where('detail_members.cabang_id', $cabang)
+        //     ->orderBy('user_groups.created_at', 'desc')
+        //     ->get(['user_groups.*']);
+
+        $usergroup = UserGroup::where('cabang_id', $cabang)->get();
     $nama = DetailGroup::with('UserGroup')->where('folder_id', $id)->get();
    
     $selectedGroup = $nama->pluck('user_group_id')->toArray();

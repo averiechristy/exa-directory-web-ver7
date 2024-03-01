@@ -1,4 +1,4 @@
-@extends('layouts.superadmin.app')
+@extends('layouts.admin.app')
 @section('content')
     <div class="content-wrapper">
         <div class="d-sm-flex align-items-center justify-content-between border-bottom">
@@ -9,10 +9,9 @@
                 <div class="card mt-5">
                     <div class="card-body py-3">
                         <h4 class="card-title">Folder</h4>
-                        <a href="{{route('superadmin.folder.create')}}" class="btn btn-warning btn-sm">Add Folder</a>
+                        <a href="{{route('admin.folder.create')}}" class="btn btn-warning btn-sm">Add Folder</a>
                     </div>
-                    
-                    <div class="card-body">    
+                    <div class="card-body">
                         @include('components.alert')
                         <div class="folder-list">
                         @foreach ($folders as $folder)
@@ -23,12 +22,8 @@
                     <i class="mdi mdi-folder me-2 font-24 text-warning"></i>
                 </div>
                 <div class="font-weight-bold folder-name">{{$folder->nama_folder}} </div>
-              
             </div>
-           
-        </div>
-        <a href="{{ route('tampilgrup', $folder->id) }}"><p>Lihat Group Terdaftar</p></a>
-        <div class="folder-actions" style="float:right; margin-top:-30px;">
+            <div class="folder-actions">
                 @if (!isset($folder) || !$folder->id_folder_induk)
                     <div class="btn-group">
                         <button type="button" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -41,7 +36,7 @@
                                 @method('DELETE')
                                 <button type="submit" class="dropdown-item" onclick="return confirm('Yakin menghapus folder ini?')">Delete Folder</button>
                             </form>
-                            <a class="dropdown-item edit-group-btn" href="{{route('tampilfoldergroup', $folder->id)}}" >Edit Folder</a>
+                            <a class="dropdown-item edit-group-btn" href="{{route('tampilfoldergroupadmin', $folder->id)}}" >Edit Folder</a>
                         </div>
                     </div>
                 @else
@@ -52,7 +47,7 @@
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addSubfolderModal{{$folder->id}}">Add Subfolder</a>
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#renameFolderModal{{$folder->id}}">Rename Folder</a>
-                            <form action="{{ route('folder.delete', ['id' => $folder->id]) }}" method="POST" style="display: inline;">
+                            <form action="{{ route('folder.deleteadmin', ['id' => $folder->id]) }}" method="POST" style="display: inline;">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="dropdown-item" onclick="return confirm('Yakin menghapus folder ini?')">Delete Folder</button>
@@ -61,10 +56,11 @@
                     </div>
                 @endif
             </div>
+        </div>
         <div class="subfolders collapse" id="subfolders{{$folder->id}}">
             @if(count($folder->subfolders) > 0)
                 <div class="subfolder-list">
-                    @include('partials.folder_recursive', ['subfolders' => $folder->subfolders])
+                    @include('partials.admin_folder_recursive', ['subfolders' => $folder->subfolders])
                 </div>
             @else
                 <p>Folder ini kosong.</p>

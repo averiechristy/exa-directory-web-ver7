@@ -1,7 +1,7 @@
 @extends('layouts.superadmin.app')
 
 @section('content')
-
+<div class="main-panel">
 <div class="content-wrapper">
           
            
@@ -42,7 +42,7 @@ entries
 </div>
 
 @include('components.alert')
-                    <div class="table-responsive">
+<div class="table-responsive">
                       <table class="table table-striped" >
                         <thead>
                           <tr>
@@ -141,6 +141,9 @@ entries
                 @endforeach    
                         </tbody>
                       </table>
+
+                      </div>
+
                       <div class="dataTables_info" id="dataTableInfo" role="status" aria-live="polite">
     Showing <span id="showingStart">1</span> to <span id="showingEnd">10</span> of <span id="totalEntries">0</span> entries
 </div>
@@ -160,6 +163,7 @@ entries
                 </div>
             </div>
         </div>
+  </div>
   </div>
 
   <style>

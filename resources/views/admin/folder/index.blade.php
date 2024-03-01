@@ -10,26 +10,8 @@
                     <div class="card-body py-3">
                         <h4 class="card-title">Folder</h4>
                         <a href="{{route('admin.folder.create')}}" class="btn btn-warning btn-sm">Add Folder</a>
-                    </div>
-                    
+                    </div>    
                     <div class="card-body">    
-                    <div class="dataTables_length " id="myDataTable_length">
-<label for="entries"> Show
-<select id="entries" name="myDataTable_length" aria-controls="myDataTable"  onchange="changeEntries()" class>
-<option value="10">10</option>
-<option value="25">25</option>
-<option value="50">50</option>
-<option value="100">100</option>
-</select>
-entries
-</label>
-</div>
-
-<div id="myDataTable_filter" class="dataTables_filter mb-3" >
-    <label for="search">Search
-        <input id="search" placeholder>
-    </label>
-</div>                    
                         @include('components.alert')
                         <div class="folder-list">
                         @foreach ($folders as $folder)
@@ -40,21 +22,24 @@ entries
                     <i class="mdi mdi-folder me-2 font-24 text-warning"></i>
                 </div>
                 <div class="font-weight-bold folder-name">{{$folder->nama_folder}} </div>
-            </div>
-            <div class="folder-actions">
+            </div>        
+        </div>
+        <a href="{{ route('tampilgrupadmin', $folder->id) }}"><p>Lihat Group Terdaftar</p></a>
+    <div class="folder-actions" style="float:right; margin-top:-30px;">
                 @if (!isset($folder) || !$folder->id_folder_induk)
                     <div class="btn-group">
                         <button type="button" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Actions
                         </button>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addSubfolderModal{{$folder->id}}">Add Subfolder</a>
-                            <form action="{{ route('folder.delete', ['id' => $folder->id]) }}" method="POST" style="display: inline;">
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addSubfolderModaladmin{{$folder->id}}">Add Subfolder</a>
+                            <form action="{{ route('folder.deleteadmin', ['id' => $folder->id]) }}" method="POST" style="display: inline;">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="dropdown-item" onclick="return confirm('Yakin menghapus folder ini?')">Delete Folder</button>
                             </form>
-                            <a class="dropdown-item edit-group-btn" href="{{route('tampilfoldergroup', $folder->id)}}" >Edit Folder</a>
+                            
+                            <a class="dropdown-item edit-group-btn" href="{{route('tampilfoldergroupadmin', $folder->id)}}" >Edit Folder</a>
                         </div>
                     </div>
                 @else
@@ -63,9 +48,9 @@ entries
                             Actions
                         </button>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addSubfolderModal{{$folder->id}}">Add Subfolder</a>
-                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#renameFolderModal{{$folder->id}}">Rename Folder</a>
-                            <form action="{{ route('folder.delete', ['id' => $folder->id]) }}" method="POST" style="display: inline;">
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addSubfolderModaladmin{{$folder->id}}">Add Subfolder</a>
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#renameFolderModaladmin{{$folder->id}}">Rename Folder</a>
+                            <form action="{{ route('folder.deleteadmin', ['id' => $folder->id]) }}" method="POST" style="display: inline;">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="dropdown-item" onclick="return confirm('Yakin menghapus folder ini?')">Delete Folder</button>
@@ -74,7 +59,6 @@ entries
                     </div>
                 @endif
             </div>
-        </div>
         <div class="subfolders collapse" id="subfolders{{$folder->id}}">
             @if(count($folder->subfolders) > 0)
                 <div class="subfolder-list">
@@ -85,9 +69,9 @@ entries
             @endif
         </div>
     </div>
-    @include('modals.rename_folder')
-    @include('modals.adding_subfolder')
-    @include('modals.edit_group')
+    @include('modals.rename_folder_admin')
+    @include('modals.adding_subfolder_admin')
+    @include('modals.edit_group_admin')
 @endforeach
 
                             @include('modals.add_folder')
