@@ -160,7 +160,8 @@ $folderMember = $foldersForMember->first();
             'nama_file' => 'required|string',
             'inlineRadioOptions' => 'required|in:berlaku,tidak_berlaku',
             'flexCheckIndeterminate' => 'nullable|boolean',
-            'formFileSm.*' => 'max:25000'
+            'formFileSm.*' => 'max:25000|mimes:jpg,jpeg,png,gif,mp4,mov,avi,pdf,mp3,wav',
+        
         ]);
     
         // Retrieve necessary user information
@@ -233,8 +234,8 @@ $folderMember = $foldersForMember->first();
             'nama_file' => 'required|string',
             'inlineRadioOptions' => 'required|in:berlaku,tidak_berlaku',
             'flexCheckIndeterminate' => 'nullable|boolean',
-            'formFileSm.*' => 'max:25000'
-        ]);
+            'formFileSm.*' => 'max:25000|mimes:jpg,jpeg,png,gif,mp4,mov,avi,pdf,mp3,wav',
+                ]);
     
         // Retrieve necessary user information
         $loggedInUser = auth()->user();
@@ -347,8 +348,7 @@ $folderMember = $foldersForMember->first();
             'nama_file' => 'required|string',
             'inlineRadioOptions' => 'required|in:berlaku,tidak_berlaku',
             'flexCheckIndeterminate' => 'nullable|boolean',
-            'formFileSm.*' => 'max:25000'
-        ]);
+            'formFileSm.*' => 'max:25000|mimes:jpg,jpeg,png,gif,mp4,mov,avi,pdf,mp3,wav',        ]);
             
         // Ambil data file yang akan diupdate
         $file = File::find($id);
@@ -430,8 +430,7 @@ $folderMember = $foldersForMember->first();
             'nama_file' => 'required|string',
             'inlineRadioOptions' => 'required|in:berlaku,tidak_berlaku',
             'flexCheckIndeterminate' => 'nullable|boolean',
-            'formFileSm.*' => 'max:25000'
-        ]);
+            'formFileSm.*' => 'max:25000|mimes:jpg,jpeg,png,gif,mp4,mov,avi,pdf,mp3,wav',        ]);
             
         // Ambil data file yang akan diupdate
         $file = File::find($id);
