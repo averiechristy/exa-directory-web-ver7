@@ -10,12 +10,12 @@
       </div>
       <div class="modal-body">
         <!-- Form for adding a subfolder -->
-        <form action="{{ route('folder.createSubfolderadmin', ['id' => $folder->id]) }}" method="POST">
+        <form name="saveform" action="{{ route('folder.createSubfolderadmin', ['id' => $folder->id]) }}" method="POST" onsubmit="return validateForm()">
             @csrf 
             <!-- Untuk melindungi dari serangan CSRF -->
             <div class="form-group">
                 <label for="subfolderName">Nama Subfolder</label>
-                <input type="text" class="form-control" id="subfolderName" name="nama_subfolder">
+                <input type="text" class="form-control" id="subfolderName" name="nama_subfolder" >
             </div>
       </div>
       <div class="modal-footer">
@@ -25,3 +25,14 @@
     </div>
   </div>
 </div>
+
+<script>
+  function validateForm() {
+    var subfolderName = document.getElementById('subfolderName').value;
+    if (subfolderName.trim() === '') {
+      alert('Nama subfolder tidak boleh kosong.');
+      return false;
+    }
+    return true;
+  }
+</script>

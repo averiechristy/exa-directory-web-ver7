@@ -11,7 +11,7 @@
             </div>
             <div class="modal-body">
                 <!-- Form for renaming a folder -->
-                <form action="{{ route('folder.renameadmin', ['id' => $folder->id]) }}" method="POST">
+                <form name="saveform"  action="{{ route('folder.renameadmin', ['id' => $folder->id]) }}" method="POST"  onsubmit="return validateForm()">
                     @csrf <!-- Untuk melindungi dari serangan CSRF -->
                     <div class="form-group">
                         <label for="newFolderName{{$folder->id}}">Nama Folder</label>
@@ -25,3 +25,19 @@
         </div>
     </div>
 </div>
+
+
+<script>
+    function validateForm() {
+        var newName = document.getElementById("newFolderName{{$folder->id}}").value;
+
+        // Check if newName is empty
+        if (newName.trim() == '') {
+            alert("Nama folder tidak boleh kosong");
+            return false;
+        }
+
+        // If all checks pass, return true to submit the form
+        return true;
+    }
+</script>

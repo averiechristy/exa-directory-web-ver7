@@ -11,7 +11,7 @@
             </div>
             <div class="modal-body">
                 <!-- Form for renaming a folder -->
-                <form action="{{ route('folder.rename', ['id' => $folder->id]) }}" method="POST">
+                <form name="saveform"  action="{{ route('folder.rename', ['id' => $folder->id]) }}" method="POST"  onsubmit="return validateForm()">
                     @csrf <!-- Untuk melindungi dari serangan CSRF -->
                     <div class="form-group">
                         <label for="newFolderName{{$folder->id}}">Nama Folder</label>

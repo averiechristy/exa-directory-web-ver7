@@ -15,7 +15,7 @@
     @csrf
                            <div class="form-group mb-4">
                               <label for="" class="form-label" style="font-size: 11pt; font-weight: bold;">Nama Group</label>
-                              <input name="nama_group" type="text" class="form-control {{$errors->has('name') ? 'is-invalid' : ''}}" style="border-color: #01004C;" value="" required />
+                              <input name="nama_group" type="text" class="form-control {{$errors->has('name') ? 'is-invalid' : ''}}" style="border-color: #01004C;" value=""  />
                               <!-- @if ($errors->has('name'))
                                   <p class="text-danger">{{$errors->first('name')}}</p>
                               @endif -->
@@ -148,13 +148,17 @@
         
     });
     $('form').submit(function(e) {
-        var selectedRadio = $('input[name="inlineRadioOptions"]:checked').val();
-
-        if (!selectedRadio) {
-            alert('Anda harus memilih salah satu opsi.');
-            e.preventDefault(); // Mencegah pengiriman formulir jika tidak ada opsi yang dipilih
-        }
-    });
+    var selectedRadio = $('input[name="inlineRadioOptions"]:checked').val();
+    var namaGroup = $('input[name="nama_group"]').val();
+    if (!namaGroup.trim()) {
+        alert('Silakan masukkan nama grup.');
+        e.preventDefault(); // Mencegah pengiriman formulir jika nama grup tidak diisi
+    }
+    else  if (!selectedRadio) {
+        alert('Anda harus memilih salah satu opsi.');
+        e.preventDefault(); // Mencegah pengiriman formulir jika tidak ada opsi yang dipilih
+    }
+});
 
     // Code lainnya tetap sama
     // ...

@@ -76,11 +76,12 @@
             <input class="form-control form-control-sm mb-2" type="file" name="formFileSm[]" onchange="previewFile(this)">
             <div class="preview-container"></div>
         </div>
+
+
         <button type="button" class="btn btn-sm btn-danger mb-3" id="removeFileInput" style="float:right;"> Remove </button>
     </div>
 
 </div>
-
 </div>
 
 <button type="button" class="btn btn-sm btn-primary mt-3 mb-3" id="addFileInput">Add More</button>
@@ -162,10 +163,19 @@ $(document).ready(function () {
 
     // Fungsi untuk menampilkan pratinjau file
   // Fungsi untuk menampilkan pratinjau file
+// Fungsi untuk menampilkan pratinjau file
 function previewFile(input) {
     const file = input.files[0];
     const preview = document.createElement('div');
     preview.style.marginTop = '10px';
+    
+    // Validasi ukuran file
+    const maxFileSize = 100 * 1024 * 1024; // 1MB
+    if (file.size > maxFileSize) {
+        alert("Ukuran file tidak boleh lebih dari 100 MB.");
+        input.value = ''; // Menghapus file yang sudah dipilih
+        return;
+    }
     
     const fileType = file.type.split('/')[0];
     
@@ -203,6 +213,7 @@ function previewFile(input) {
     preview.classList.add('preview-container'); // Menghapus tanda "." dari ".preview-container"
     input.parentElement.appendChild(preview);
 }
+
 
 
     // Memanggil fungsi previewFile saat ada perubahan pada input file

@@ -27,17 +27,17 @@
                                 @endphp
 
                                 @if(in_array($extension, ['jpg', 'jpeg', 'png', 'gif'])) <!-- Gambar -->
-                                    <img src="{{ asset('storage/files/') }}/{{ $detailFile->file }}" alt="Gambar" class="file-preview">
+                                    <img src="{{ asset('public/files/') }}/{{ $detailFile->file }}" alt="Gambar" class="file-preview">
                                 @elseif(in_array($extension, ['mp4', 'mov', 'avi'])) <!-- Video -->
                                     <video width="90%" height="500" controls class="file-preview">
-                                        <source src="{{ asset('storage/files/') }}/{{ $detailFile->file }}" type="video/mp4">
+                                        <source src="{{ asset('public/files/') }}/{{ $detailFile->file }}" type="video/mp4">
                                         Your browser does not support the video tag.
                                     </video>
                                 @elseif($extension == 'pdf') <!-- PDF -->
-                                    <iframe src="{{ asset('storage/files/') }}/{{ $detailFile->file }}" width="90%" height="500px" class="file-preview"></iframe>
+                                    <iframe src="{{ asset('public/files/') }}/{{ $detailFile->file }}" width="90%" height="500px" class="file-preview"></iframe>
                                 @elseif(in_array($extension, ['mp3', 'wav'])) <!-- Audio -->
                                     <audio controls preload="none" class="file-preview">
-                                        <source src="{{ asset('storage/files/') }}/{{ $detailFile->file }}" type="audio/mpeg">
+                                        <source src="{{ asset('public/files/') }}/{{ $detailFile->file }}" type="audio/mpeg">
                                         Your browser does not support the audio tag.
                                     </audio>
                                 @else

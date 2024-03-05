@@ -74,7 +74,7 @@
         <div class="form-input-item">
             <label for="formFileSm" class="form-label mt-5">Upload File / Video / Image / Audio</label>
             <div id="fileInputs">
-            <input class="upload-input form-control form-control-sm mb-2" type="file" name="formFileSm[]" value="{{ asset('storage/files/') }}/{{ $nama->file }}" onchange="previewFile(this)">
+            <input class="upload-input form-control form-control-sm mb-2" type="file" name="formFileSm[]" value="{{ asset('public/files/') }}/{{ $nama->file }}" onchange="previewFile(this)">
             <input type="hidden" name="exisiting_file[]" value="{{ $nama->id }}">
 
 
@@ -86,18 +86,18 @@
         @endphp
 
         @if(in_array($extension, ['jpg', 'jpeg', 'png', 'gif'])) <!-- Gambar -->
-            <img src="{{ asset('storage/files/') }}/{{ $nama->file }}" style="max-width: 90%; max-height: 500px;">
+            <img src="{{ asset('public/files/') }}/{{ $nama->file }}" style="max-width: 90%; max-height: 500px;">
         @elseif(in_array($extension, ['mp4', 'mov', 'avi'])) <!-- Video -->
             <video width="90%" height="500" controls>
-                <source src="{{ asset('storage/files/') }}/{{ $nama->file }}" type="video/mp4">
+                <source src="{{ asset('public/files/') }}/{{ $nama->file }}" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
         @elseif($extension == 'pdf') <!-- PDF -->
-            <iframe src="{{ asset('storage/files/') }}/{{ $nama->file }}" width="90%" height="500px"></iframe>
+            <iframe src="{{ asset('public/files/') }}/{{ $nama->file }}" width="90%" height="500px"></iframe>
    
         @elseif(in_array($extension, ['mp3', 'wav'])) <!-- Audio -->
             <audio controls preload="none">
-                <source src="{{ asset('storage/files/') }}/{{ $nama->file }}" type="audio/mpeg">
+                <source src="{{ asset('public/files/') }}/{{ $nama->file }}" type="audio/mpeg">
                 Your browser does not support the audio tag.
             </audio>
         @else
@@ -199,6 +199,13 @@ function previewFile(input, previewContainer) {
     const preview = document.createElement('div');
     preview.style.marginTop = '10px';
     
+    const maxFileSize = 100 * 1024 * 1024; // 1MB
+    if (file.size > maxFileSize) {
+        alert("Ukuran file tidak boleh lebih dari 100 MB.");
+        input.value = ''; // Menghapus file yang sudah dipilih
+        return;
+    }
+
     const fileType = file.type.split('/')[0];
     
     if (fileType === 'image') {

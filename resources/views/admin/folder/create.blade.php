@@ -16,7 +16,7 @@
                    
                   </div>
                   <div class="card-body">
-                      <form action="{{route('admin.folder.simpan')}}" method="post">
+                      <form name="saveform" action="{{route('admin.folder.simpan')}}" method="post" onsubmit="return validateForm()">
                            @csrf
 
                            <label for="" class="form-label"style="font-size: 11pt; font-weight: bold;">Pilih Group</label>
@@ -59,7 +59,7 @@
 </div>
                            <div class="form-group mb-4">
                                <label for="" class="form-label"style="font-size: 11pt; font-weight: bold;">Nama Folder</label>
-                               <input name="nama_folder" type="text" class="form-control {{$errors->has('name') ? 'is-invalid' : ''}}" style="border-color: #01004C;" value="" required />
+                               <input name="nama_folder" type="text" class="form-control {{$errors->has('name') ? 'is-invalid' : ''}}" style="border-color: #01004C;" value=""  />
                                <!-- @if ($errors->has('name'))
                                    <p class="text-danger">{{$errors->first('name')}}</p>
                                @endif -->
@@ -103,6 +103,33 @@ $(document).ready(function() {
     });
    
 });
+
+function validateForm() {
+    var checkboxes = document.getElementsByName('group[]');
+    var folderName = document.forms['saveform']['nama_folder'].value;
+
+    // Periksa apakah setidaknya satu checkbox terpilih
+    var atLeastOneChecked = false;
+    for (var i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i].checked) {
+            atLeastOneChecked = true;
+            break;
+        }
+    }
+
+    // Periksa apakah nama folder telah diisi
+    if (!atLeastOneChecked) {
+        alert('Pilih setidaknya satu grup.');
+        return false;
+    }
+
+    if (folderName === '') {
+        alert('Nama folder harus diisi.');
+        return false;
+    }
+
+    return true; // Izinkan formulir untuk disubmit
+}
 </script>
 
 @endsection

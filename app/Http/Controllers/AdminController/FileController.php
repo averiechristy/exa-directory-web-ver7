@@ -63,6 +63,7 @@ $memberDetails = DetailMember::where('user_id', $user->id)->get();
 
 $foldersByAdmin = Folder::where('cabang_id', $Cabang)->get();
 
+
 $filesByFolder = [];
 
 foreach ($foldersByAdmin as $folder) {
@@ -109,9 +110,9 @@ $folderMember = $foldersForMember->first();
         
     
         return view("admin.file.index", [
-            "files" => $files,
+           
             "filesByFolder" => $filesByFolder,
-            "folder" => $folder,
+          
             "filesByFolderForMember" => $filesByFolderForMember
         ]);
     }
@@ -160,7 +161,7 @@ $folderMember = $foldersForMember->first();
             'nama_file' => 'required|string',
             'inlineRadioOptions' => 'required|in:berlaku,tidak_berlaku',
             'flexCheckIndeterminate' => 'nullable|boolean',
-            'formFileSm.*' => 'max:25000|mimes:jpg,jpeg,png,gif,mp4,mov,avi,pdf,mp3,wav',
+            'formFileSm.*' => 'mimes:jpg,jpeg,png,gif,mp4,mov,avi,pdf,mp3,wav',
         
         ]);
     
@@ -234,7 +235,7 @@ $folderMember = $foldersForMember->first();
             'nama_file' => 'required|string',
             'inlineRadioOptions' => 'required|in:berlaku,tidak_berlaku',
             'flexCheckIndeterminate' => 'nullable|boolean',
-            'formFileSm.*' => 'max:25000|mimes:jpg,jpeg,png,gif,mp4,mov,avi,pdf,mp3,wav',
+            'formFileSm.*' => 'mimes:jpg,jpeg,png,gif,mp4,mov,avi,pdf,mp3,wav',
                 ]);
     
         // Retrieve necessary user information
@@ -348,7 +349,7 @@ $folderMember = $foldersForMember->first();
             'nama_file' => 'required|string',
             'inlineRadioOptions' => 'required|in:berlaku,tidak_berlaku',
             'flexCheckIndeterminate' => 'nullable|boolean',
-            'formFileSm.*' => 'max:25000|mimes:jpg,jpeg,png,gif,mp4,mov,avi,pdf,mp3,wav',        ]);
+            'formFileSm.*' => 'mimes:jpg,jpeg,png,gif,mp4,mov,avi,pdf,mp3,wav',        ]);
             
         // Ambil data file yang akan diupdate
         $file = File::find($id);
@@ -430,7 +431,7 @@ $folderMember = $foldersForMember->first();
             'nama_file' => 'required|string',
             'inlineRadioOptions' => 'required|in:berlaku,tidak_berlaku',
             'flexCheckIndeterminate' => 'nullable|boolean',
-            'formFileSm.*' => 'max:25000|mimes:jpg,jpeg,png,gif,mp4,mov,avi,pdf,mp3,wav',        ]);
+            'formFileSm.*' => 'mimes:jpg,jpeg,png,gif,mp4,mov,avi,pdf,mp3,wav',        ]);
             
         // Ambil data file yang akan diupdate
         $file = File::find($id);

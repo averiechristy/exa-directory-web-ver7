@@ -302,7 +302,6 @@ public function addFolder(Request $request)
         DetailGroup::insert($detailgroup);
     }
 
-    dd($detailgroup);
 
     return redirect()->route('superadmin.folder.index')
         ->with('success', 'Folder berhasil ditambahkan.');
@@ -359,6 +358,10 @@ public function delete($id, Request $request)
         return redirect()->route('superadmin.folder.index')->with('error', 'Folder not found.');
     }
 
+    if (!empty($folder)) {
+        Pin::whereIn('folder_id', $folder)->delete();
+    }
+
     // Hapus folder dan semua folder anak secara rekursif
     $this->deleteFolderAndChildren($folder);
     
@@ -397,12 +400,15 @@ public function createSubfolder(Request $request, $id)
  
     $userGroupId = $parentFolder->user_group_id;
         
+    $cabangId  = $parentFolder->cabang_id;
+    
     // Buat subfolder
     $subfolder = new Folder([
         'id_folder_induk' => $parentFolder->id,
         'nama_folder' => $request->input('nama_subfolder'),
         'user_group_id' => $userGroupId,
         // Sesuaikan dengan cara Anda menyimpan informasi pembuat folder
+        'cabang_id' => $cabangId,
     ]);
 
     $subfolder->save();

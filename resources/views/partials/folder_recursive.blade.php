@@ -54,7 +54,7 @@
                     </div>
                     <div class="modal-body">
                         <!-- Form for renaming a folder -->
-                        <form action="{{ route('folder.rename', ['id' => $subfolder->id]) }}" method="POST">
+                        <form name="simpanform"  action="{{ route('folder.rename', ['id' => $subfolder->id]) }}" method="POST"  onsubmit="return validasiform()">
                             @csrf <!-- Untuk melindungi dari serangan CSRF -->
                             <div class="form-group">
                                 <label for="newFolderName{{$subfolder->id}}">Nama Folder</label>
@@ -80,7 +80,7 @@
                     </div>
                     <div class="modal-body">
                         <!-- Form for adding a subfolder -->
-                        <form action="{{ route('folder.createSubfolder', ['id' => $subfolder->id]) }}" method="POST">
+                        <form name="saveform"  action="{{ route('folder.createSubfolder', ['id' => $subfolder->id]) }}" method="POST"  onsubmit="return validateForm()">
                             @csrf 
                             <!-- Untuk melindungi dari serangan CSRF -->
                             <div class="form-group">
@@ -107,4 +107,17 @@
             @endif      
         </div>
     </div>
+
+    <script>
+  function validateForm() {
+    var subfolderName = document.getElementById('subfolderName').value;
+    if (subfolderName.trim() === '') {
+      alert('Nama subfolder tidak boleh kosong.');
+      return false;
+    }
+    return true;
+  }
+</script>
+
+
 @endforeach

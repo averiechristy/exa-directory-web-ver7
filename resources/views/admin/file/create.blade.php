@@ -156,6 +156,13 @@ function previewFile(input) {
     const file = input.files[0];
     const preview = document.createElement('div');
     preview.style.marginTop = '10px';
+
+    const maxFileSize = 100 * 1024 * 1024; // 1MB
+    if (file.size > maxFileSize) {
+        alert("Ukuran file tidak boleh lebih dari 100 MB.");
+        input.value = ''; // Menghapus file yang sudah dipilih
+        return;
+    }
     
     const fileType = file.type.split('/')[0];
     
