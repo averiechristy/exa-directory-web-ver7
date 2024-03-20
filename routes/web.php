@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController\ApprovalController;
+use App\Http\Controllers\AdminController\ApprovalPageController;
 use App\Http\Controllers\AdminController\CabangController;
 use App\Http\Controllers\AdminController\DashboardController;
 use App\Http\Controllers\AdminController\FileController;
@@ -197,6 +198,12 @@ Route::get('/group/{id}/membersedit', [FolderController::class,'getGroupMemberse
 
 
 Route::get('/tampilgrup/{id}',[FolderController::class,'tampilgrup'])->name('tampilgrup');
+Route::get('superadmin/approvalpage', [ApprovalPageController::class,'index'])->name('superadmin.approvalpage');
+Route::post('/updatestatus/{id}',[FileController::class,'updatestatus'])->name('updatestatus');
+Route::get('/tampilkontenapproval/{id}',[FileController::class,'tampilkontenapproval'])->name('tampilkontenapproval');
+
+Route::get('approval/viewkonten',[ApprovalPageController::class,'viewkonten'])->name('approval.viewkonten');
+Route::get('/detailmemberapproval/{id}',[ApprovalPageController::class,'detailmemberapproval'])->name('detailmemberapproval');
 
 
 });
@@ -252,6 +259,14 @@ Route::get('/group/{id}/membersadmin', [FolderController::class,'getGroupMembers
 
 Route::get('/tampilgrupadmin/{id}',[FolderController::class,'tampilgrupadmin'])->name('tampilgrupadmin');
 
+Route::get('admin/approvalpage', [ApprovalPageController::class,'adminindex'])->name('admin.approvalpage');
+Route::get('/tampilkontenapprovaladmin/{id}',[FileController::class,'tampilkontenapprovaladmin'])->name('tampilkontenapprovaladmin');
+
+Route::get('/detailmemberapprovaladmin/{id}',[ApprovalPageController::class,'detailmemberapprovaladmin'])->name('detailmemberapprovaladmin');
+
+
+Route::post('/updatestatusadmin/{id}',[FileController::class,'updatestatusadmin'])->name('updatestatusadmin');
+
 });
 
 Route::middleware('auth')->middleware('ensureUserRole:USER')->group(function () {
@@ -278,6 +293,13 @@ Route::get('/profile/edit', [ProfileController::class,'editProfileForm'])->name(
 
 Route::get('user/kontenread/{id}',[KontenReadController::class,'index'])->name('user.kontenread');
 
+Route::get('user/approvalpage', [ApprovalPageController::class,'userindex'])->name('user.approvalpage');
+Route::get('/tampilkontenapprovaluser/{id}',[FileController::class,'tampilkontenapprovaluser'])->name('tampilkontenapprovaluser');
+Route::get('/detailmemberapprovaluser/{id}',[ApprovalPageController::class,'detailmemberapprovaluser'])->name('detailmemberapprovaluser');
+
+
+Route::post('/updatestatususer/{id}',[FileController::class,'updatestatususer'])->name('updatestatususer');
+
 
 });
 
@@ -286,10 +308,5 @@ Route::get('user/kontenread/{id}',[KontenReadController::class,'index'])->name('
 Route::middleware('auth')->middleware('ensureUserRole:APPROVAL')->group(function () {
 
     Route::get('approval/dashboard',[ApprovalDashboardController::class,'index'])->name('approval.dashboard');
-    Route::post('/updatestatus/{id}',[FileController::class,'updatestatus'])->name('updatestatus');
-    Route::get('/tampilkontenapproval/{id}',[FileController::class,'tampilkontenapproval'])->name('tampilkontenapproval');
-
-    Route::get('approval/viewkonten',[ApprovalDashboardController::class,'viewkonten'])->name('approval.viewkonten');
-    Route::get('/detailmemberapproval/{id}',[ApprovalDashboardController::class,'detailmemberapproval'])->name('detailmemberapproval');
 
 });

@@ -32,9 +32,12 @@
                               <!-- @if ($errors->has('name'))
                                   <p class="text-danger">{{$errors->first('name')}}</p>
                               @endif -->
+                             
 
                           </div>
                            <div class="form-group mb-4">
+                           <label for="" class="form-label">Status File</label>
+                           <br>
                            <div class="form-check form-check-inline">
                               <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="berlaku">
                               <label class="form-check-label"  style="margin-left: 5px;" for="inlineRadio1">Berlaku</label>
@@ -46,6 +49,8 @@
                             </div>
 
                            <div class="form-group mb-4">
+                           <label for="" class="form-label">Download File</label>
+                           <br>
                            <div class="form-check">
                               <input class="form-check-input" name="flexCheckIndeterminate" type="checkbox" value="" id="flexCheckIndeterminate">
                               <label class="form-check-label" style="margin-left: 5px;" for="flexCheckIndeterminate">
@@ -53,6 +58,17 @@
                               </label>
                             </div>
                           </div>
+
+                          <div class="form-group mb-4">
+  <label for="" class="form-label">Approval Line</label>
+      <select id="user_approval"  name="user_approval" class="form-select form-select-sm mb-3" aria-label=".form-select-lg example" style="border-color: #01004C; border-radius: 5px;" >
+            <option selected disabled>Pilih Approval</option>
+            <!-- Loop melalui data folder dari database -->
+            @foreach($user as $user)
+                <option value="{{ $user->id }}">{{ $user->nama_user }}</option>
+            @endforeach
+        </select>
+</div>
     <div class="form-group mb-4">
          <label>Konten</label>
                  <div class="form-group">
@@ -61,6 +77,7 @@
 
 </textarea>        
 </div>
+
 
     <!-- <div class="mb-3">
     <label for="formFileSm" class="form-label">Upload File</label>
@@ -86,9 +103,16 @@
 
 <button type="button" class="btn btn-sm btn-primary mt-3 mb-3" id="addFileInput">Add More</button>
 
+
+
+
+
   <div class="form-group mb-4">
         <button type="submit" class="btn " style="width:80px; height: 30px; background-color: #01004C; color: white; font-size: 12px;">Save</button>
   </div>
+
+
+
                 </form>
             </div>
         </div>
@@ -100,28 +124,33 @@
 <script>
 function validateForm() {
     // Mendapatkan nilai judul
-    var judul = document.forms["saveform"]["nama_file"].value;
-    var selectElement = document.getElementById("path_folder");
-var pathFolder = selectElement.options[selectElement.selectedIndex].value;
-
+    let judul = document.forms["saveform"]["nama_file"].value;
+var pathFolder = document.forms["saveform"]["path_folder"].value;
 
 
     var inlineRadioOptions = document.forms["saveform"]["inlineRadioOptions"].value;
+
+    var approval = document.forms["saveform"]['user_approval'].value;
     
     if (judul == "") {
         alert("Judul tidak boleh kosong");
         return false;
     }
 
-    if (pathFolder === "" || pathFolder === null) {
+    if (pathFolder === "" || pathFolder === "Pilih Path") {
     alert("Path Folder harus dipilih");
     return false;
 }
+
 
     if (inlineRadioOptions == null || inlineRadioOptions === '') {
         alert("Pilihan status file harus dipilih");
         return false;
     }
+    if (approval === "" || approval === "Pilih Approval") {
+    alert("Approval Line harus dipilih");
+    return false;
+}
 
     // Mendapatkan nilai status berlaku
   
@@ -176,34 +205,42 @@ function previewFile(input) {
         input.value = ''; // Menghapus file yang sudah dipilih
         return;
     }
+
     
-    const fileType = file.type.split('/')[0];
     
-    if (fileType === 'image') {
-        const img = document.createElement('img');
-        img.src = URL.createObjectURL(file);
-        img.style.maxWidth = '100%';
-        img.style.height = 'auto';
-        preview.appendChild(img);
-    } else if (fileType === 'audio') {
-        const audio = document.createElement('audio');
-        audio.controls = true;
-        audio.src = URL.createObjectURL(file);
-        preview.appendChild(audio);
-    } else if (fileType === 'video') {
-        const video = document.createElement('video');
-        video.controls = true;
-        video.style.maxWidth = '100%';
-        video.style.height = 'auto';
-        const source = document.createElement('source');
-        source.src = URL.createObjectURL(file);
-        source.type = file.type;
-        video.appendChild(source);
-        preview.appendChild(video);
-    } else {
-        const fileName = document.createTextNode(file.name);
-        preview.appendChild(fileName);
-    }
+    const allowedTypes = ['jpg', 'jpeg', 'png', 'gif', 'mp4', 'mov', 'avi', 'pdf', 'mp3', 'wav'];
+const fileType = file.name.split('.').pop().toLowerCase(); // Mendapatkan ekstensi file
+if (!allowedTypes.includes(fileType)) {
+    alert("Tipe file tidak diizinkan. Silakan pilih file dengan tipe: jpg, jpeg, png, gif, mp4, mov, avi, pdf, mp3, atau wav.");
+    input.value = ''; // Menghapus file yang sudah dipilih
+    return;
+}    
+if (fileType === 'jpg' || fileType === 'jpeg' || fileType === 'png' || fileType === 'gif') {
+    const img = document.createElement('img');
+    img.src = URL.createObjectURL(file);
+    img.style.maxWidth = '100%';
+    img.style.height = 'auto';
+    preview.appendChild(img);
+} else if (fileType === 'mp3' || fileType === 'wav') {
+    const audio = document.createElement('audio');
+    audio.controls = true;
+    audio.src = URL.createObjectURL(file);
+    preview.appendChild(audio);
+} else if (fileType === 'mp4' || fileType === 'mov' || fileType === 'avi') {
+    const video = document.createElement('video');
+    video.controls = true;
+    video.style.maxWidth = '100%';
+    video.style.height = 'auto';
+    const source = document.createElement('source');
+    source.src = URL.createObjectURL(file);
+    source.type = file.type;
+    video.appendChild(source);
+    preview.appendChild(video);
+} else {
+    const fileName = document.createTextNode(file.name);
+    preview.appendChild(fileName);
+}
+
     
     const existingPreview = input.parentElement.querySelector('.preview-container');
     if (existingPreview) {

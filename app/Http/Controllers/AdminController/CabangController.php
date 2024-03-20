@@ -39,16 +39,35 @@ class CabangController extends Controller
 
         $loggedInUser = auth()->user();
         $loggedInUsername = $loggedInUser->nama_user; 
+
+        $namacabang = $request->nama_cabang;
+        $kodecabang = $request -> kode_cabang;
+
+        $existingcode = Cabang::where('kode_cabang',$kodecabang)->first();
+        $existingnama = Cabang::where('nama_cabang',$namacabang)->first();
+
+        if($existingcode){
+            $request->session()->flash('error', "Gagal menyimpan data, kode cabang sudah ada");
+        
+            return redirect()->route('superadmin.cabang.index');
+        }
+        if ($existingnama){
+
+            $request->session()->flash('error', "Gagal menyimpan data, nama cabang sudah ada");
+        
+            return redirect()->route('superadmin.cabang.index');
+
+
+        }
+
         Cabang::create([
             'kode_cabang'=> $request->kode_cabang,
             'nama_cabang'=> $request->nama_cabang,
            'created_by' => $loggedInUsername,
             
-            
-            
         ]);
     
-        $request->session()->flash('success', 'User Role berhasil ditambahkan.');
+        $request->session()->flash('success', 'Cabang berhasil ditambahkan.');
     
         return redirect(route('superadmin.cabang.index'));   
     }
@@ -84,6 +103,28 @@ class CabangController extends Controller
         $data = Cabang::find($id);
         $loggedInUser = auth()->user();
         $loggedInUsername = $loggedInUser->nama_user; 
+
+
+
+        $namacabang = $request->nama_cabang;
+        $kodecabang = $request -> kode_cabang;
+
+        $existingcode = Cabang::where('kode_cabang',$kodecabang)->first();
+        $existingnama = Cabang::where('nama_cabang',$namacabang)->first();
+
+        if($existingcode){
+            $request->session()->flash('error', "Gagal menyimpan data, kode cabang sudah ada");
+        
+            return redirect()->route('superadmin.cabang.index');
+        }
+        if ($existingnama){
+
+            $request->session()->flash('error', "Gagal menyimpan data, nama cabang sudah ada");
+        
+            return redirect()->route('superadmin.cabang.index');
+
+
+        }
 
         $data->fill($request->except('kode_cabang'));
         $kode_cabang_existing = $data->kode_cabang;

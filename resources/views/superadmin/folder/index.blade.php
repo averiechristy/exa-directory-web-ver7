@@ -27,40 +27,27 @@
             </div>
            
         </div>
-        <a href="{{ route('tampilgrup', $folder->id) }}"><p>Lihat Group Terdaftar</p></a>
-        <div class="folder-actions" style="float:right; margin-top:-30px;">
-                @if (!isset($folder) || !$folder->id_folder_induk)
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Actions
-                        </button>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addSubfolderModal{{$folder->id}}">Add Subfolder</a>
-                            <form action="{{ route('folder.delete', ['id' => $folder->id]) }}" method="POST" style="display: inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="dropdown-item" onclick="return confirm('Yakin menghapus folder ini?')">Delete Folder</button>
-                            </form>
-                            <a class="dropdown-item edit-group-btn" href="{{route('tampilfoldergroup', $folder->id)}}" >Edit Folder</a>
-                        </div>
-                    </div>
-                @else
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Actions
-                        </button>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addSubfolderModal{{$folder->id}}">Add Subfolder</a>
-                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#renameFolderModal{{$folder->id}}">Rename Folder</a>
-                            <form action="{{ route('folder.delete', ['id' => $folder->id]) }}" method="POST" style="display: inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="dropdown-item" onclick="return confirm('Yakin menghapus folder ini?')">Delete Folder</button>
-                            </form>
-                        </div>
-                    </div>
-                @endif
-            </div>
+        <p style="width:20%; float:right;">
+        <a href="{{ route('tampilgrup', $folder->id) }}" style="width:20%;">Lihat Group Terdaftar</a></p>
+        <div class="folder-actions">
+    <div class="btn-group">
+        <button type="button" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Actions
+        </button>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addSubfolderModal{{$folder->id}}">Add Subfolder</a>
+            <form action="{{ route('folder.delete', ['id' => $folder->id]) }}" method="POST" style="display: inline;">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="dropdown-item" onclick="return confirm('Yakin menghapus folder ini?')">Delete Folder</button>
+            </form>
+            @if (!isset($folder) || !$folder->id_folder_induk)
+                <a class="dropdown-item edit-group-btn" href="{{route('tampilfoldergroup', $folder->id)}}" >Edit Folder</a>
+            @endif
+        </div>
+    </div>
+</div>
+
         <div class="subfolders collapse" id="subfolders{{$folder->id}}">
             @if(count($folder->subfolders) > 0)
                 <div class="subfolder-list">
@@ -89,6 +76,10 @@
   float:right;
   text-align:
 }
+
+        .folder-item {
+            cursor: pointer;
+        }
 
 .paginate_button {
     box-sizing:border-box;
@@ -146,6 +137,20 @@
 
 .folder-actions {
     margin-top: 5px;
+}
+/* CSS untuk merapikan tampilan button action */
+.folder-actions {
+    margin-top: 5px;
+    display: inline-block;
+}
+
+.btn-group {
+    display: inline-block;
+    margin-right: 10px; /* Sesuaikan jarak antar button */
+}
+
+.dropdown-menu {
+    min-width: 120px; /* Sesuaikan lebar dropdown jika diperlukan */
 }
 
 

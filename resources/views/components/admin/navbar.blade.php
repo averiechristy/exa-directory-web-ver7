@@ -82,26 +82,30 @@
 
           <li class="nav-item nav-category">Directory</li>
 <li class="nav-item {{ Request::is('admin/file/index')|| Request::is('admin/file/create') || Request::is('admin/folder/create')|| Request::is('admin/folder/index')? 'active' : '' }} ">
-    <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
-        <i class="menu-icon mdi mdi-folder"></i>
-        <span class="menu-title">Directory</span>
-        <i class="menu-arrow"></i> 
-    </a>
-    <div class="collapse {{ Request::is('admin.folder.index', 'admin.file.index') || Request::is('admin/file/create')|| Request::is('admin/folder/create') || Request::is('admin.folder.index', 'admin.file.index/*') ? 'show' : '' }}" id="ui-basic">
-        <ul class="nav flex-column sub-menu">
-        <li class="nav-item">
-    <a class="nav-link {{ Request::is('admin.folder.index') || Request::is('admin/folder/create') ? 'active' : '' }}" href="{{route('admin.folder.index')}}">
-        Folder
-    </a>
+
+  <div class=" {{ Request::is('admin.folder.index', 'admin.file.index') || Request::is('admin/file/create')|| Request::is('admin/folder/create') || Request::is('admin.folder.index', 'admin.file.index/*') ? 'show' : '' }}" id="ui-basic">
+      <ul class="nav flex-column sub-menu" style="background-color:none;">
+      <li class="nav-item">
+  <a class="nav-link {{ Request::is('admin.folder.index') || Request::is('admin/folder/create') ? 'active' : '' }}" href="{{route('admin.folder.index')}}">
+      Folder
+  </a>
 </li>
 <li class="nav-item">
-<a class="nav-link {{ Request::is('admin.file.index') || Request::is('admin/file/create') ? 'active' : '' }}" href="{{route('admin.file.index')}}">
-        File
-    </a>
+  <a class="nav-link {{ Request::is('admin.file.index') || Request::is('admin/file/create') ? 'active' : '' }}" href="{{route('admin.file.index')}}">
+      File
+  </a>
 </li>
-        </ul>
-    </div>
+      </ul>
+  </div>
 </li>
+@if (auth()->user()->is_approval == 1)
+    <li class="nav-item {{ Request::is('admin/approvalpage') || Request::is('admin/approvalpage') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('admin.approvalpage') }}">
+            <i class="menu-icon mdi mdi-file-account"></i>
+            <span class="menu-title">Approval</span>
+        </a>
+    </li>
+@endif
 
         </ul>
       </nav>

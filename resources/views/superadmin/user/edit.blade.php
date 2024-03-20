@@ -32,7 +32,7 @@
                               <option value="" selected disabled>-- Pilih Akses --</option>
         @foreach ($cabang as $item)
             <option value="{{ $item->id }}" {{ old('cabang_id', $data->cabang_id) == $item->id ? 'selected' : '' }}>
-                {{ $item->kode_cabang }}- {{$item->nama_cabang}}
+                {{ $item->kode_cabang }} - {{$item->nama_cabang}}
             </option>
         @endforeach
     </select>
@@ -83,9 +83,14 @@
                                   <p class="text-danger">{{$errors->first('name')}}</p>
                               @endif -->
                           </div>
+                          
+                          <div class="form-group mb-4">
+                          <div class="form-check form-switch">
+  <input class="form-check-input" type="checkbox" role="switch" name="flexCheckIndeterminate" id="flexCheckIndeterminate"{{ $data->is_approval == 1 ? 'checked' : '' }}>
+  <label style=" font-weight: bold; font-size:10pt;">Sebagai Approval</label>
+</div>
+</div>
 
-                      
-                           
                            <div class="form-group mb-4">
                                <button type="submit" class="btn " style="width:80px; height: 30px; background-color: #01004C; color: white; font-size: 12px;">Save</button>
                            </div>
@@ -160,6 +165,11 @@
         let nama = document.forms["saveform"]["nama_user"].value;
         let email = document.forms["saveform"]["email"].value;
 
+        if (nopegawai === nama) {
+        alert("No Pegawai tidak boleh sama dengan Nama User");
+        return false;
+    }
+    
         if (nopegawai == "") {
             alert("No pegawai tidak boleh kosong");
             return false;

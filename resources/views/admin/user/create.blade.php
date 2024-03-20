@@ -76,11 +76,17 @@
                                   <p class="text-danger">{{$errors->first('name')}}</p>
                               @endif -->
                           </div>
-                      
+                          <div class="form-group mb-4">
+                          <div class="form-check form-switch">
+  <input class="form-check-input" type="checkbox" role="switch" name="flexCheckIndeterminate" id="flexCheckIndeterminate">
+  <label style=" font-weight: bold; font-size:10pt;">Sebagai Approval</label>
+</div>
+</div>
                            
                            <div class="form-group mb-4">
                                <button type="submit" class="btn " style="width:80px; height: 30px; background-color: #01004C; color: white; font-size: 12px;">Save</button>
                            </div>
+                           
                        </form>
                    </div>
                 </div>
@@ -102,6 +108,10 @@
     let email = document.forms["saveform"]["email"].value;
     let password = document.forms["saveform"]["password"].value;
 
+    if (nopegawai === nama) {
+        alert("No Pegawai tidak boleh sama dengan Nama User");
+        return false;
+    }
        if ( role == "") {
             alert("Pilih salah satu role");
             return false;

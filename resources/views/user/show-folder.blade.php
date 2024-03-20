@@ -42,6 +42,7 @@
                                                 {{ $subfolder->nama_folder }}
                                             </a>
                                         </td>
+                                        <td></td>
                                         <td>{{$subfolder->updated_at}}</td>
                                         <td>Folder</td>
                                         <td>

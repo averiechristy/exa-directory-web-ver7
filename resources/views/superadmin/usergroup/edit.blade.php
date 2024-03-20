@@ -20,6 +20,8 @@
                                   <p class="text-danger">{{$errors->first('name')}}</p>
                               @endif -->
                           </div> 
+                          <label for="" class="form-label" style="font-size: 11pt; font-weight: bold;">Jenis Group</label>
+
     <div class="form-group mb-4">
 
     <div class="form-check form-check-inline">
@@ -262,7 +264,6 @@ $(document).ready(function() {
         counter++;
         saveMemberData();
     });
-
 
     $('.cabang-checkbox').change(function() {
         // Mendapatkan nilai checkbox yang di-check

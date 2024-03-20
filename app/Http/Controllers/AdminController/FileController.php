@@ -8,6 +8,7 @@ use App\Models\DetailMember;
 use App\Models\File;
 use App\Models\Folder;
 use App\Models\Pin;
+use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -49,10 +50,55 @@ class FileController extends Controller
 
         $request->session()->flash('success', "Perubahan Berhasil Disimpan");
 
-        return redirect(route('approval.dashboard'));
+        return redirect(route('superadmin.approvalpage'));
 
     }
 
+
+    public function updatestatusadmin(Request $request, $id){
+
+        $file = File::find($id);
+        
+        $statuspersetujuan = $file-> status_persetujuan;
+
+        $statuspersetujuanbaru = $request->status_persetujuan;
+
+        $catatan = $request->catatan;
+
+        $file->status_persetujuan = $request->status_persetujuan;
+        $file->catatan = $request->catatan;
+
+
+
+        $file->save();
+
+        $request->session()->flash('success', "Perubahan Berhasil Disimpan");
+
+        return redirect(route('admin.approvalpage'));
+
+    }
+    public function updatestatususer(Request $request, $id){
+
+        $file = File::find($id);
+        
+        $statuspersetujuan = $file-> status_persetujuan;
+
+        $statuspersetujuanbaru = $request->status_persetujuan;
+
+        $catatan = $request->catatan;
+
+        $file->status_persetujuan = $request->status_persetujuan;
+        $file->catatan = $request->catatan;
+
+
+
+        $file->save();
+
+        $request->session()->flash('success', "Perubahan Berhasil Disimpan");
+
+        return redirect(route('user.approvalpage'));
+
+    }
 
     public function fileindex()
     {
@@ -124,8 +170,15 @@ $folderMember = $foldersForMember->first();
     public function create()
     {
         $folders = Folder::all();
+
+        $user = User::where('is_approval', 1)
+        ->where('is_active', '1')
+        ->get();
+
+
         return view("superadmin.file.create",[
             "folders"=> $folders,
+            "user" => $user,
             
         ]);
     }
@@ -135,6 +188,7 @@ $folderMember = $foldersForMember->first();
     {
 
         $Cabang = Auth::user()->cabang_id; 
+        $role = Auth::user()->role_id;
 
         // $folders = Folder::join('detail_groups', 'folders.id', '=', 'detail_groups.folder_id')
         // ->where('detail_groups.cabang_id', $Cabang)
@@ -143,10 +197,19 @@ $folderMember = $foldersForMember->first();
         // ->get(['folders.*']); 
 
 
-     $folders = Folder::where('cabang_id', $Cabang)->get();
+        $user = User::where('is_approval', 1)
+        ->where('cabang_id', $Cabang)
+        ->whereNot('role_id', 1)
+        ->where('is_active', '1')
+        ->get();
+
+ $folders = Folder::where('cabang_id', $Cabang)
+ ->where('role_id', $role)
+ ->get();
 
         return view("admin.file.create",[
-            "folders"=> $folders
+            "folders"=> $folders,
+            "user" => $user
         ]);
     }
 
@@ -170,6 +233,11 @@ $folderMember = $foldersForMember->first();
         $cabanglogged = $loggedInUser->cabang_id;
         $loggedInUsername = $loggedInUser->nama_user;
 
+        $userapproval = $request->user_approval;
+        
+        $role = $loggedInUser->role_id;
+        
+
         $path= $request->path_folder;
         
         // Process the form data and store it in the database
@@ -177,8 +245,9 @@ $folderMember = $foldersForMember->first();
         $namaFile = $validatedData['nama_file'];
         $status = $validatedData['inlineRadioOptions'];
         $canDownload = $request->has('flexCheckIndeterminate');
+       
         $konten = $request->input('konten');
-        $cabang_id_user = $cabanglogged;
+        $cabang_id_user = $role;
         $formdinamis = $request->file('formFileSm');
 
    
@@ -193,6 +262,7 @@ $folderMember = $foldersForMember->first();
             'konten' => $konten,
             'cabang_id_user' => $cabang_id_user,
             'created_by' => $loggedInUsername,
+            'user_approval' => $userapproval,
         ]);
     
         $file->save();
@@ -243,7 +313,9 @@ $folderMember = $foldersForMember->first();
         $cabanglogged = $loggedInUser->cabang_id;
         $loggedInUsername = $loggedInUser->nama_user;
 
-    
+       
+        $role = $loggedInUser->role_id;
+        
         // Process the form data and store it in the database
          $folderId = $validatedData['path_folder'];
         $namaFile = $validatedData['nama_file'];
@@ -253,7 +325,7 @@ $folderMember = $foldersForMember->first();
         $cabang_id_user = $cabanglogged;
         $formdinamis = $request->file('formFileSm');
 
-   
+    $userapproval = $request->user_approval;
     
         // Create a new File instance and save it to the database
         $file = new File([
@@ -263,8 +335,9 @@ $folderMember = $foldersForMember->first();
             'is_download' => $canDownload,
             'status_persetujuan' => 'Menunggu Persetujuan',
             'konten' => $konten,
-            'cabang_id_user' => $cabang_id_user,
+            'cabang_id_user' => $role,
             'created_by' => $loggedInUsername,
+            'user_approval' => $userapproval,
         ]);
     
         $file->save();
@@ -305,12 +378,16 @@ $folderMember = $foldersForMember->first();
         $folders = Folder::all();
 
         $nama = DetailFile::with('File')->where('file_id', $id)->get();
+        $user = User::where('is_approval', 1)
+        ->where('is_active', '1')
+        ->get();
         
       
         return view('superadmin.file.edit',[
             'folders'=> $folders,
             'data'=> $data,
             'nama' => $nama,
+            'user' => $user,
         ]);
     }
 
@@ -324,11 +401,19 @@ $folderMember = $foldersForMember->first();
         $folders = Folder::where('cabang_id', $Cabang)->get();
 
         $nama = DetailFile::with('File')->where('file_id', $id)->get();
-    
+
+
+       $user = User::where('is_approval', 1)
+        ->where('cabang_id', $Cabang)
+        ->whereNot('role_id', 1)
+        ->where('is_active', '1')
+        ->get();
+
         return view('admin.file.edit',[
             'folders'=> $folders,
             'data'=> $data,
             'nama' => $nama,
+            'user' => $user
         ]);
     }
     /**
@@ -367,32 +452,56 @@ $folderMember = $foldersForMember->first();
         $file->updated_by = $loggedInUsername;
 
         $formdinamis = $request->file('formFileSm');
-
+        $file->user_approval = $request->user_approval;
+      
      
         $file->save();
 
         $existingfile = $request -> exisiting_file;
        
-       if($existingfile != null){
+
+    
+        if (!is_array($existingfile) || count($existingfile) === 1 && $existingfile[0] !== null)
+{
+        
+        
         $filesToDelete = DetailFile::where('file_id', $file->id)
         ->whereNotIn('id', $existingfile)
         ->get();
 
-
+        
         foreach ($filesToDelete as $fileToDelete) {
+           
             Storage::delete('public/files/' . $fileToDelete->file);
             $fileToDelete->delete();
         }
+    } elseif  (is_array($existingfile) && count($existingfile) === 1 && $existingfile[0] === null) {
+
+      
+        // Ambil semua detail file yang terkait dengan file yang akan diperbarui
+        $filesToDelete = DetailFile::where('file_id', $file->id)->get();
+    
+        foreach ($filesToDelete as $fileToDelete) {
+            // Pastikan file ada di sistem penyimpanan sebelum menghapusnya
+            // if (Storage::exists('public/files/' . $fileToDelete->file)) {
+            //     // Hapus file dari sistem penyimpanan
+            //     Storage::delete('public/files/' . $fileToDelete->file);
+            // }
+
+             Storage::delete('public/files/' . $fileToDelete->file);
+            $fileToDelete->delete();
+    
+            // Hapus entri file dari database
+            $fileToDelete->delete();
+        }
     }
+
         
         $uploadData=[];
       
-        // Proses upload file jika ada file yang diunggah
         
-    
-        // Simpan perubahan
      
-    
+
         if ($request->hasFile('formFileSm')) {
             // Handle file uploads
             foreach ($request->file('formFileSm') as $uploadedFile) {
@@ -412,7 +521,7 @@ $folderMember = $foldersForMember->first();
                     'size' => $uploadedFileSize,
                 ]);
 
-                
+               
                 $uploadData->save();
             }
         }
@@ -450,21 +559,45 @@ $folderMember = $foldersForMember->first();
 
         $formdinamis = $request->file('formFileSm');
 
-     
+        $file->user_approval = $request->user_approval;
         $file->save();
 
         $existingfile = $request -> exisiting_file;
        
-
-        $filesToDelete = DetailFile::where('file_id', $file->id)
-        ->whereNotIn('id', $existingfile)
-        ->get();
-
-        foreach ($filesToDelete as $fileToDelete) {
-            Storage::delete('public/files/' . $fileToDelete->file);
-            $fileToDelete->delete();
-        }
+        if (!is_array($existingfile) || count($existingfile) === 1 && $existingfile[0] !== null)
+        {
+                
+                
+                $filesToDelete = DetailFile::where('file_id', $file->id)
+                ->whereNotIn('id', $existingfile)
+                ->get();
         
+                
+                foreach ($filesToDelete as $fileToDelete) {
+                   
+                    Storage::delete('public/files/' . $fileToDelete->file);
+                    $fileToDelete->delete();
+                }
+            } elseif  (is_array($existingfile) && count($existingfile) === 1 && $existingfile[0] === null) {
+        
+              
+                // Ambil semua detail file yang terkait dengan file yang akan diperbarui
+                $filesToDelete = DetailFile::where('file_id', $file->id)->get();
+            
+                foreach ($filesToDelete as $fileToDelete) {
+                    // Pastikan file ada di sistem penyimpanan sebelum menghapusnya
+                    // if (Storage::exists('public/files/' . $fileToDelete->file)) {
+                    //     // Hapus file dari sistem penyimpanan
+                    //     Storage::delete('public/files/' . $fileToDelete->file);
+                    // }
+        
+                     Storage::delete('public/files/' . $fileToDelete->file);
+                    $fileToDelete->delete();
+            
+                    // Hapus entri file dari database
+                    $fileToDelete->delete();
+                }
+            }
         $uploadData=[];
       
         // Proses upload file jika ada file yang diunggah
@@ -533,7 +666,31 @@ $folderMember = $foldersForMember->first();
 
         $detailFiles = DetailFile::with('File')->where('file_id', $id)->get();
       
-        return view('approval.detail',[
+        return view('superadmin.approvaldetail',[
+            'data'=> $data,
+            'detailFiles' => $detailFiles,
+        ]);
+
+    }
+
+    public function tampilkontenapprovaladmin($id){
+        $data = File::find($id);
+
+        $detailFiles = DetailFile::with('File')->where('file_id', $id)->get();
+      
+        return view('admin.approvaldetail',[
+            'data'=> $data,
+            'detailFiles' => $detailFiles,
+        ]);
+
+    }
+
+    public function tampilkontenapprovaluser($id){
+        $data = File::find($id);
+
+        $detailFiles = DetailFile::with('File')->where('file_id', $id)->get();
+      
+        return view('user.approvalpagedetail',[
             'data'=> $data,
             'detailFiles' => $detailFiles,
         ]);

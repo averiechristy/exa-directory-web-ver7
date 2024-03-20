@@ -71,7 +71,12 @@
                               @endif -->
                           </div>
 
-                      
+                          <div class="form-group mb-4">
+                          <div class="form-check form-switch">
+  <input class="form-check-input" type="checkbox" role="switch" name="flexCheckIndeterminate" id="flexCheckIndeterminate" {{ $data->is_download == 1 ? 'checked' : '' }}>
+  <label style=" font-weight: bold; font-size:10pt;">Sebagai Approval</label>
+</div>
+</div>
                            
                            <div class="form-group mb-4">
                                <button type="submit" class="btn " style="width:80px; height: 30px; background-color: #01004C; color: white; font-size: 12px;">Save</button>
@@ -93,7 +98,10 @@
         let nopegawai = document.forms["saveform"]["no_pegawai"].value;
         let nama = document.forms["saveform"]["nama_user"].value;
         let email = document.forms["saveform"]["email"].value;
-
+        if (nopegawai === nama) {
+        alert("No Pegawai tidak boleh sama dengan Nama User");
+        return false;
+    }
         if (nopegawai == "") {
             alert("No pegawai tidak boleh kosong");
             return false;

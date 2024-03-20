@@ -26,8 +26,16 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             // Authentication passed...
 
+          
             // Check user role and redirect accordingly
             $user = Auth::user();
+
+            if ($user->is_active == 0) {
+                // If the user is not active, log them out and redirect back with a message
+
+                return redirect()->route('login')->with('error', 'Akun Anda tidak aktif. Silakan hubungi administrator.');
+            }
+    
 
             if ($user->isSuperAdmin()) {
                 return redirect()->route('superadmin.dashboard'); // Adjust the route accordingly
@@ -41,7 +49,7 @@ class AuthController extends Controller
 
         }
         // Authentication failed, redirect back with errors
-        return redirect()->route('login')->with('error', 'Invalid credentials');
+        return redirect()->route('login')->with('error', 'Email atau Password salah, silakan coba kembali!');
     }
 
     public function logout()

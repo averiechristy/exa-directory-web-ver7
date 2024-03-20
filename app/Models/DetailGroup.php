@@ -13,6 +13,7 @@ class DetailGroup extends Model
         'folder_id',
         'user_group_id',
         'cabang_id',
+        'role_id',
         
     ];
 

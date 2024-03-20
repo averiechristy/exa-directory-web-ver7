@@ -55,19 +55,23 @@
         </div>
   </div>
 
-  <script>
+<script>
 function validateForm() {
-  let kodecabang = document.forms["saveform"]["kode_cabang"].value;
-  let namacabang = document.forms["saveform"]["nama_cabang"].value;
+  let kodecabang = document.forms["saveform"]["kode_cabang"].value.trim();
+  let namacabang = document.forms["saveform"]["nama_cabang"].value.trim();
 
-   if (kodecabang == "") {
+  if (kodecabang === "") {
     alert("Kode cabang tidak boleh kosong");
     return false;
-  } else   if (namacabang == "") {
+  } else if (namacabang === "") {
     alert("Nama cabang tidak boleh kosong");
+    return false;
+  } else if (kodecabang.length === 0 || namacabang.length === 0) {
+    alert("Kode cabang atau Nama cabang tidak boleh hanya spasi");
     return false;
   }
 }
 </script>
+
 
   @endsection

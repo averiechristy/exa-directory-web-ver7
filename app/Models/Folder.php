@@ -15,6 +15,7 @@ class Folder extends Model
         'updated_by',
         'user_group_id',
         'created_by',
+        'role_id',
         'cabang_id',
     ];
 

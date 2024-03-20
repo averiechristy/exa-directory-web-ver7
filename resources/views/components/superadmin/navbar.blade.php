@@ -86,13 +86,9 @@
 
         <li class="nav-item nav-category">Directory</li>
 <li class="nav-item {{ Request::is('superadmin/file/index')|| Request::is('superadmin/file/create') || Request::is('superadmin/folder/create')|| Request::is('superadmin/folder/index')? 'active' : '' }} ">
-  <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
-      <i class="menu-icon mdi mdi-folder"></i>
-      <span class="menu-title">Directory</span>
-      <i class="menu-arrow"></i> 
-  </a>
-  <div class="collapse {{ Request::is('superadmin.folder.index', 'superadmin.file.index') || Request::is('superadmin/file/create')|| Request::is('superadmin/folder/create') || Request::is('superadmin.folder.index', 'superadmin.file.index/*') ? 'show' : '' }}" id="ui-basic">
-      <ul class="nav flex-column sub-menu">
+
+  <div class=" {{ Request::is('superadmin.folder.index', 'superadmin.file.index') || Request::is('superadmin/file/create')|| Request::is('superadmin/folder/create') || Request::is('superadmin.folder.index', 'superadmin.file.index/*') ? 'show' : '' }}" id="ui-basic">
+      <ul class="nav flex-column sub-menu" style="background-color:none;">
       <li class="nav-item">
   <a class="nav-link {{ Request::is('superadmin.folder.index') || Request::is('superadmin/folder/create') ? 'active' : '' }}" href="{{route('superadmin.folder.index')}}">
       Folder
@@ -106,6 +102,15 @@
       </ul>
   </div>
 </li>
+
+@if (auth()->user()->is_approval == 1)
+    <li class="nav-item {{ Request::is('superadmin/approvalpage') || Request::is('superadmin/approvalpage') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('superadmin.approvalpage') }}">
+            <i class="menu-icon mdi mdi-file-account"></i>
+            <span class="menu-title">Approval</span>
+        </a>
+    </li>
+@endif
 
       </ul>
   </nav>

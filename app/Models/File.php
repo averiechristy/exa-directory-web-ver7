@@ -23,6 +23,7 @@ class File extends Model
         'konten',
         'cabang_id_user',
         'catatan',
+        'user_approval',
     ];
 
     public function folder()
@@ -44,4 +45,10 @@ public function detailfiles()
 {
     return $this->hasMany(DetailFile::class);
 }
+
+public function user()
+{
+    return $this->belongsTo(User::class, 'user_approval');
+}
+
 }

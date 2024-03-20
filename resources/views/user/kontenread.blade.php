@@ -5,8 +5,9 @@
 <div class="content-wrapper">
     <div id="content-wrapper" class="d-flex flex-column">
         <div id="content" class="container-fluid">
-            <h2 id="judul" class="judul" style="text-align: center;">{!! $data->nama_file !!}</h2>
-            <div id="konten" class="konten">{!! $data->konten !!}</div>
+        <h3 id="judul" class="judul" style="text-align: center; color:black">{!! $data->nama_file !!}</h3>
+            <div id="konten" class="konten" style=" color:black">{!! $data->konten !!}</div>
+
             <div class="file-wrapper">
             @if($detailFiles->isNotEmpty())
 

@@ -1,15 +1,18 @@
-@extends('layouts.admin.app')
+@extends('layouts.superadmin.app')
 
 @section('content')
 <div class="content-wrapper">
     <div class="d-sm-flex align-items-center justify-content-between border-bottom">
         <!-- Judul konten -->
     </div>
+
     <div id="content-wrapper" class="d-flex flex-column">
         <!-- Main Content -->
         <div id="content" class="content">
+
+        
             <h4 class="h4 mb-2 text-gray-800 mt-3">
-                <a href="{{ route('admin.file.index') }}">File</a> / Isi Konten
+                <a href="{{ route('superadmin.approvalpage') }}">File</a> / Isi Konten
             </h4>
             <div class="konten-wrapper">
                 <!-- Konten -->
@@ -17,15 +20,16 @@
 
                 <!-- Tampilan file -->
                 <div class="file-wrapper">
-                @if($detailFiles->isNotEmpty())
+                    @if($detailFiles->isNotEmpty())
                         @foreach($detailFiles as $detailFile)
                             <div class="file">
+                                <p>{{ $detailFile->file }}</p>
                                 @php
                                     $extension = pathinfo($detailFile->file, PATHINFO_EXTENSION);
                                 @endphp
 
                                 @if(in_array($extension, ['jpg', 'jpeg', 'png', 'gif'])) <!-- Gambar -->
-                                    <img src="{{ asset('public/files/') }}/{{ $detailFile->file }}" alt="Gambar" class="file-preview" style="max-width: 50%; max-height: 50%;">
+                                    <img src="{{ asset('public/files/') }}/{{ $detailFile->file }}" alt="Gambar" class="file-preview">
                                 @elseif(in_array($extension, ['mp4', 'mov', 'avi'])) <!-- Video -->
                                     <video width="90%" height="500" controls class="file-preview">
                                         <source src="{{ asset('public/files/') }}/{{ $detailFile->file }}" type="video/mp4">
@@ -43,7 +47,6 @@
                                     <p>Tipe file tidak didukung.</p>
                                 @endif
                             </div>
-                            <p>{{ $detailFile->file }}</p>
                         @endforeach
                     @endif
                 </div>
@@ -51,5 +54,9 @@
         </div>
     </div>
 </div>
-
 @endsection
+
+<style>
+
+  
+</style>

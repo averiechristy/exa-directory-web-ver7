@@ -22,7 +22,8 @@
                               @endif -->
                           </div>          
                           
-                          
+                          <label for="" class="form-label" style="font-size: 11pt; font-weight: bold;">Jenis Group</label>
+               
 <div class="form-group mb-4">
 <div class="form-check form-check-inline">
     <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="General">

@@ -23,7 +23,7 @@
 
                         <div class="form-group mb-4">
                             <label for="" class="form-label">Path Folder</label>
-                            <select id="path_folder" name="path_folder" class="form-select form-select-sm mb-3" aria-label=".form-select-lg example" style="border-color: #01004C; border-radius: 5px;" >
+                            <select id="path_folder" name="path_folder" class="form-select form-select-sm mb-3" aria-label=".form-select-lg example" style="border-color: #01004C; border-radius: 5px;" required>
                                 <option disabled>Pilih Path</option>
                                 <!-- Loop melalui data folder dari database -->
                                 @foreach ($folders as $item)
@@ -36,6 +36,8 @@
 
                       
                         <div class="form-group mb-4">
+                        <label for="" class="form-label">Status File</label>
+                        <br>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="berlaku" {{ $data->status == 'berlaku' ? 'checked' : '' }}>
                                 <label class="form-check-label" style="margin-left: 5px;" for="inlineRadio1">Berlaku</label>
@@ -46,6 +48,8 @@
                             </div>
                         </div>
                         <div class="form-group mb-4">
+                        <label for="" class="form-label">Download File</label>
+                        <br>
     <div class="form-check">
         <input class="form-check-input" name="flexCheckIndeterminate" type="checkbox" value="1" id="flexCheckIndeterminate" {{ $data->is_download == 1 ? 'checked' : '' }}>
         <label class="form-check-label" style="margin-left: 5px;" for="flexCheckIndeterminate">
@@ -55,7 +59,18 @@
 </div>
 
 <div class="form-group mb-4">
-    <label>Konnten</label>
+  <label for="" class="form-label">Approval Line</label>
+      <select id="user_approval"  name="user_approval" class="form-select form-select-sm mb-3" aria-label=".form-select-lg example" style="border-color: #01004C; border-radius: 5px;" required>
+            <option selected disabled>Pilih Approval</option>
+            <!-- Loop melalui data folder dari database -->
+            @foreach($user as $user)
+                <option value="{{ $user->id }}" {{ old('user_approval', $data->user_approval) == $user->id ? 'selected' : '' }}>{{ $user->nama_user }}</option>
+            @endforeach
+        </select>
+</div>
+
+<div class="form-group mb-4">
+    <label>Konten</label>
     <div class="form-group">
      <!-- <textarea name="isi_artikel" class="my-editor form-control {{$errors->has('konten') ? 'is-invalid' : ''}}" style="border-color: #01004C;" id="my-editor" cols="30" rows="10" required>{{old('konten')}}</textarea>                                             -->
         <textarea name="konten" class="my-editor form-control {{$errors->has('konten') ? 'is-invalid' : ''}} " id="my-editor"cols="30" rows="10" style="border-color: #01004C;" value=""  oninvalid="this.setCustomValidity('Isi artikel tidak boleh kosong')" oninput="setCustomValidity('')">{{ old('konten') }}
@@ -147,34 +162,42 @@
 </div>
 
 <script>
-    function validateForm() {
-    var pathFolder = document.getElementById('path_folder').value;
-    var namaFile = document.getElementsByName('nama_file')[0].value;
+function validateForm() {
+    // Mendapatkan nilai judul
+    let judul = document.forms["saveform"]["nama_file"].value;
+var pathFolder = document.forms["saveform"]["path_folder"].value;
+
 
     var inlineRadioOptions = document.forms["saveform"]["inlineRadioOptions"].value;
-    // Validasi jika nama file belum diisi
-    if (namaFile === "") {
-        alert("Judul tidak boleh kosong.");
+
+    var approval = document.forms["saveform"]['user_approval'].value;
+    
+    if (judul == "") {
+        alert("Judul tidak boleh kosong");
         return false;
     }
-    // Validasi jika path folder belum dipilih
-    if (pathFolder === null || pathFolder === "") {
-        alert("Mohon pilih path folder.");
-        return false;
-    }
+
+    if (pathFolder === "" || pathFolder === "Pilih Path") {
+    alert("Path Folder harus dipilih");
+    return false;
+}
+
 
     if (inlineRadioOptions == null || inlineRadioOptions === '') {
         alert("Pilihan status file harus dipilih");
         return false;
     }
-
-    // Validasi jika konten belum diisi
-   
-
-    // Jika semua validasi berhasil, return true
-    return true;
+    if (approval === "" || approval === "Pilih Approval") {
+    alert("Approval Line harus dipilih");
+    return false;
 }
 
+    // Mendapatkan nilai status berlaku
+  
+
+    // Jika validasi berhasil, kembalikan true
+    return true;
+}
 </script>
 <script>
 
@@ -208,7 +231,7 @@ $(document).on('click', '#removeFileInput', function () {
         $(this).closest('.upload-item').remove();
     }
     else {
-        alert("Anda tidak dapat menghapus form insentif pertama.");
+        alert("Anda tidak dapat menghapus form pertama.");
     }
     
     saveProductData();
@@ -229,33 +252,38 @@ function previewFile(input, previewContainer) {
         return;
     }
     
-    const fileType = file.type.split('/')[0];
-    
-    if (fileType === 'image') {
-        const img = document.createElement('img');
-        img.src = URL.createObjectURL(file);
-        img.style.maxWidth = '100%';
-        img.style.height = 'auto';
-        preview.appendChild(img);
-    } else if (fileType === 'audio') {
-        const audio = document.createElement('audio');
-        audio.controls = true;
-        audio.src = URL.createObjectURL(file);
-        preview.appendChild(audio);
-    } else if (fileType === 'video') {
-        const video = document.createElement('video');
-        video.controls = true;
-        video.style.maxWidth = '100%';
-        video.style.height = 'auto';
-        const source = document.createElement('source');
-        source.src = URL.createObjectURL(file);
-        source.type = file.type;
-        video.appendChild(source);
-        preview.appendChild(video);
-    } else {
-        const fileName = document.createTextNode(file.name);
-        preview.appendChild(fileName);
-    }
+    const allowedTypes = ['jpg', 'jpeg', 'png', 'gif', 'mp4', 'mov', 'avi', 'pdf', 'mp3', 'wav'];
+const fileType = file.name.split('.').pop().toLowerCase(); // Mendapatkan ekstensi file
+if (!allowedTypes.includes(fileType)) {
+    alert("Tipe file tidak diizinkan. Silakan pilih file dengan tipe: jpg, jpeg, png, gif, mp4, mov, avi, pdf, mp3, atau wav.");
+    input.value = ''; // Menghapus file yang sudah dipilih
+    return;
+}    
+if (fileType === 'jpg' || fileType === 'jpeg' || fileType === 'png' || fileType === 'gif') {
+    const img = document.createElement('img');
+    img.src = URL.createObjectURL(file);
+    img.style.maxWidth = '100%';
+    img.style.height = 'auto';
+    preview.appendChild(img);
+} else if (fileType === 'mp3' || fileType === 'wav') {
+    const audio = document.createElement('audio');
+    audio.controls = true;
+    audio.src = URL.createObjectURL(file);
+    preview.appendChild(audio);
+} else if (fileType === 'mp4' || fileType === 'mov' || fileType === 'avi') {
+    const video = document.createElement('video');
+    video.controls = true;
+    video.style.maxWidth = '100%';
+    video.style.height = 'auto';
+    const source = document.createElement('source');
+    source.src = URL.createObjectURL(file);
+    source.type = file.type;
+    video.appendChild(source);
+    preview.appendChild(video);
+} else {
+    const fileName = document.createTextNode(file.name);
+    preview.appendChild(fileName);
+}
     
     // Menghapus pratinjau yang ada sebelumnya pada kontainer pratinjau
     while (previewContainer.firstChild) {

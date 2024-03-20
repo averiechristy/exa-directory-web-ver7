@@ -27,6 +27,8 @@ class User extends Authenticatable
         'updated_by',
         'created_by',
         'is_approved',
+        'is_approval',
+        'is_active',
     ];
 
     /**
@@ -54,6 +56,12 @@ class User extends Authenticatable
     {
 
         return $this->belongsTo(UserRole::class);
+    }
+
+    public function File()
+    {
+
+        return $this->belongsTo(File::class);
     }
 
     public function Cabang()

@@ -19,7 +19,9 @@
                               <!-- @if ($errors->has('name'))
                                   <p class="text-danger">{{$errors->first('name')}}</p>
                               @endif -->
-                          </div>        
+                          </div>   
+                                                  
+<label for="" class="form-label" style="font-size: 11pt; font-weight: bold;">Jenis Group</label>
 
 <div class="form-group mb-4">
 <div class="form-check form-check-inline">
@@ -155,7 +157,7 @@
         e.preventDefault(); // Mencegah pengiriman formulir jika nama grup tidak diisi
     }
     else  if (!selectedRadio) {
-        alert('Anda harus memilih salah satu opsi.');
+        alert('Anda harus memilih salah satu jenis group.');
         e.preventDefault(); // Mencegah pengiriman formulir jika tidak ada opsi yang dipilih
     }
 });

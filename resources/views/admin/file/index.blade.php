@@ -51,6 +51,7 @@ entries
                             <th>Path Folder</th>
                            <th>Isi Konten</th>
                             <th>Status Persetujuan</th>
+                            <th>Approval Line</th>
                             <th>Catatan</th>
                             <th>Status</th>
                             <!-- <th>Lihat File</th> -->
@@ -70,13 +71,13 @@ entries
                         @foreach($files as $file)
                           <tr>
                         <td>
-                        <a href="#" class="folderlink">
+                        
                               <div class="d-flex align-items-center">
                                   <div><i class="mdi mdi-file me-2 font-24 text-warning "></i>
                                   </div>
                                   <div class="font-weight-bold ">{{$file -> nama_file}}</div>
                               </div>
-                        </a>
+                        
                         </td>
                           <td>{{ $file->folder->getFolderPath() }}</td>
                           <td> <a href="{{ route('admintampilkonten', $file->id) }}">Lihat isi konten</a>
@@ -91,6 +92,7 @@ entries
                 <span class="badge badge-warning">Menunggu Persetujuan</span>
             @endif
                             </td>
+                              <td>{{ $file->user->nama_user }}</td>
                             <td>{{$file -> catatan}}</td>
                             <td>
             @if ($file->status === 'berlaku')
@@ -150,7 +152,7 @@ entries
                         @foreach($files as $file)
                           <tr>
                         <td>
-                        <a href="#" class="folderlink">
+                    
                               <div class="d-flex align-items-center">
                                   <div><i class="mdi mdi-file me-2 font-24 text-warning "></i>
                                   </div>
@@ -171,6 +173,7 @@ entries
                 <span class="badge badge-warning">Menunggu Persetujuan</span>
             @endif
                             </td>
+                            <td>{{ $file->user->nama_user }}</td>
                             <td>{{$file -> catatan}}</td>
                             <td>
             @if ($file->status === 'berlaku')

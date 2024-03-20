@@ -36,6 +36,8 @@ class FolderController extends Controller
     // Mendapatkan ID cabang dari user login
     
     $Cabang = Auth::user()->cabang_id;
+    $role = Auth::user()->role_id;
+
     $usergroup = DetailMember::where('cabang_id', $Cabang)->get();
     $cabangId = auth()->user()->cabang_id;
 
@@ -55,7 +57,9 @@ class FolderController extends Controller
     // ->get();
 
     
-    $folders = Folder::where('cabang_id', $Cabang)->whereNull('id_folder_induk')->get();
+    $folders = Folder::where('cabang_id', $Cabang)->whereNull('id_folder_induk')
+    ->where('role_id', $role)
+    ->get();
 
     return view("admin.folder.index", [
         "folders" => $folders,
@@ -78,7 +82,8 @@ class FolderController extends Controller
     public function foldercreate()
     {
         $cabang = Auth::user()->cabang_id;
-    
+        $role = Auth::user()->role_id;
+
         // Menyaring data berdasarkan role pengguna
         // $usergroup = UserGroup::join('detail_members', 'user_groups.id', '=', 'detail_members.user_group_id')
         //     ->where('detail_members.cabang_id', $cabang)
@@ -86,7 +91,9 @@ class FolderController extends Controller
         //     ->get(['user_groups.*']);
 
 
-        $usergroup = UserGroup::where('cabang_id', $cabang)->get();
+        $usergroup = UserGroup::where('cabang_id', $cabang)
+        ->where('role_id', $role)
+        ->get();
 
         return view("admin.folder.create",[
             "usergroup"=> $usergroup
@@ -118,11 +125,14 @@ public function store(Request $request)
     $folder = new Folder;
     $Cabang = Auth::user()->cabang_id; 
     $loggedInUser = auth()->user();
+    $roleId = $loggedInUser->role_id;
     $loggedInUsername = $loggedInUser->nama_user; 
     
     $folder->nama_folder = $request->nama_folder;
     $folder -> cabang_id = $Cabang;
     $folder -> created_by = $loggedInUsername;
+    $folder -> role_id = $roleId;
+
 
     $folder->save();
 
@@ -163,7 +173,10 @@ public function store(Request $request)
         $folder -> cabang_id = $Cabang;
         $folder -> created_by = $loggedInUsername;
         // Ambil group dari request
-      
+        $roleId = $loggedInUser->role_id;
+
+        $folder -> role_id = $roleId;
+
         $folder->save();
         $detailgroup = [];
 
@@ -334,12 +347,10 @@ public function deleteFolderAndChildren($folder)
     }
     // Hapus semua pin terkait dengan folder
     $pins = Pin::where('folder_id', $folder->id)->get();
+    
     foreach ($pins as $pin) {
         // Hapus semua file terkait dengan pin
-        $files = File::where('pin_id', $pin->id)->get();
-        foreach ($files as $file) {
-            $file->delete();
-        }
+        
         // Hapus pin
         $pin->delete();
     }
@@ -397,33 +408,38 @@ public function createSubfolder(Request $request, $id)
 
     // Temukan folder utama
     $parentFolder = Folder::find($id);
- 
-    $userGroupId = $parentFolder->user_group_id;
+    
+    $idparent = $parentFolder -> id;
+
+    $detailgrup = DetailGroup::where('folder_id', $idparent)->get();
+
+
         
     $cabangId  = $parentFolder->cabang_id;
+    $roleId  = $parentFolder->role_id;
+
     
     // Buat subfolder
     $subfolder = new Folder([
         'id_folder_induk' => $parentFolder->id,
         'nama_folder' => $request->input('nama_subfolder'),
-        'user_group_id' => $userGroupId,
+        
         // Sesuaikan dengan cara Anda menyimpan informasi pembuat folder
         'cabang_id' => $cabangId,
+        'role_id' => $roleId,
     ]);
 
     $subfolder->save();
 
-    // Ambil semua cabang_id dari parent folder
-    $cabangIds = DetailGroup::where('folder_id', $parentFolder->id)->pluck('cabang_id')->toArray();
-
-    // Simpan ke dalam detail_groups
+    // Ambil semua cabang_id dan user_group_id dari parent folder
     $detailGroups = [];
 
-    foreach ($cabangIds as $cabangId) {
+    foreach ($detailgrup as $detail) {
         $detailGroups[] = [
-            'user_group_id' => $userGroupId,
             'folder_id' => $subfolder->id,
-            'cabang_id' => $cabangId,
+            'cabang_id' => $detail->cabang_id,
+            
+            'user_group_id' => $detail->user_group_id, // Menyimpan user_group_id
         ];
     }
 
@@ -444,24 +460,41 @@ public function createSubfolderadmin(Request $request, $id)
 
     // Temukan folder utama
     $parentFolder = Folder::find($id);
- 
-    $userGroupId = $parentFolder->user_group_id;
+    
+    $idparent = $parentFolder -> id;
 
+    $detailgrup = DetailGroup::where('folder_id', $idparent)->get();
+
+    $roleId  = $parentFolder->role_id;
+   
+        
     $cabangId  = $parentFolder->cabang_id;
     
-
     // Buat subfolder
     $subfolder = new Folder([
         'id_folder_induk' => $parentFolder->id,
         'nama_folder' => $request->input('nama_subfolder'),
-        'user_group_id' => $userGroupId,
+        'role_id' => $roleId,
+
+        // Sesuaikan dengan cara Anda menyimpan informasi pembuat folder
         'cabang_id' => $cabangId,
-       // Sesuaikan dengan cara Anda menyimpan informasi pembuat folder
     ]);
+    
 
     $subfolder->save();
 
-    
+    // Ambil semua cabang_id dan user_group_id dari parent folder
+    $detailGroups = [];
+
+    foreach ($detailgrup as $detail) {
+        $detailGroups[] = [
+            'folder_id' => $subfolder->id,
+            'cabang_id' => $detail->cabang_id,
+            'user_group_id' => $detail->user_group_id, // Menyimpan user_group_id
+        ];
+    }
+
+    DetailGroup::insert($detailGroups);
 
     $request->session()->flash('success', 'Subfolder berhasil dibuat.');
     return redirect(route('admin.folder.index'));

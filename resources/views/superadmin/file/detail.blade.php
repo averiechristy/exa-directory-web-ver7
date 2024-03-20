@@ -10,7 +10,7 @@
         <!-- Main Content -->
         <div id="content" class="content">
             <h4 class="h4 mb-2 text-gray-800 mt-3">
-                <a href="{{ route('superadmin.file.index') }}">Konten</a> / Isi Konten
+                <a href="{{ route('superadmin.file.index') }}">File</a> / Isi Konten
             </h4>
             <div class="konten-wrapper">
                 <!-- Konten -->

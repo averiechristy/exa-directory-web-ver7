@@ -24,8 +24,8 @@
                 <div class="font-weight-bold folder-name">{{$folder->nama_folder}} </div>
             </div>        
         </div>
-        <a href="{{ route('tampilgrupadmin', $folder->id) }}"><p>Lihat Group Terdaftar</p></a>
-    <div class="folder-actions" style="float:right; margin-top:-30px;">
+        <a href="{{ route('tampilgrupadmin', $folder->id) }}"><p style="float:right;">Lihat Group Terdaftar</p></a>
+    <div class="folder-actions" >
                 @if (!isset($folder) || !$folder->id_folder_induk)
                     <div class="btn-group">
                         <button type="button" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

@@ -26,18 +26,3 @@
     </div>
 </div>
 
-
-<script>
-    function validateForm() {
-        var newName = document.getElementById("newFolderName{{$folder->id}}").value;
-
-        // Check if newName is empty
-        if (newName.trim() == '') {
-            alert("Nama folder tidak boleh kosong");
-            return false;
-        }
-
-        // If all checks pass, return true to submit the form
-        return true;
-    }
-</script>

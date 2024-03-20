@@ -44,6 +44,8 @@ entries
                             <th>Email</th>
                             <th>Cabang</th>
                             <th>Role</th>
+                            <th>Approval / Non Approval</th>
+                            <th>Aktf / Tidak Aktif</th>
                             <th>Created at</th>
                             <th>Created by</th>
                             <th>Updated at</th>
@@ -59,11 +61,27 @@ entries
                             <td>{{$users->email}}</td>
                             <td>{{$users->Cabang->nama_cabang}}</td>
                             <td>{{$users->Role->nama_role}}</td>
+                            <td>
+    @if($users->is_approval == 1)
+        Approval
+    @elseif ($users->is_approval == 0)
+        Non Approval
+    @endif
+</td>
+<td>
+            @if ($users->is_active == 1)
+                <span class="badge badge-success">Aktif</span>
+            @elseif ($users->is_active == 0)
+                <span class="badge badge-danger">Tidak Aktif</span>
+          
+            @endif
+    </td>
                             <td>{{$users->created_at}}</td>
                             <td>{{ $users->created_by}}</td>
                             <td>{{$users->updated_at}}</td>
-                            <td></td>
+                            <td>{{$users->updated_by}}</td>
                             <td>
+                            @if ($users->is_active == 1)
                             <form action="{{ route('superadmin.reset-password', ['user' => $users->id]) }}" method="POST">
                 @csrf
                 <button type="submit" class="btn-reset show_confirm2" data-toggle="tooltip" title='Reset Password'><i class="mdi mdi-refresh"  style="color:white" ></i></button>
@@ -73,7 +91,10 @@ entries
                 @csrf
                             <input name="_method" type="hidden" value="DELETE">
                             <button type="submit" class="btn-delete mt-1 show_confirm" data-toggle="tooltip" title='Hapus'><i class="mdi mdi-delete" style="color:white;" ></i></button>
-                        </form>                             
+                        </form>      
+                        @else
+                        Action Disabled
+                        @endif
                             </td>
                           </tr>
                 @endforeach        
@@ -262,4 +283,27 @@ updatePagination();
   
              
 </script>
+
+<style>
+    .badge-success{
+      background-color : green;
+    }
+
+    .badge-warning {
+        background-color : orange;
+    }
+
+    .badge-danger{
+      background-color : red;
+    }
+
+    .modal-dialog-tes {
+      margin:20px;
+
+    }
+    .close {
+      background-color :white;
+      border:none;
+    }
+  </style>
   @endsection

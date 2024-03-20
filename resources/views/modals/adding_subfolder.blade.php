@@ -24,13 +24,4 @@
       </div>
     </div>
   </div>
-</div><script>
-  function validateForm() {
-    var subfolderName = document.getElementById('subfolderName').value;
-    if (subfolderName.trim() === '') {
-      alert('Nama subfolder tidak boleh kosong.');
-      return false;
-    }
-    return true;
-  }
-</script>
+</div>

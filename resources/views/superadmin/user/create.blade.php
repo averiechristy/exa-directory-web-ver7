@@ -84,6 +84,15 @@
                               @endif -->
                           </div>
 
+                          <div class="form-group mb-4">
+
+                          
+                          <div class="form-check form-switch">
+  <input class="form-check-input" type="checkbox" role="switch" name="flexCheckIndeterminate" id="flexCheckIndeterminate">
+  <label style=" font-weight: bold; font-size:10pt;">Sebagai Approval</label>
+</div>
+
+</div>
                            <div class="form-group mb-4">
                                <button type="submit" class="btn " style="width:80px; height: 30px; background-color: #01004C; color: white; font-size: 12px;">Save</button>
                            </div>
@@ -121,12 +130,10 @@ if (selectedCabang === "1") {
     roleDropdown.innerHTML += '<option value="" selected disabled>Pilih Role</option>';
     roleDropdown.innerHTML += '<option value="1">Super Admin</option>';
     roleDropdown.innerHTML += '<option value="2">Admin</option>';
-    roleDropdown.innerHTML += '<option value="4">Approval</option>';
     roleDropdown.innerHTML += '<option value="3">User</option>';
 } else {
     roleDropdown.innerHTML += '<option value="" selected disabled>Pilih Role</option>';
     roleDropdown.innerHTML += '<option value="2">Admin</option>';
-    roleDropdown.innerHTML += '<option value="4">Approval</option>';
     roleDropdown.innerHTML += '<option value="3">User</option>';
 }
         });
@@ -141,37 +148,42 @@ if (selectedCabang === "1") {
             selectElement.appendChild(option);
         }
     });
-    
     function validateForm() {
-        let cabang = document.forms["saveform"]["cabang_id"].value;
+    let cabang = document.forms["saveform"]["cabang_id"].value;
     let role = document.forms["saveform"]["role_id"].value;
     let nopegawai = document.forms["saveform"]["no_pegawai"].value;
     let nama = document.forms["saveform"]["nama_user"].value;
     let email = document.forms["saveform"]["email"].value;
     let password = document.forms["saveform"]["password"].value;
 
-        if ( cabang == ""){
-            alert("Pilih salah satu cabang");
-            return false;
-        }  else if ( role == "") {
-            alert("Pilih salah satu role");
-            return false;
-        }
-        else if ( nopegawai == "" ){
-            alert ("No pegawai tidak boleh kosong");
-            return false;
-        }
-        else if ( nama == "" ){
-            alert ("Nama user tidak boleh kosong");
-            return false;
-        }else if ( email == "" ){
-            alert ("Email tidak boleh kosong");
-            return false;
-        }else if ( password == "" ){
-            alert ("Password tidak boleh kosong");
-            return false;
-        }
+    // Validasi jika nama_user dan no_pegawai sama
+    if (nopegawai === nama) {
+        alert("No Pegawai tidak boleh sama dengan Nama User");
+        return false;
     }
+
+    // Sisanya adalah validasi yang sama seperti sebelumnya
+    if (cabang == "") {
+        alert("Pilih salah satu cabang");
+        return false;
+    } else if (role == "") {
+        alert("Pilih salah satu role");
+        return false;
+    } else if (nopegawai == "") {
+        alert("No pegawai tidak boleh kosong");
+        return false;
+    } else if (nama == "") {
+        alert("Nama user tidak boleh kosong");
+        return false;
+    } else if (email == "") {
+        alert("Email tidak boleh kosong");
+        return false;
+    } else if (password == "") {
+        alert("Password tidak boleh kosong");
+        return false;
+    }
+}
+
 </script>
 
 

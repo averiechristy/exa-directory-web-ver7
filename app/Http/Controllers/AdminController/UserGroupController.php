@@ -29,7 +29,9 @@ class UserGroupController extends Controller
     public function create()
     {
             $cabang = Cabang::all();
-            $users = User::where('role_id', '3')->get();
+            $users = User::where('role_id', '3')
+            
+            ->get();
         
             return view("superadmin.usergroup.create",[
                 "cabang"=> $cabang,
@@ -41,6 +43,7 @@ class UserGroupController extends Controller
     public function usergroupindex()
     {
         $cabang = Auth::user()->cabang_id;
+        $role = Auth::user()->role_id;
     
         // Menyaring data berdasarkan role pengguna
         // $usergroup = UserGroup::join('detail_members', 'user_groups.id', '=', 'detail_members.user_group_id')
@@ -49,7 +52,9 @@ class UserGroupController extends Controller
         //  ->distinct()
         //  ->get(['user_groups.*']); // Ambil semua kolom dari tabel usergroups dengan entri unik
 
-         $usergroup = UserGroup::where('cabang_id', $cabang)->distinct()->get();
+         $usergroup = UserGroup::where('cabang_id', $cabang)
+         ->where('role_id', $role)
+         ->distinct()->get();
 
 // Menggunakan distinct() untuk mengambil entri unik dari hasil query
 
@@ -84,6 +89,20 @@ class UserGroupController extends Controller
     $loggedInUser = auth()->user();
     $loggedInUsername = $loggedInUser->nama_user; 
     $cabangId = $loggedInUser->cabang_id;
+
+    $roleId = $loggedInUser->role_id;
+
+    $nama = $request->nama_group;
+   
+    $existingGroup = UserGroup::where('nama_group', $nama)->first();
+    
+   
+    // Check if group with the same name already exists
+    if ($existingGroup) {
+        // If group with the same name exists, return with error message
+        $request->session()->flash('error', 'Gagal menyimpan data, Nama Group sudah ada.');
+        return redirect(route('superadmin.usergroup.index'));    }
+
     $usergroup = new UserGroup;
     $usergroup->nama_group = $request->nama_group;
     $usergroup->created_by = $loggedInUsername;
@@ -92,6 +111,7 @@ class UserGroupController extends Controller
 
     $usergroup ->type = $usergrouptype;
 $usergroup -> cabang_id = $cabangId;
+$usergroup -> role_id = $roleId;
 
     $usergroup->save();
 
@@ -161,12 +181,25 @@ public function usergroupstore(Request $request)
     $loggedInUser = Auth::user();
     $loggedInUsername = $loggedInUser->nama_user; 
     $cabangId = $loggedInUser->cabang_id;
+    
+    $roleId = $loggedInUser->role_id;
+    $nama = $request->nama_group;
+    $existingGroup = UserGroup::where('nama_group', $nama)
+    ->where('cabang_id', $cabangId)
+    ->first();
+   
+    // Check if group with the same name already exists
+    if ($existingGroup) {
+        // If group with the same name exists, return with error message
+        $request->session()->flash('error', 'Gagal menyimpan data, Nama Group sudah ada.');
+        return redirect(route('admin.usergroup.index'));    }
     $usergroup->nama_group = $request->nama_group;
     $usergroup->created_by = $loggedInUsername;
     $usergrouptype = $request->inlineRadioOptions;
 
     $usergroup->type = $usergrouptype;
     $usergroup -> cabang_id = $cabangId;
+    $usergroup -> role_id = $roleId;
 
     $usergroup->save();
 
@@ -398,7 +431,16 @@ public function usergroupstore(Request $request)
 
         $usergrouptype = $usergroup->type;
 
-      
+        $nama = $request->nama_group;
+   
+        $existingGroup = UserGroup::where('nama_group', $nama)  ->where('id', '!=', $id)->first();
+        
+       
+        // Check if group with the same name already exists
+        if ($existingGroup) {
+            // If group with the same name exists, return with error message
+            $request->session()->flash('error', 'Gagal menyimpan data, Nama Group sudah ada.');
+            return redirect(route('superadmin.usergroup.index'));    }
        
         
         $usergroup->save();
@@ -453,6 +495,19 @@ public function usergroupstore(Request $request)
             $usergroup->updated_by = $loggedInUsername;
     
             $usergrouptype = $usergroup->type;
+            $cabangId = $loggedInUser->cabang_id;
+
+            $nama = $request->nama_group;
+            $existingGroup = UserGroup::where('nama_group', $nama)
+            ->where('cabang_id', $cabangId)
+            ->where('id', '!=', $id)
+            ->first();
+           
+            // Check if group with the same name already exists
+            if ($existingGroup) {
+                // If group with the same name exists, return with error message
+                $request->session()->flash('error', 'Gagal menyimpan data, Nama Group sudah ada.');
+                return redirect(route('admin.usergroup.index'));    }
                
             $usergroup->save();
         

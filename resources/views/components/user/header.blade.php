@@ -9,6 +9,27 @@
 <!-- Topbar Navbar -->
 <ul class="navbar-nav ml-auto">
 
+@if (auth()->user()->is_approval == 1)
+
+<li class="nav-item {{ Request::is('user/approvalpage') || Request::is('user/approvalpage') ? 'active' : '' }}">
+    <a class="nav-link" style="color:gray;" href="{{ route('user.approvalpage') }}">Approval</a>
+</li>
+
+<style>
+    /* CSS untuk efek hover */
+    .nav-link:hover {
+        color: blue; /* Ubah warna saat dihover */
+        text-decoration: underline; /* Tambahkan garis bawah saat dihover */
+        cursor: pointer; /* Ubah kursor saat dihover */
+        font-weight : bold;
+    }
+</style>
+
+@endif
+
+
+    <div class="topbar-divider d-none d-sm-block"></div>
+
     <!-- Nav Item - Search Dropdown (Visible Only XS) -->
     <!-- Nav Item - User Information -->
     <li class="nav-item dropdown no-arrow">

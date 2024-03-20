@@ -132,6 +132,7 @@
 $('form').submit(function(e) {
     var selectedRadio = $('input[name="inlineRadioOptions"]:checked').val();
     var namaGroup = $('input[name="nama_group"]').val();
+    
     if (!namaGroup.trim()) {
         alert('Silakan masukkan nama grup.');
         e.preventDefault(); // Mencegah pengiriman formulir jika nama grup tidak diisi

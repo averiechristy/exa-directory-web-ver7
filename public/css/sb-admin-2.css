@@ -57,7 +57,14 @@ html {
 article, aside, figcaption, figure, footer, header, hgroup, main, nav, section {
   display: block;
 }
-
+.btn-edit {
+  border: none;
+  border-radius: 8px;
+  background: #0267FF;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+}
 body {
   margin: 0;
   font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
