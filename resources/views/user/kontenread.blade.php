@@ -18,37 +18,32 @@
         $extension = pathinfo($detailFile->file, PATHINFO_EXTENSION);
     @endphp
 
-    @if(in_array($extension, ['jpg', 'jpeg', 'png', 'gif'])) <!-- Gambar -->
-        <div class="mt-3" style="position: relative; max-width: 90%; max-height: 500px;">
-            <img src="{{ asset('public/files/') }}/{{ $detailFile->file }}" style="max-width: 100%; max-height: 100%;" oncontextmenu="return false;">
-            
-        </div>
-    @elseif(in_array($extension, ['mp4', 'mov', 'avi'])) <!-- Video -->
-        <video class="mt-3" width="90%" height="500" controls controlsList="nodownload"  oncontextmenu="return false;">
-            <source src="{{ asset('public/files/') }}/{{ $detailFile->file }}" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
-  
-@elseif($extension == 'pdf') <!-- PDF -->
-
-<div class="mt-3" style="position: relative; width: 90%; height: 500px;" >
-    <object data="{{ asset('public/files/') }}/{{ $detailFile->file }}#toolbar=0" type="application/pdf" width="100%" height="100%" oncontextmenu="return false;">
-        <p>Browser Anda tidak mendukung menampilkan PDF. Silakan <a href="{{ asset('public/files/') }}/{{ $detailFile->file }}">unduh PDF</a> untuk melihatnya.</p>
-    </object>
-    <div oncontextmenu="return false;" style="position: absolute; top: 0; left: 0; width: 99%; height: 100%; background-color: rgba(255, 255, 255, 0); text-align: center; display: flex; justify-content: center; align-items: center;">
-        <!-- <p style="color: black;">PDF tidak dapat di download</p> -->
+@if(in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'gif'])) <!-- Gambar -->
+    <div class="mt-3" style="position: relative; max-width: 90%; max-height: 500px;">
+        <img src="{{ asset('public/files/') }}/{{ $detailFile->file }}" style="max-width: 100%; max-height: 100%;" oncontextmenu="return false;">
     </div>
-</div>
+@elseif(in_array(strtolower($extension), ['mp4', 'mov', 'avi'])) <!-- Video -->
+    <video class="mt-3" width="90%" height="500" controls controlsList="nodownload" oncontextmenu="return false;">
+        <source src="{{ asset('public/files/') }}/{{ $detailFile->file }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+@elseif(strtolower($extension) == 'pdf') <!-- PDF -->
+    <div class="mt-3" style="position: relative; width: 90%; height: 500px;">
+        <iframe src="https://docs.google.com/viewer?url={{ asset('public/files/') }}/{{ $detailFile->file }}&embedded=true" width="100%" height="100%" style="border: none;"></iframe>
+        <div oncontextmenu="return false;" style="position: absolute; top: 0; left: 0; width: 99%; height: 100%; background-color: rgba(255, 255, 255, 0); text-align: center; display: flex; justify-content: center; align-items: center;">
+            <!-- <p style="color: black;">PDF tidak dapat di download</p> -->
+        </div>
+    </div>
+@elseif(in_array(strtolower($extension), ['mp3', 'wav'])) <!-- Audio -->
+    <audio class="mt-3" controls preload="none" controlsList="nodownload" oncontextmenu="return false;">
+        <source src="{{ asset('public/files/') }}/{{ $detailFile->file }}" type="audio/mpeg">
+        Your browser does not support the audio tag.
+    </audio>
+@else
+    <!-- Tipe file tidak didukung -->
+    <p>Tipe file tidak didukung.</p>
+@endif
 
-    @elseif(in_array($extension, ['mp3', 'wav'])) <!-- Audio -->
-        <audio class="mt-3"controls preload="none" controlsList="nodownload"  oncontextmenu="return false;">
-            <source src="{{ asset('public/files/') }}/{{ $detailFile->file }}" type="audio/mpeg">
-            Your browser does not support the audio tag.
-        </audio>
-    @else
-        <!-- Tipe file tidak didukung -->
-        <p>Tipe file tidak didukung.</p>
-    @endif
     <p>{{$detailFile -> file}}</p>
 @endforeach
 
@@ -61,30 +56,33 @@
         $extension = pathinfo($detailFile->file, PATHINFO_EXTENSION);
     @endphp
 
-    @if(in_array($extension, ['jpg', 'jpeg', 'png', 'gif'])) <!-- Gambar -->
-        <div class="mt-3" style="position: relative; max-width: 90%; max-height: 500px;">
-            <img src="{{ asset('public/files/') }}/{{ $detailFile->file }}" style="max-width: 50%; max-height: 50%;">
-           
-        </div>
-    @elseif(in_array($extension, ['mp4', 'mov', 'avi'])) <!-- Video -->
-        <video class="mt-3" width="90%" height="500" controls >
-            <source src="{{ asset('public/files/') }}/{{ $detailFile->file }}" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
-    @elseif($extension == 'pdf') <!-- PDF -->
-        <div class="mt-3"  style="position: relative; width: 90%; height: 500px;">
-            <iframe src="{{ asset('public/files/') }}/{{ $detailFile->file }}" width="100%" height="100%" style="border: none;"></iframe>
-            
-        </div>
-    @elseif(in_array($extension, ['mp3', 'wav'])) <!-- Audio -->
-        <audio class="mt-3"controls preload="none" >
-            <source src="{{ asset('public/files/') }}/{{ $detailFile->file }}" type="audio/mpeg">
-            Your browser does not support the audio tag.
-        </audio>
-    @else
-        <!-- Tipe file tidak didukung -->
-        <p>Tipe file tidak didukung.</p>
-    @endif
+@if(in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'gif'])) <!-- Gambar -->
+    <div class="mt-3" style="position: relative; max-width: 90%; max-height: 500px;">
+        <img src="{{ asset('public/files/') }}/{{ $detailFile->file }}" style="max-width: 50%; max-height: 50%;">
+    </div>
+@elseif(in_array(strtolower($extension), ['mp4', 'mov', 'avi'])) <!-- Video -->
+    <video class="mt-3" width="90%" height="500" controls >
+        <source src="{{ asset('public/files/') }}/{{ $detailFile->file }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+@elseif(strtolower($extension) == 'pdf') <!-- PDF -->
+    <!-- <div class="mt-3"  style="position: relative; width: 90%; height: 500px;">
+        <iframe src="{{ asset('public/files/') }}/{{ $detailFile->file }}" width="100%" height="100%" style="border: none;"></iframe>
+    </div> -->
+    <br>
+    <div class="mt-3"  style="position: relative; width: 90%; height: 500px;">
+        <iframe src="https://docs.google.com/viewer?url={{ asset('public/files/') }}/{{ $detailFile->file }}&embedded=true" width="100%" height="100%" style="border: none;"></iframe>
+    </div>
+@elseif(in_array(strtolower($extension), ['mp3', 'wav'])) <!-- Audio -->
+    <audio class="mt-3" controls preload="none" >
+        <source src="{{ asset('public/files/') }}/{{ $detailFile->file }}" type="audio/mpeg">
+        Your browser does not support the audio tag.
+    </audio>
+@else
+    <!-- Tipe file tidak didukung -->
+    <p>Tipe file tidak didukung.</p>
+@endif
+
     <p>{{$detailFile -> file}}</p>
 @endforeach
 @endif

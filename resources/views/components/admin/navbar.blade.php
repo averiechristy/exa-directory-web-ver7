@@ -3,10 +3,10 @@
         <div class="me-3">         
         </div>
         <div>
-          <a class="navbar-brand brand-logo" href="#">
+          <a class="navbar-brand brand-logo" >
             <img src="{{asset('img/logodirectory.png')}}" alt="logo" />
           </a>
-          <a class="navbar-brand brand-logo-mini" href="#">
+          <a class="navbar-brand brand-logo-mini" >
             <img src="{{asset('img/smalllogo.png')}}" alt="logo" />
           </a>
         </div>

@@ -21,6 +21,12 @@ class DetailMember extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function Cabang()
+    {
+
+        return $this->belongsTo(Cabang::class, 'cabang_id');
+    }
+
     public function UserGroup()
     {
 

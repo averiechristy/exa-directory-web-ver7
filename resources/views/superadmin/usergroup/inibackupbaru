@@ -38,7 +38,6 @@
 
 <div id="general" style="display:none;">
 <label for="" class="form-label"style="font-size: 11pt; font-weight: bold;">Pilih Cabang</label>
-
 <div class="form-group mb-4">
 @foreach ($cabang as $key => $item)
     @if ($key % 10 == 0 && $key != 0)
@@ -63,21 +62,18 @@
             <!-- @foreach ($users as $user)
                 <option value="{{ $user->id }}">{{ $user->nama_user }} - {{$user->no_pegawai}}</option>
             @endforeach -->                                                                            
-        </select>     
+        </select>                                                                                       
         <div class="form-group mb-4 mt-2" style="display:none;">
             <button type="button" class="btn btn-sm remove-member mb-3" style="float: right; background-color: red; color: white; border-radius: 8px;">Hapus</button>
         </div> 
-
     </div>
     </div>
                     
     </div>
-
     <div class="form-group mb-4">
     <button type="button" id="add-member" class="btn btn-sm" style="background-color: #FF9900; color: white; border-radius: 8px;">
         <i class="fa fa-plus" style="font-size: 14px;"></i> Tambah Anggota
     </button>
-
 </div>     
 </div>
 </div>
@@ -100,7 +96,6 @@
 
     <div class="form-group mb-4">
     <label for="" class="form-label" style="font-size: 11pt; font-weight: bold;">Anggota</label>
-    <div id="member-fields-custom">
     <div class="member-container-custom">
     <div class="member-item-custom">
         <select name ="anggotacustom[]" class="form-select form-select-sm mb-3 member-select-custom" aria-label=".form-select-lg example" style="border-color: #01004C;  border-radius: 5px;" required>
@@ -122,7 +117,6 @@
 </button>
 
 </div>     
-</div>
 </div>
                            <div class="form-group mb-4">
                                <button type="submit" class="btn " style="width:80px; height: 30px; background-color: #01004C; color: white; font-size: 12px;">Save</button>
@@ -146,9 +140,7 @@
 $('form').submit(function(e) {
     var selectedRadio = $('input[name="inlineRadioOptions"]:checked').val();
     var namaGroup = $('input[name="nama_group"]').val();
-    var selectedCabangCount = $('.cabang-checkbox:checked').length; 
-    var selectedCabangCountCustom = $('.cabang-checkbox-custom:checked').length; 
-
+    var selectedCabangCount = $('.cabang-checkbox:checked').length; // Menghitung jumlah cabang yang dipilih
 
     var selectedMemberCount = $('.member-select-custom').filter(function() {
         return $(this).val() != null;
@@ -161,22 +153,20 @@ $('form').submit(function(e) {
         alert('Anda harus memilih salah satu jenis group.');
         e.preventDefault(); 
     }
-    else if (selectedRadio === 'General' && selectedCabangCount === 0) { 
+    else if (selectedRadio === 'General' && selectedCabangCount === 0) { // Menambahkan validasi untuk jenis General
         alert('Anda harus memilih setidaknya satu cabang.');
         e.preventDefault(); 
     }
 
-    else if (selectedRadio === 'Custom' && selectedCabangCountCustom === 0) { 
+    else if (selectedRadio === 'Custom' && selectedCabangCount === 0) { // Menambahkan validasi untuk jenis General
         alert('Anda harus memilih setidaknya satu cabang.');
         e.preventDefault(); 
     }
 
     else if (selectedRadio === 'Custom' && selectedMemberCount === 0) {
-        alert('Anda harus memilih setidaknya satu anggota untuk jenis grup custom.');
+        alert('Anda harus memilih setidaknya satu anggota untuk jenis grup kustom.');
         e.preventDefault(); 
     }
-
-   
 });
 
     $(document).ready(function() {
@@ -200,47 +190,77 @@ $('form').submit(function(e) {
 
 </script>
 
+
 <script>
-        $(document).ready(function() {
+    $(document).ready(function() {
+    // Add Member Field
+    $("#add-member").click(function() {
+        var memberField = `
+        <div id="member-fields">
+        <div class="member-container">
+            <div class="member-item">
+                <select name="anggota[]" class="form-select form-select-sm mb-3 member-select" aria-label=".form-select-lg example" style="border-color: #01004C;  border-radius: 5px;" required>
+                    <option selected disabled>Pilih Anggota</option>
+                  
+                </select>
+                <div class="form-group mb-4 mt-2" style="display:none;">
+                    <button type="button" class="btn btn-sm remove-member mb-3" style="float: right; background-color: red; color: white; border-radius: 8px;">Hapus</button>
+                </div> 
+                <div class="form-group mb-4 mt-2">
+                    <button type="button" class="btn btn-sm remove-member mb-3" style="float: right; background-color: red; color: white; border-radius: 8px;">Hapus</button>
+                </div> 
+            </div>
+            </div>
+            </div>`;
 
-       
-            var selectedMembers = [];
+            
+        $(".member-container").append(memberField);
+        updateAnggotaByCabangCustom(); 
 
-// Event handler untuk perubahan pada select anggota
-$(document).on('change', '.member-select', function() {
-    var selectedMemberId = $(this).val();
+    });
 
-    // Periksa apakah ID anggota sudah ada dalam daftar yang dipilih sebelumnya
-    if (selectedMembers.includes(selectedMemberId)) {
-        alert("Anggota ini sudah dipilih sebelumnya. Silakan pilih anggota lain.");
-        // Kembalikan nilai select box ke opsi default
-        $(this).val('');
-        // Hapus nilai yang dipilih dari array selectedMembers
-        var index = selectedMembers.indexOf(selectedMemberId);
+    $("#add-member-custom").click(function() {
+        var memberField = `
+        <div id="member-fields-custom">
+        <div class="member-container-custom">
+            <div class="member-item-custom">
+                <select name="anggota[]" class="form-select form-select-sm mb-3 member-select-custom" aria-label=".form-select-lg example" style="border-color: #01004C;  border-radius: 5px;" required>
+                    <option selected disabled>Pilih Anggota</option>
+                </select>
+                <div class="form-group mb-4 mt-2" style="display:none;">
+                    <button type="button" class="btn btn-sm remove-member mb-3" style="float: right; background-color: red; color: white; border-radius: 8px;">Hapus</button>
+                </div> 
+                <div class="form-group mb-4 mt-2">
+                    <button type="button" class="btn btn-sm remove-member-custom mb-3" style="float: right; background-color: red; color: white; border-radius: 8px;">Hapus</button>
+                </div> 
+            </div>
+            </div>
+            </div>`;
+        $(".member-container-custom").append(memberField);
+        updateAnggotaByCabangCustom();
 
-      
+    
+    });
 
-    } else {
-        // Jika ID anggota belum ada dalam daftar, tambahkan ke daftar
-        selectedMembers.push(selectedMemberId);
-
-    }
-});
-
+    // Remove Member Field
+    $(document).on("click", ".remove-member", function() {
+        $(this).closest(".member-item").remove();
+    });
 
 
+    $(document).on("click", ".remove-member-custom", function() {
+        $(this).closest(".member-item-custom").remove();
+    });
 
 
-
-      $('.cabang-checkbox').change(function() {
+    $('.cabang-checkbox').change(function() {
         // Mendapatkan nilai checkbox yang di-check
-        selectedMembers = [];
-        
         var selectedCabang = $('.cabang-checkbox:checked').map(function() {
             return $(this).val();
         }).get();
 
-
+        console.log(selectedCabang);
+        // Ajax request untuk mendapatkan anggota berdasarkan cabang yang di-check
         $.ajax({
             url: '{{ route("superadmin.usergroup.getAnggotaByCabang") }}',
             type: 'post',
@@ -265,87 +285,8 @@ $(document).on('change', '.member-select', function() {
         });
     });
 
-    $("#add-member").click(function() {
-    var memberField = `
-    <div class="member-container">
-        <div class="member-item">
-            <select name="anggota[]" class="form-select form-select-sm mb-3 member-select" aria-label=".form-select-lg example" style="border-color: #01004C;  border-radius: 5px;" required>
-                <option selected disabled>Pilih Anggota</option>
-            </select>
-            <div class="form-group mb-4 mt-2" style="display:none;">
-                <button type="button" class="btn btn-sm remove-member mb-3" style="float: right; background-color: red; color: white; border-radius: 8px;">Hapus</button>
-            </div> 
-            <div class="form-group mb-4 mt-2">
-                <button type="button" class="btn btn-sm remove-member mb-3" style="float: right; background-color: red; color: white; border-radius: 8px;">Hapus</button>
-            </div> 
-        </div>
-    </div>`;
 
-    $("#member-fields").append(memberField);
-    var cabangId = $('.cabang-checkbox:checked').map(function() {
-        return $(this).val();
-    }).get();
-
-    updateAnggotaByCabang(cabangId, $("#member-fields").find('.member-container').last());
-});
-
-function updateAnggotaByCabang(cabangId, memberField) {
-    // Ajax request untuk mendapatkan anggota berdasarkan cabang yang dipilih
-    $.ajax({
-        url: '{{ route("superadmin.usergroup.getAnggotaByCabang") }}',
-        type: 'post',
-        data: {
-            _token: '{{ csrf_token() }}',
-            cabang: cabangId
-        },
-        success: function(data) {
-            // Mengganti opsi pada dropdown anggota pada memberField terakhir
-            var selectElement = memberField.find('.member-select');
-            selectElement.empty();
-            selectElement.append('<option value="" disabled selected>Pilih Anggota</option>');
-            $.each(data, function(index, value) {
-                selectElement.append('<option value="' + value.id + '">' + value.nama_user + ' - ' + value.no_pegawai + '</option>');
-            });
-        }
-    });
-}
-
-    $(document).on("click", ".remove-member", function() {
-        $(this).closest(".member-item").remove();
-    });
-
-});
-</script>
-
-<script>
-        $(document).ready(function() {
-
-            var selectedMemberscustom = [];
-// Event handler untuk perubahan pada select anggota
-$(document).on('change', '.member-select-custom', function() {
-    var selectedMemberIdcustom = $(this).val();
-
-    // Periksa apakah ID anggota sudah ada dalam daftar yang dipilih sebelumnya
-    if (selectedMemberscustom.includes(selectedMemberIdcustom)) {
-        alert("Anggota ini sudah dipilih sebelumnya. Silakan pilih anggota lain.");
-        // Kembalikan nilai select box ke opsi default
-        $(this).val('');
-        // Hapus nilai yang dipilih dari array selectedMemberscustom
-        var index = selectedMemberscustom.indexOf(selectedMemberIdcustom);
-        if (index !== -1) {
-            selectedMemberscustom.splice(index, 1);
-        }
-    } else {
-        // Jika ID anggota belum ada dalam daftar, tambahkan ke daftar
-        selectedMemberscustom.push(selectedMemberIdcustom);
-    }
-
-});
-            
-      $('.cabang-checkbox-custom').change(function() {
-
-        selectedMemberscustom = [];
-
+    $('.cabang-checkbox-custom').change(function() {
         // Mendapatkan nilai checkbox yang di-check
         var selectedCabang = $('.cabang-checkbox-custom:checked').map(function() {
             return $(this).val();
@@ -367,72 +308,73 @@ $(document).on('change', '.member-select-custom', function() {
                     // Menambah opsi baru
                     $(this).append('<option selected disabled> Pilih Anggota </option>');
                     $.each(data, function(key, value) {
-                                               
+                        
+                        
                         $(this).append('<option value="' + value.id + '">' + value.nama_user + ' - ' + value.no_pegawai + '</option>');
                     
                     }.bind(this));
                 });
             }
         });
-
     });
 
+});
 
-    $("#add-member-custom").click(function() {
-    var memberFieldcustom = `
-    <div class="member-container-custom">
-        <div class="member-item-custom">
-            <select name="anggotacustom[]" class="form-select form-select-sm mb-3 member-select-custom" aria-label=".form-select-lg example" style="border-color: #01004C;  border-radius: 5px;" required>
-                <option selected disabled>Pilih Anggota</option>
-            </select>
-            <div class="form-group mb-4 mt-2" style="display:none;">
-                <button type="button" class="btn btn-sm remove-member-custom mb-3" style="float: right; background-color: red; color: white; border-radius: 8px;">Hapus</button>
-            </div> 
-            <div class="form-group mb-4 mt-2">
-                <button type="button" class="btn btn-sm remove-member-custom mb-3" style="float: right; background-color: red; color: white; border-radius: 8px;">Hapus</button>
-            </div> 
-        </div>
-    </div>`;
+</script>
 
-    $("#member-fields-custom").append(memberFieldcustom);
-    var cabangId = $('.cabang-checkbox-custom:checked').map(function() {
+<script>
+    function updateAnggotaByCabang() {
+    // Mendapatkan nilai checkbox yang dipilih untuk cabang
+    var selectedCabang = $('.cabang-checkbox:checked').map(function() {
         return $(this).val();
     }).get();
 
-    updateAnggotaByCabang(cabangId, $("#member-fields-custom").find('.member-container-custom').last());
-    
-});
-
-function updateAnggotaByCabang(cabangId, memberFieldcustom) {
     // Ajax request untuk mendapatkan anggota berdasarkan cabang yang dipilih
     $.ajax({
         url: '{{ route("superadmin.usergroup.getAnggotaByCabang") }}',
         type: 'post',
         data: {
             _token: '{{ csrf_token() }}',
-            cabang: cabangId
+            cabang: selectedCabang
         },
         success: function(data) {
-            // Mengganti opsi pada dropdown anggota pada memberFieldcustom terakhir
-            var selectElement = memberFieldcustom.find('.member-select-custom');
-            selectElement.empty();
-            selectElement.append('<option value="" disabled selected>Pilih Anggota</option>');
-            $.each(data, function(index, value) {
-                selectElement.append('<option value="' + value.id + '">' + value.nama_user + ' - ' + value.no_pegawai + '</option>');
+            // Mengganti opsi pada dropdown anggota
+            $('.member-select').empty(); // Menghapus opsi sebelumnya
+            $('.member-select').append('<option selected disabled>Pilih Anggota</option>'); // Menambah opsi default
+            $.each(data, function(key, value) {
+                $('.member-select').append('<option value="' + value.id + '">' + value.nama_user + ' - ' + value.no_pegawai + '</option>'); // Menambah opsi baru
             });
         }
     });
 }
 
-
-$(document).on("click", ".remove-member-custom", function() {
-        $(this).closest(".member-item-custom").remove();
-    });
-
-});
-
-
 </script>
 
+<script>
+function updateAnggotaByCabangCustom() {
+    
+    var selectedCabangcustom = $('.cabang-checkbox-custom:checked').map(function() {
+        return $(this).val();
+    }).get();
+    
+    $.ajax({
+        url: '{{ route("superadmin.usergroup.getAnggotaByCabang") }}',
+        type: 'post',
+        data: {
+            _token: '{{ csrf_token() }}',
+            cabang: selectedCabangcustom
+        },
+        success: function(data) {
+            // Mengganti opsi pada dropdown anggota
+            $('.member-select-custom').empty(); // Menghapus opsi sebelumnya
+            $('.member-select-custom').append('<option selected disabled>Pilih Anggota</option>'); // Menambah opsi default
+            $.each(data, function(key, value) {
+                $('.member-select-custom').append('<option value="' + value.id + '">' + value.nama_user + ' - ' + value.no_pegawai + '</option>'); // Menambah opsi baru
+            });
+        }
 
-@endsection  
+    });
+}
+</script>
+
+@endsection

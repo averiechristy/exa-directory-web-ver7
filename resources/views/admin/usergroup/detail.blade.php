@@ -31,6 +31,7 @@
                            
                             <th>Nama User</th>
                             <th>Nomor Pegawai</th>
+                            <th>Cabang</th>
 
                           </tr>
                         </thead>
@@ -41,6 +42,7 @@
                           
                             <td>{{$member -> User -> nama_user}}</td>
                             <td>{{$member -> User -> no_pegawai}}</td>
+                            <td>{{$member -> Cabang -> nama_cabang}}</td>
 
 </tr>
                           @endforeach

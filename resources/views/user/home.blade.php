@@ -62,7 +62,7 @@
                                 <tr>
                                     <th>Nama</th>
                                     <th>Date Modified</th>
-                                    <th>Type</th>
+                                  
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -76,7 +76,7 @@
             </a>
         </td>       
         <td>{{$folder->updated_at}}</td>
-        <td>Folder</td>
+    
         <td>
             @if(auth()->user()->isFolderPinned($folder->id))
                 <button class="btn btn-sm btn-danger" onclick="unpinFolder({{ $folder->id }})">Unpin Folder</button>

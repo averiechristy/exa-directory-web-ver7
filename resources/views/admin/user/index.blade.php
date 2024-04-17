@@ -105,7 +105,10 @@ entries
                         </form> 
                         
                         @else
-                        Action Disabled
+                        <form method="POST" action="{{ route('adminaktifkanuser', $users->id) }}">
+    @csrf
+    <button type="submit" class="btn btn-sm btn-primary mt-1 show_confirm3" data-toggle="tooltip"> Aktifkan User</button>
+</form>
                         @endif
                             </td>
                           </tr>

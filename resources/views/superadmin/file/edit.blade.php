@@ -87,6 +87,7 @@
 @if ($nama->count() > 0)
 <div class="upload-container">
 @foreach ($nama as $nama)
+<div id ="file-fields">
     <div class="upload-item">
         <div class="form-input-item">
             <label for="formFileSm" class="form-label mt-5">Upload File / Video / Image / Audio</label>
@@ -128,17 +129,20 @@
 
         </div>
     </div>
+    </div>
 @endforeach
 
 </div>
 @else
+
+<div id ="file-fields">
 <div class="upload-container">
     <div class="upload-item">
 
     <div class="form-input-item">
         <label for="formFileSm" class="form-label">Upload File / Video / Image / Audio</label>
         <div id="fileInputs">
-            <input class="form-control form-control-sm mb-2" type="file" name="formFileSm[]" onchange="previewFile(this)">
+            <input class="form-control form-control-sm mb-2" id="fileInput" type="file" name="formFileSm[]" onchange="previewFile(this)">
             <div class="preview-container"></div>
         </div>
         <button type="button" class="btn btn-sm btn-danger mb-3" id="removeFileInput" style="float:right;"> Remove </button>
@@ -147,8 +151,10 @@
 </div>
 
 </div>
+</div>
+
 @endif
-<button type="button" class="btn btn-sm btn-primary mb-3 addFileInput" id="addFileInput">Add More</button>
+<button type="button" class="btn btn-sm btn-primary mb-3 mt-4 addFileInput" id="addFileInput">Add More</button>
 
                         <div class="form-group mb-4">
                             <button type="submit" class="btn" style="width:80px; height: 30px; background-color: #01004C; color: white; font-size: 12px;">Save</button>
@@ -171,6 +177,9 @@ var pathFolder = document.forms["saveform"]["path_folder"].value;
     var inlineRadioOptions = document.forms["saveform"]["inlineRadioOptions"].value;
 
     var approval = document.forms["saveform"]['user_approval'].value;
+
+    var konten = document.forms["saveform"]["konten"].value;
+    let fileInput = document.getElementById('fileInput').value;
     
     if (judul == "") {
         alert("Judul tidak boleh kosong");
@@ -182,18 +191,20 @@ var pathFolder = document.forms["saveform"]["path_folder"].value;
     return false;
 }
 
-
     if (inlineRadioOptions == null || inlineRadioOptions === '') {
         alert("Pilihan status file harus dipilih");
         return false;
     }
+
     if (approval === "" || approval === "Pilih Approval") {
     alert("Approval Line harus dipilih");
     return false;
 }
 
-    // Mendapatkan nilai status berlaku
-  
+if (konten === "" && fileInput === "") {
+        alert("Isi konten atau unggah file harus diisi salah satu");
+        return false;
+}  
 
     // Jika validasi berhasil, kembalikan true
     return true;
@@ -205,17 +216,25 @@ $(document).ready(function () {
 
 // Fungsi untuk menambah insentif
 $('#addFileInput').click(function () {
-    var insentifContainer = $('.upload-container');
-    var newInsentifItem = $('.upload-item').eq(0).clone();
+  
+    var fileField = `
+    <div class="upload-container">
+    <div class="upload-item">
 
-    // Mengosongkan nilai input pada item baru
-    newInsentifItem.find('input').val('');
+    <div class="form-input-item">
+        <label for="formFileSm" class="form-label">Upload File / Video / Image / Audio</label>
+        <div id="fileInputs">
+            <input class="form-control form-control-sm mb-2" type="file" name="formFileSm[]" onchange="previewFile(this)">
+            <div class="preview-container"></div>
+        </div>
 
-    // Menghapus preview file pada item baru
-    newInsentifItem.find('.preview-container').empty(); // Menambah baris ini
 
-    // Menambah item insentif baru ke dalam kontainer
-    insentifContainer.append(newInsentifItem);
+        <button type="button" class="btn btn-sm btn-danger mb-2 mt-2" id="removeFileInput" style="float:right;"> Remove </button>
+    </div>
+
+</div>
+</div>`;
+$("#file-fields").append(fileField);
     
 });
  
@@ -227,13 +246,10 @@ $(document).on('click', '#removeFileInput', function () {
     var insentifItems = insentifContainer.find('.upload-item');
 
     // Memastikan ada lebih dari satu item sebelum menghapus
-    if (insentifItems.length > 1) {
+   
         $(this).closest('.upload-item').remove();
-    }
-    else {
-        alert("Anda tidak dapat menghapus form pertama.");
-    }
-    
+
+ 
     saveProductData();
 });
 

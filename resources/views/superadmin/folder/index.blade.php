@@ -36,14 +36,15 @@
         </button>
         <div class="dropdown-menu">
             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addSubfolderModal{{$folder->id}}">Add Subfolder</a>
+           
+            @if (!isset($folder) || !$folder->id_folder_induk)
+                <a class="dropdown-item edit-group-btn" href="{{route('tampilfoldergroup', $folder->id)}}" >Edit Folder</a>
+            @endif
             <form action="{{ route('folder.delete', ['id' => $folder->id]) }}" method="POST" style="display: inline;">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="dropdown-item" onclick="return confirm('Yakin menghapus folder ini?')">Delete Folder</button>
             </form>
-            @if (!isset($folder) || !$folder->id_folder_induk)
-                <a class="dropdown-item edit-group-btn" href="{{route('tampilfoldergroup', $folder->id)}}" >Edit Folder</a>
-            @endif
         </div>
     </div>
 </div>

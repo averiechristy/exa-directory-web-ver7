@@ -119,7 +119,7 @@ function validateForm() {
 
     // Periksa apakah nama folder telah diisi
     if (!atLeastOneChecked) {
-        alert('Pilih setidaknya satu grup.');
+        alert("Pilih setidaknya satu grup, jika tidak ada grup silakan buat grup terlebih dahulu.");
         return false;
     }
 

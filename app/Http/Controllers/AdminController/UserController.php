@@ -89,13 +89,13 @@ public function userindex()
 
         if ($existingUser) {
             // Jika email sudah ada, tampilkan pesan flash error
-            $request->session()->flash('error', 'Gagal menyimpan data, Email sudah terdaftar');
+            $request->session()->flash('error', 'Gagal menyimpan data, email sudah terdaftar.');
             return redirect(route('superadmin.user.index'));
         }
 
         if ($existingno) {
             // Jika email sudah ada, tampilkan pesan flash error
-            $request->session()->flash('error', 'Gagal menyimpan data, No Pegawai sudah terdaftar');
+            $request->session()->flash('error', 'Gagal menyimpan data, no pegawai sudah terdaftar.');
             return redirect(route('superadmin.user.index'));
         }
     
@@ -113,7 +113,7 @@ public function userindex()
 
 
 
-        $request->session()->flash('success', 'Akun User berhasil ditambahkan');
+        $request->session()->flash('success', 'Akun User berhasil ditambahkan.');
 
         return redirect(route('superadmin.user.index'));
 
@@ -140,13 +140,13 @@ public function userindex()
 
         if ($existingUser) {
             // Jika email sudah ada, tampilkan pesan flash error
-            $request->session()->flash('error', 'Gagal menyimpan data, Email sudah terdaftar');
+            $request->session()->flash('error', 'Gagal menyimpan data, email sudah terdaftar.');
             return redirect(route('admin.user.index'));
         }
 
         if ($existingno) {
             // Jika email sudah ada, tampilkan pesan flash error
-            $request->session()->flash('error', 'Gagal menyimpan data, No Pegawai sudah terdaftar');
+            $request->session()->flash('error', 'Gagal menyimpan data, no pegawai sudah terdaftar.');
             return redirect(route('admin.user.index'));
         }
     
@@ -161,7 +161,7 @@ public function userindex()
             'is_approval' => $apporval,
         ]);
     
-        $request->session()->flash('success', 'Akun User berhasil ditambahkan');
+        $request->session()->flash('success', 'Akun User berhasil ditambahkan.');
     
         return redirect(route('admin.user.index'));
     }
@@ -232,13 +232,13 @@ public function userindex()
        
  if ($existingUser) {
     // Jika email sudah ada, tampilkan pesan flash error
-    $request->session()->flash('error', 'Gagal menyimpan data, Email sudah terdaftar');
+    $request->session()->flash('error', 'Gagal menyimpan data, email sudah terdaftar.');
     return redirect(route('superadmin.user.index'));
 }
 
 if ($existingno) {
     // Jika email sudah ada, tampilkan pesan flash error
-    $request->session()->flash('error', 'Gagal menyimpan data, No Pegawai sudah terdaftar');
+    $request->session()->flash('error', 'Gagal menyimpan data, no pegawai sudah terdaftar.');
     return redirect(route('superadmin.user.index'));
 }
 
@@ -257,7 +257,7 @@ if ($existingno) {
           
         $data->save();
     
-        $request->session()->flash('success', "Akun User berhasil diupdate");
+        $request->session()->flash('success', "Akun User berhasil diupdate.");
     
         return redirect(route('superadmin.user.index'));
     }
@@ -294,13 +294,13 @@ public function userupdate(Request $request, string $id)
     
      if ($existingUser) {
                 // Jika email sudah ada, tampilkan pesan flash error
-                $request->session()->flash('error', 'Gagal menyimpan data, Email sudah terdaftar');
+                $request->session()->flash('error', 'Gagal menyimpan data, email sudah terdaftar.');
                 return redirect(route('admin.user.index'));
             }
     
             if ($existingno) {
                 // Jika email sudah ada, tampilkan pesan flash error
-                $request->session()->flash('error', 'Gagal menyimpan data, No Pegawai sudah terdaftar');
+                $request->session()->flash('error', 'Gagal menyimpan data, no pegawai sudah terdaftar.');
                 return redirect(route('admin.user.index'));
             }
 
@@ -318,7 +318,7 @@ public function userupdate(Request $request, string $id)
        
         $data->save();
     
-        $request->session()->flash('success', "Akun User berhasil diupdate");
+        $request->session()->flash('success', "Akun User berhasil diupdate.");
     
         return redirect(route('admin.user.index'));
     }
@@ -336,7 +336,7 @@ public function userupdate(Request $request, string $id)
                 $user->is_active = 0;
                 $user->save();
 
-                $request->session()->flash('error', "User tidak dihapus namun dinonaktifkan, karena ada file approval yang berhubungan");
+                $request->session()->flash('error', "User tidak dihapus namun dinonaktifkan, karena ada file approval yang berhubungan.");
                 return redirect()->route('superadmin.user.index');
             } elseif (File::where('user_approval', $user->id)->whereIn('status_persetujuan', ['Menunggu Persetujuan', 'Ditolak'])->exists()){
                 $request->session()->flash('error', "Tidak dapat menghapus user, karena masih ada data approval yang berhubungan.");
@@ -376,9 +376,27 @@ public function userupdate(Request $request, string $id)
     
         $user->delete();
 
-        $request->session()->flash('error', "Akun User Berhasil dihapus.");
+        $request->session()->flash('error', "Akun User berhasil dihapus.");
 
         return redirect()->route('superadmin.user.index');
+    }
+
+    public function aktifkanuser(Request $request ,$id){
+        $user = User::find($id);
+        $user->is_active = 1;
+        $user->save();
+        $request->session()->flash('success', "Akun User berhasil diaktifkan kembali.");
+
+        return redirect()->route('superadmin.user.index');
+    }
+
+    public function adminaktifkanuser(Request $request ,$id){
+        $user = User::find($id);
+        $user->is_active = 1;
+        $user->save();
+        $request->session()->flash('success', "Akun User berhasil diaktifkan kembali.");
+
+        return redirect()->route('admin.user.index');
     }
 
     public function userdestroy(Request $request, $id)
@@ -391,7 +409,7 @@ public function userupdate(Request $request, string $id)
                 $user->is_active = 0;
                 $user->save();
 
-                $request->session()->flash('error', "User tidak dihapus namun dinonaktifkan, karena ada file approval yang berhubungan");
+                $request->session()->flash('error', "User tidak dihapus namun dinonaktifkan, karena ada file approval yang berhubungan.");
                 return redirect()->route('superadmin.user.index');
             } elseif (File::where('user_approval', $user->id)->whereIn('status_persetujuan', ['Menunggu Persetujuan', 'Ditolak'])->exists()){
                 $request->session()->flash('error', "Tidak dapat menghapus user, karena masih ada data approval yang berhubungan.");
@@ -419,33 +437,41 @@ public function userupdate(Request $request, string $id)
             return redirect()->route('admin.user.index');
         }
     }
-
-  
         $user->delete();
 
-        $request->session()->flash('error', "Akun User Berhasil dihapus.");
+        $request->session()->flash('error', "Akun User berhasil dihapus.");
         
         return redirect()->route('admin.user.index');
     }
 
     public function resetPassword(User $user, Request $request)
 {
-    $user->update([
-        'password' => Hash::make('12345678'), // Ganti 'password_awal' dengan password yang Anda inginkan
-    ]);
+
+    $loggedInUser = Auth::user();
+    $loggedInUsername = $loggedInUser->nama_user; 
     
-    $request->session()->flash('success', 'Password berhasil direset');
+    $user->update([
+        'updated_by'=> $loggedInUsername,
+        'password' => Hash::make('12345678'), 
+    ]);
+   
+    $request->session()->flash('success', 'Password berhasil direset.');
 
     return redirect()->route('superadmin.user.index');
+    
 }   
 
 public function userresetPassword(User $user, Request $request)
 {
+
+    $loggedInUser = Auth::user();
+    $loggedInUsername = $loggedInUser->nama_user; 
     $user->update([
+        'updated_by'=> $loggedInUsername,
         'password' => Hash::make('12345678'), // Ganti 'password_awal' dengan password yang Anda inginkan
     ]);
 
-    $request->session()->flash('success', 'Password berhasil direset');
+    $request->session()->flash('success', 'Password berhasil direset.');
 
     return redirect()->route('admin.user.index');
 }

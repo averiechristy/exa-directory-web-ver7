@@ -32,11 +32,12 @@
                               <!-- @if ($errors->has('name'))
                                   <p class="text-danger">{{$errors->first('name')}}</p>
                               @endif -->
+                             
 
                           </div>
-                          <label for="" class="form-label">Status File</label>
-                          <br>
                            <div class="form-group mb-4">
+                           <label for="" class="form-label">Status File</label>
+                           <br>
                            <div class="form-check form-check-inline">
                               <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="berlaku">
                               <label class="form-check-label"  style="margin-left: 5px;" for="inlineRadio1">Berlaku</label>
@@ -49,7 +50,7 @@
 
                            <div class="form-group mb-4">
                            <label for="" class="form-label">Download File</label>
-                          <br>
+                           <br>
                            <div class="form-check">
                               <input class="form-check-input" name="flexCheckIndeterminate" type="checkbox" value="" id="flexCheckIndeterminate">
                               <label class="form-check-label" style="margin-left: 5px;" for="flexCheckIndeterminate">
@@ -60,7 +61,7 @@
 
                           <div class="form-group mb-4">
   <label for="" class="form-label">Approval Line</label>
-      <select id="user_approval"  name="user_approval" class="form-select form-select-sm mb-3" aria-label=".form-select-lg example" style="border-color: #01004C; border-radius: 5px;" required>
+      <select id="user_approval"  name="user_approval" class="form-select form-select-sm mb-3" aria-label=".form-select-lg example" style="border-color: #01004C; border-radius: 5px;" >
             <option selected disabled>Pilih Approval</option>
             <!-- Loop melalui data folder dari database -->
             @foreach($user as $user)
@@ -71,11 +72,10 @@
     <div class="form-group mb-4">
          <label>Konten</label>
                  <div class="form-group">
-     <!-- <textarea name="isi_artikel" class="my-editor form-control {{$errors->has('konten') ? 'is-invalid' : ''}}" style="border-color: #01004C;" id="my-editor" cols="30" rows="10" >{{old('konten')}}</textarea>                                             -->
-<textarea name="konten" class="my-editor form-control {{$errors->has('konten') ? 'is-invalid' : ''}} " id="my-editor"cols="30" rows="10" style="border-color: #01004C;" value=""  oninvalid="this.setCustomValidity('Isi artikel tidak boleh kosong')" oninput="setCustomValidity('')">{{ old('konten') }}
-
-</textarea>        
+     <!-- <textarea name="isi_artikel" class="my-editor form-control {{$errors->has('konten') ? 'is-invalid' : ''}}" style="border-color: #01004C;" id="my-editor" cols="30" rows="10" required>{{old('konten')}}</textarea>                                             -->
+<textarea name="konten" class="konten my-editor form-control {{$errors->has('konten') ? 'is-invalid' : ''}} " id="my-editor"cols="30" rows="10" style="border-color: #01004C;" value=""  oninvalid="this.setCustomValidity('Isi artikel tidak boleh kosong')" oninput="setCustomValidity('')">{{ old('konten') }}</textarea>        
 </div>
+
 
     <!-- <div class="mb-3">
     <label for="formFileSm" class="form-label">Upload File</label>
@@ -88,27 +88,36 @@
     <div class="form-input-item">
         <label for="formFileSm" class="form-label">Upload File / Video / Image / Audio</label>
         <div id="fileInputs">
-            <input class="form-control form-control-sm mb-2" type="file" name="formFileSm[]" onchange="previewFile(this)">
+            <input class="form-control form-control-sm mb-2" type="file" id="fileInput" name="formFileSm[]" onchange="previewFile(this)">
             <div class="preview-container"></div>
         </div>
-        <button type="button" class="btn btn-sm btn-danger mb-3" id="removeFileInput" style="float:right;"> Remove </button>
+
+
+        <button type="button" class="btn btn-sm btn-danger mb-2 mt-2" id="removeFileInput" style="float:right;"> Remove </button>
     </div>
 
 </div>
-
 </div>
 
-<button type="button" class="btn btn-sm btn-primary mt-3 mb-3" id="addFileInput">Add More</button>
+<button type="button" class="btn btn-sm btn-primary mt-4 mb-3" id="addFileInput">Add More</button>
+
+
+
+
 
   <div class="form-group mb-4">
         <button type="submit" class="btn " style="width:80px; height: 30px; background-color: #01004C; color: white; font-size: 12px;">Save</button>
   </div>
+
+
+
                 </form>
             </div>
         </div>
       </div>
   </div>
 </div>
+
 
 <script>
 function validateForm() {
@@ -120,6 +129,9 @@ var pathFolder = document.forms["saveform"]["path_folder"].value;
     var inlineRadioOptions = document.forms["saveform"]["inlineRadioOptions"].value;
 
     var approval = document.forms["saveform"]['user_approval'].value;
+
+    var konten = document.forms["saveform"]["konten"].value;
+    let fileInput = document.getElementById('fileInput').value;
     
     if (judul == "") {
         alert("Judul tidak boleh kosong");
@@ -141,6 +153,11 @@ var pathFolder = document.forms["saveform"]["path_folder"].value;
     return false;
 }
 
+if (konten === "" && fileInput === "") {
+        alert("Isi konten atau unggah file harus diisi salah satu");
+        return false;
+    }
+
     // Mendapatkan nilai status berlaku
   
 
@@ -149,7 +166,9 @@ var pathFolder = document.forms["saveform"]["path_folder"].value;
 }
 </script>
 
+
 <script>
+    
 $(document).ready(function () {
 
     // Fungsi untuk menambah insentif
@@ -173,23 +192,27 @@ $(document).ready(function () {
         if (insentifItems.length > 1) {
             $(this).closest('.upload-item').remove();
         } else {
-            alert("Anda tidak dapat menghapus form pertama.");
+            alert("Anda tidak dapat menghapus form input file pertama.");
         }
     });
 
     // Fungsi untuk menampilkan pratinjau file
   // Fungsi untuk menampilkan pratinjau file
+// Fungsi untuk menampilkan pratinjau file
 function previewFile(input) {
     const file = input.files[0];
     const preview = document.createElement('div');
     preview.style.marginTop = '10px';
-
+    
+    // Validasi ukuran file
     const maxFileSize = 100 * 1024 * 1024; // 1MB
     if (file.size > maxFileSize) {
         alert("Ukuran file tidak boleh lebih dari 100 MB.");
         input.value = ''; // Menghapus file yang sudah dipilih
         return;
     }
+
+    
     
     const allowedTypes = ['jpg', 'jpeg', 'png', 'gif', 'mp4', 'mov', 'avi', 'pdf', 'mp3', 'wav'];
 const fileType = file.name.split('.').pop().toLowerCase(); // Mendapatkan ekstensi file
@@ -223,6 +246,8 @@ if (fileType === 'jpg' || fileType === 'jpeg' || fileType === 'png' || fileType 
     const fileName = document.createTextNode(file.name);
     preview.appendChild(fileName);
 }
+
+    
     const existingPreview = input.parentElement.querySelector('.preview-container');
     if (existingPreview) {
         input.parentElement.removeChild(existingPreview); // Menghapus pratinjau dari form sebelumnya
@@ -231,6 +256,7 @@ if (fileType === 'jpg' || fileType === 'jpeg' || fileType === 'png' || fileType 
     preview.classList.add('preview-container'); // Menghapus tanda "." dari ".preview-container"
     input.parentElement.appendChild(preview);
 }
+
 
 
     // Memanggil fungsi previewFile saat ada perubahan pada input file

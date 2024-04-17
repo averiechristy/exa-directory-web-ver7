@@ -205,6 +205,8 @@ Route::get('/tampilkontenapproval/{id}',[FileController::class,'tampilkontenappr
 Route::get('approval/viewkonten',[ApprovalPageController::class,'viewkonten'])->name('approval.viewkonten');
 Route::get('/detailmemberapproval/{id}',[ApprovalPageController::class,'detailmemberapproval'])->name('detailmemberapproval');
 
+Route::post('/aktifkanuser/{id}',[UserController::class,'aktifkanuser'])->name('aktifkanuser');
+
 
 });
 
@@ -266,6 +268,7 @@ Route::get('/detailmemberapprovaladmin/{id}',[ApprovalPageController::class,'det
 
 
 Route::post('/updatestatusadmin/{id}',[FileController::class,'updatestatusadmin'])->name('updatestatusadmin');
+Route::post('/adminaktifkanuser/{id}',[UserController::class,'adminaktifkanuser'])->name('adminaktifkanuser');
 
 });
 

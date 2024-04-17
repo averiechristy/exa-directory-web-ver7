@@ -45,7 +45,7 @@ entries
                             <th>Cabang</th>
                             <th>Role</th>
                             <th>Approval / Non Approval</th>
-                            <th>Aktf / Tidak Aktif</th>
+                            <th>Aktif / Tidak Aktif</th>
                             <th>Created at</th>
                             <th>Created by</th>
                             <th>Updated at</th>
@@ -93,7 +93,11 @@ entries
                             <button type="submit" class="btn-delete mt-1 show_confirm" data-toggle="tooltip" title='Hapus'><i class="mdi mdi-delete" style="color:white;" ></i></button>
                         </form>      
                         @else
-                        Action Disabled
+                        <form method="POST" action="{{ route('aktifkanuser', $users->id) }}">
+    @csrf
+    <button type="submit" class="btn btn-sm btn-primary mt-1 show_confirm3" data-toggle="tooltip"> Aktifkan User</button>
+</form>
+
                         @endif
                             </td>
                           </tr>

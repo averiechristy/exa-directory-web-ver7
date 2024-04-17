@@ -53,6 +53,7 @@ class UserGroupController extends Controller
         //  ->get(['user_groups.*']); // Ambil semua kolom dari tabel usergroups dengan entri unik
 
          $usergroup = UserGroup::where('cabang_id', $cabang)
+         ->orderBy('created_at', 'desc')
          ->where('role_id', $role)
          ->distinct()->get();
 
@@ -74,6 +75,7 @@ class UserGroupController extends Controller
             // Fetch users with the same cabang_id as the logged-in user
             $users = User::where('cabang_id', $loggedInUser->cabang_id)
                           ->get();
+
         
             return view("admin.usergroup.create",[
                
@@ -86,6 +88,8 @@ class UserGroupController extends Controller
      * Store a newly created resource in storage.
      */public function store(Request $request)
 {
+
+ 
     $loggedInUser = auth()->user();
     $loggedInUsername = $loggedInUser->nama_user; 
     $cabangId = $loggedInUser->cabang_id;
@@ -100,7 +104,7 @@ class UserGroupController extends Controller
     // Check if group with the same name already exists
     if ($existingGroup) {
         // If group with the same name exists, return with error message
-        $request->session()->flash('error', 'Gagal menyimpan data, Nama Group sudah ada.');
+        $request->session()->flash('error', 'Gagal menyimpan data, nama group sudah ada.');
         return redirect(route('superadmin.usergroup.index'));    }
 
     $usergroup = new UserGroup;
@@ -181,17 +185,19 @@ public function usergroupstore(Request $request)
     $loggedInUser = Auth::user();
     $loggedInUsername = $loggedInUser->nama_user; 
     $cabangId = $loggedInUser->cabang_id;
+    $roleId = $loggedInUser ->role_id;
     
     $roleId = $loggedInUser->role_id;
     $nama = $request->nama_group;
     $existingGroup = UserGroup::where('nama_group', $nama)
     ->where('cabang_id', $cabangId)
+    ->where('role_id', $roleId)
     ->first();
    
     // Check if group with the same name already exists
     if ($existingGroup) {
         // If group with the same name exists, return with error message
-        $request->session()->flash('error', 'Gagal menyimpan data, Nama Group sudah ada.');
+        $request->session()->flash('error', 'Gagal menyimpan data, nama group sudah ada.');
         return redirect(route('admin.usergroup.index'));    }
     $usergroup->nama_group = $request->nama_group;
     $usergroup->created_by = $loggedInUsername;
@@ -390,6 +396,7 @@ public function usergroupstore(Request $request)
     
     public function getMembersByCabang($cabangId)
     {
+        
         // Fetch members based on the selected branch (Cabang)
         $members = User::whereIn('cabang_id', $cabangId)->get();
 
@@ -420,7 +427,7 @@ public function usergroupstore(Request $request)
     {
         // Validate the request data
      
-    
+  
         // Update UserGroup
         $usergroup = UserGroup::findOrFail($id);
         $loggedInUser = auth()->user();
@@ -439,7 +446,7 @@ public function usergroupstore(Request $request)
         // Check if group with the same name already exists
         if ($existingGroup) {
             // If group with the same name exists, return with error message
-            $request->session()->flash('error', 'Gagal menyimpan data, Nama Group sudah ada.');
+            $request->session()->flash('error', 'Gagal menyimpan data, nama group sudah ada.');
             return redirect(route('superadmin.usergroup.index'));    }
        
         
@@ -449,10 +456,29 @@ public function usergroupstore(Request $request)
         $detailmember = [];
     
         if ( $usergrouptype == 'General') {
-            foreach ($request->cabang as $cabangId) {
-                $users = User::where('cabang_id', $cabangId)->get();
+            
+            if ($request->has('anggota')) {
+                // Ambil semua user dari cabang yang dipilih
+                $selectedCabangs = $request->cabang;
+                $users = User::whereIn('cabang_id', $selectedCabangs)->get();
+    
                 foreach ($users as $user) {
+                    // Cek apakah user termasuk dalam anggota yang dikecualikan
                     if (!in_array($user->id, $request->anggota)) {
+                        // Tambahkan detail member untuk user yang tidak dikecualikan
+                        $detailmember[] = [
+                            'user_group_id' => $usergroup->id,
+                            'user_id' => $user->id,
+                            'cabang_id' => $user->cabang_id,
+                        ];
+                    }
+                }
+    
+            } else {
+                // Jika tidak ada anggota yang dikecualikan, tambahkan semua user dari cabang yang dipilih
+                foreach ($request->cabang as $cabangId) {
+                    $users = User::where('cabang_id', $cabangId)->get();
+                    foreach ($users as $user) {
                         $detailmember[] = [
                             'user_group_id' => $usergroup->id,
                             'user_id' => $user->id,
@@ -462,15 +488,18 @@ public function usergroupstore(Request $request)
                 }
             }
         } elseif ( $usergrouptype == 'Custom') {
-            foreach ($request->anggotacustom as $anggotaId) {
-                $user = User::find($anggotaId);
-                $cabangId = $user->cabang_id;
+            if ($request->has('anggotacustom')) {
+                foreach ($request->anggotacustom as $anggotaId) {
+                    // Ambil informasi cabang_id dari user_id
+                    $user = User::find($anggotaId);
+                    $cabangId = $user->cabang_id;
     
-                $detailmember[] = [
-                    'user_group_id' => $usergroup->id,
-                    'user_id' => $anggotaId,
-                    'cabang_id' => $cabangId,
-                ];
+                    $detailmember[] = [
+                        'user_group_id' => $usergroup->id,
+                        'user_id' => $anggotaId,
+                        'cabang_id' => $cabangId,
+                    ];
+                }
             }
         }
     
@@ -496,18 +525,23 @@ public function usergroupstore(Request $request)
     
             $usergrouptype = $usergroup->type;
             $cabangId = $loggedInUser->cabang_id;
+            $roleId = $loggedInUser->role_id;
 
             $nama = $request->nama_group;
+
             $existingGroup = UserGroup::where('nama_group', $nama)
-            ->where('cabang_id', $cabangId)
             ->where('id', '!=', $id)
+            ->where('cabang_id', $cabangId)
+            ->where('role_id', $roleId)
             ->first();
-           
+
             // Check if group with the same name already exists
             if ($existingGroup) {
                 // If group with the same name exists, return with error message
-                $request->session()->flash('error', 'Gagal menyimpan data, Nama Group sudah ada.');
-                return redirect(route('admin.usergroup.index'));    }
+                $request->session()->flash('error', 'Gagal menyimpan data, nama group sudah ada.');
+                return redirect(route('admin.usergroup.index')); 
+
+            }
                
             $usergroup->save();
         
@@ -515,10 +549,16 @@ public function usergroupstore(Request $request)
             $detailmember = [];
         
             if ( $usergrouptype == 'General') {
-                foreach ($request->cabang as $cabangId) {
+            
+                if ($request->has('anggota')) {
+                    // Ambil semua user dari cabang yang dipilih
+                    $selectedCabangs = $request->cabang;
                     $users = User::where('cabang_id', $cabangId)->get();
+        
                     foreach ($users as $user) {
+                        // Cek apakah user termasuk dalam anggota yang dikecualikan
                         if (!in_array($user->id, $request->anggota)) {
+                            // Tambahkan detail member untuk user yang tidak dikecualikan
                             $detailmember[] = [
                                 'user_group_id' => $usergroup->id,
                                 'user_id' => $user->id,
@@ -526,19 +566,35 @@ public function usergroupstore(Request $request)
                             ];
                         }
                     }
-                }
-            } elseif ( $usergrouptype == 'Custom') {
-                foreach ($request->anggotacustom as $anggotaId) {
-                    $user = User::find($anggotaId);
-                    $cabangId = $user->cabang_id;
         
+                } else {
+                    // Jika tidak ada anggota yang dikecualikan, tambahkan semua user dari cabang yang dipilih
+                    $users = User::where('cabang_id', $loggedInUser->cabang_id)->get();
+                foreach ($users as $user) {
                     $detailmember[] = [
                         'user_group_id' => $usergroup->id,
-                        'user_id' => $anggotaId,
-                        'cabang_id' => $cabangId,
+                        'user_id' => $user->id,
+                        'cabang_id' => $user->cabang_id,
                     ];
                 }
+
+                }
+            } elseif ( $usergrouptype == 'Custom') {
+                if ($request->has('anggotacustom')) {
+                    foreach ($request->anggotacustom as $anggotaId) {
+                        // Ambil informasi cabang_id dari user_id
+                        $user = User::find($anggotaId);
+                        $cabangId = $user->cabang_id;
+        
+                        $detailmember[] = [
+                            'user_group_id' => $usergroup->id,
+                            'user_id' => $anggotaId,
+                            'cabang_id' => $cabangId,
+                        ];
+                    }
+                }
             }
+        
         
             // Delete existing DetailMember records for the user group
             DetailMember::where('user_group_id', $usergroup->id)->delete();
@@ -568,12 +624,12 @@ public function usergroupstore(Request $request)
             foreach ($detailMembers as $detailMember) {
                 $detailMember->delete();
             }
-    
+            
             // Hapus UserGroup setelah menghapus DetailMember
             $usergroup->delete();
     
             // Set flash message
-            $request->session()->flash('error', "User Group Berhasil dihapus.");
+            $request->session()->flash('error', "User Group berhasil dihapus.");
         } else {
             // Jika UserGroup tidak ditemukan, set flash message sesuai kebutuhan
             $request->session()->flash('error', "User Group tidak ditemukan.");
@@ -599,13 +655,13 @@ public function usergroupstore(Request $request)
         $usergroup->delete();
 
         // Set flash message
-        $request->session()->flash('error', "User Group Berhasil dihapus.");
+        $request->session()->flash('error', "User Group berhasil dihapus.");
     } else {
         // Jika UserGroup tidak ditemukan, set flash message sesuai kebutuhan
         $request->session()->flash('error', "User Group tidak ditemukan.");
     }
 
-    $request->session()->flash('error', "User Group Berhasil dihapus.");
+    $request->session()->flash('error', "User Group berhasil dihapus.");
 
     return redirect(route('admin.usergroup.index'));
 }

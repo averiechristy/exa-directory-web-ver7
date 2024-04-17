@@ -17,11 +17,11 @@
                         </button>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addSubfolderModal{{$subfolder->id}}">Add Subfolder</a>
-                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#renameFolderModal{{$subfolder->id}}">Edit SubFolder</a>      
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#renameFolderModal{{$subfolder->id}}">Edit Subfolder</a>      
                             <form action="{{ route('folder.delete', ['id' => $subfolder->id]) }}" method="POST" style="display: inline;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="dropdown-item" onclick="return confirm('Yakin menghapus folder ini?')">Delete SubFolder</button>
+                                <button type="submit" class="dropdown-item" onclick="return confirm('Yakin menghapus folder ini?')">Delete Subfolder</button>
                             </form>
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#editgroup{{$subfolder->id}}">Edit Group</a>
                         </div>
@@ -33,11 +33,11 @@
                         </button>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addSubfolderModal{{$subfolder->id}}">Add Subfolder </a>
-                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#renameFolderModal{{$subfolder->id}}">Edit SubFolder</a>      
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#renameFolderModal{{$subfolder->id}}">Edit Subfolder</a>      
                             <form action="{{ route('folder.delete', ['id' => $subfolder->id]) }}" method="POST" style="display: inline;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="dropdown-item" onclick="return confirm('Yakin menghapus folder ini?')">Delete SubFolder</button>
+                                <button type="submit" class="dropdown-item" onclick="return confirm('Yakin menghapus folder ini?')">Delete Subfolder</button>
                             </form>
                         </div>
                     </div>
@@ -59,7 +59,7 @@
                             @csrf <!-- Untuk melindungi dari serangan CSRF -->
                             <div class="form-group">
                                 <label for="newFolderName{{$subfolder->id}}">Nama Folder</label>
-                                <input type="text" class="form-control" id="newFolderName{{$subfolder->id}}" name="new_folder_name" value="{{$subfolder->nama_folder}}">
+                                <input required type="text" class="form-control" id="newFolderName{{$subfolder->id}}" name="new_folder_name" value="{{$subfolder->nama_folder}}">
                             </div>
                     </div>
                     <div class="modal-footer">
@@ -86,7 +86,7 @@
                             <!-- Untuk melindungi dari serangan CSRF -->
                             <div class="form-group">
                                 <label for="subfolderName">Nama Subfolder</label>
-                                <input type="text" class="form-control" id="subfolderName" name="nama_subfolder">
+                                <input type="text" class="form-control" id="subfolderName" name="nama_subfolder" required>
                             </div>
                     </div>
                     <div class="modal-footer">

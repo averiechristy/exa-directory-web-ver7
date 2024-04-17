@@ -47,13 +47,13 @@ class CabangController extends Controller
         $existingnama = Cabang::where('nama_cabang',$namacabang)->first();
 
         if($existingcode){
-            $request->session()->flash('error', "Gagal menyimpan data, kode cabang sudah ada");
+            $request->session()->flash('error', "Gagal menyimpan data, kode cabang sudah ada.");
         
             return redirect()->route('superadmin.cabang.index');
         }
         if ($existingnama){
 
-            $request->session()->flash('error', "Gagal menyimpan data, nama cabang sudah ada");
+            $request->session()->flash('error', "Gagal menyimpan data, nama cabang sudah ada.");
         
             return redirect()->route('superadmin.cabang.index');
 
@@ -113,13 +113,13 @@ class CabangController extends Controller
         $existingnama = Cabang::where('nama_cabang',$namacabang)->first();
 
         if($existingcode){
-            $request->session()->flash('error', "Gagal menyimpan data, kode cabang sudah ada");
+            $request->session()->flash('error', "Gagal menyimpan data, kode cabang sudah ada.");
         
             return redirect()->route('superadmin.cabang.index');
         }
         if ($existingnama){
 
-            $request->session()->flash('error', "Gagal menyimpan data, nama cabang sudah ada");
+            $request->session()->flash('error', "Gagal menyimpan data, nama cabang sudah ada.");
         
             return redirect()->route('superadmin.cabang.index');
 

@@ -2,10 +2,10 @@
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
        
         <div>
-          <a class="navbar-brand brand-logo" href="index.html">
+          <a class="navbar-brand brand-logo" >
           <img src="{{asset('img/logodirectory.png')}}" alt="logo" />
           </a>
-          <a class="navbar-brand brand-logo-mini" href="index.html">
+          <a class="navbar-brand brand-logo-mini" >
           <img src="{{asset('img/smalllogo.png')}}" alt="logo" />
           </a>
         </div>

@@ -33,13 +33,15 @@
                         </button>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addSubfolderModaladmin{{$folder->id}}">Add Subfolder</a>
+                            
+                            
+                            <a class="dropdown-item edit-group-btn" href="{{route('tampilfoldergroupadmin', $folder->id)}}" >Edit Folder</a>
+                       
                             <form action="{{ route('folder.deleteadmin', ['id' => $folder->id]) }}" method="POST" style="display: inline;">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="dropdown-item" onclick="return confirm('Yakin menghapus folder ini?')">Delete Folder</button>
                             </form>
-                            
-                            <a class="dropdown-item edit-group-btn" href="{{route('tampilfoldergroupadmin', $folder->id)}}" >Edit Folder</a>
                         </div>
                     </div>
                 @else

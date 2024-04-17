@@ -22,6 +22,12 @@ class Cabang extends Model
         return $this->hasMany(User::class);
     }
 
+    public function detailmember()
+    {
+
+        return $this->hasMany(DetailMember::class);
+    }
+
 
     public function UserGroup()
     {

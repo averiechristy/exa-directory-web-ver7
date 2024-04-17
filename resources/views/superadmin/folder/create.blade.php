@@ -23,7 +23,7 @@
                            
 <div class="form-group mb-4">
 @foreach ($usergroup as $key => $item)
-        @if ($key % 5 == 0 && $key != 0)
+        @if ($key % 10 == 0 && $key != 0)
             </div><div class="form-group mb-4">
         @endif
         <div class="form-check" style="display: inline-block; margin-right: 10px;">
@@ -123,7 +123,7 @@ function validateForm() {
     }
 
     if (!isChecked) {
-        alert("Pilih setidaknya satu grup.");
+        alert("Pilih setidaknya satu grup, jika tidak ada grup silakan buat grup terlebih dahulu.");
         return false;
     }
 

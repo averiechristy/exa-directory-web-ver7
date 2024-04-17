@@ -20,22 +20,20 @@
                 <div class="file-wrapper">
                     @if($detailFiles->isNotEmpty())
                         @foreach($detailFiles as $detailFile)
-                            <div class="file">
-                                
+                            <div class="file">   
                                 @php
                                     $extension = pathinfo($detailFile->file, PATHINFO_EXTENSION);
                                 @endphp
-
-                                @if(in_array($extension, ['jpg', 'jpeg', 'png', 'gif'])) <!-- Gambar -->
+                        @if(in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'gif', 'PNG']))
                                     <img src="{{ asset('public/files/') }}/{{ $detailFile->file }}" alt="Gambar" style="max-width: 50%; max-height: 50%;" class="file-preview">
-                                @elseif(in_array($extension, ['mp4', 'mov', 'avi'])) <!-- Video -->
+                                @elseif(in_array(strtolower($extension), ['mp4', 'mov', 'avi'])) <!-- Video -->
                                     <video width="90%" height="500" controls class="file-preview">
                                         <source src="{{ asset('public/files/') }}/{{ $detailFile->file }}" type="video/mp4">
                                         Your browser does not support the video tag.
                                     </video>
-                                @elseif($extension == 'pdf') <!-- PDF -->
-                                    <iframe src="{{ asset('public/files/') }}/{{ $detailFile->file }}" width="90%" height="500px" class="file-preview"></iframe>
-                                @elseif(in_array($extension, ['mp3', 'wav'])) <!-- Audio -->
+                                @elseif(strtolower($extension) == 'pdf') <!-- PDF -->
+                                <iframe src="https://docs.google.com/viewer?url={{ asset('public/files/') }}/{{ $detailFile->file }}&embedded=true" width="100%" height="100%" style="border: none;"></iframe>
+                                @elseif(in_array(strtolower($extension), ['mp3', 'wav'])) <!-- Audio -->
                                     <audio controls preload="none" class="file-preview">
                                         <source src="{{ asset('public/files/') }}/{{ $detailFile->file }}" type="audio/mpeg">
                                         Your browser does not support the audio tag.

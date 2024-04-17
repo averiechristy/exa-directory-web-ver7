@@ -81,8 +81,7 @@ class FolderController extends Controller
 
     public function foldercreate()
     {
-        $cabang = Auth::user()->cabang_id;
-        $role = Auth::user()->role_id;
+       
 
         // Menyaring data berdasarkan role pengguna
         // $usergroup = UserGroup::join('detail_members', 'user_groups.id', '=', 'detail_members.user_group_id')
@@ -90,7 +89,8 @@ class FolderController extends Controller
         //     ->orderBy('user_groups.created_at', 'desc')
         //     ->get(['user_groups.*']);
 
-
+        $cabang = Auth::user()->cabang_id;
+        $role = Auth::user()->role_id;
         $usergroup = UserGroup::where('cabang_id', $cabang)
         ->where('role_id', $role)
         ->get();
@@ -124,6 +124,23 @@ public function store(Request $request)
 {
     $folder = new Folder;
     $Cabang = Auth::user()->cabang_id; 
+    $role = Auth::user()->role_id;
+
+    $namafolder = $request -> nama_folder;
+   
+
+    $existingfile =  Folder::where('role_id', $role)->where('cabang_id', $Cabang)->where('nama_folder', $namafolder)->whereNull('id_folder_induk')->first();
+    
+ 
+    
+    if($existingfile){
+        
+        $request->session()->flash('error', 'Folder gagal ditambahkan, nama folder sudah ada.');
+        return redirect(route('superadmin.folder.index'));
+    }
+
+    
+
     $loggedInUser = auth()->user();
     $roleId = $loggedInUser->role_id;
     $loggedInUsername = $loggedInUser->nama_user; 
@@ -167,6 +184,25 @@ public function store(Request $request)
         $folder = new Folder;
         $loggedInUser = Auth::user();
         $Cabang = Auth::user()->cabang_id; 
+
+        $role = Auth::user()->role_id;
+
+    $namafolder = $request -> nama_folder;
+   
+
+    $existingfile =  Folder::where('role_id', $role)->where('cabang_id', $Cabang)->where('nama_folder', $namafolder)->whereNull('id_folder_induk')->first();
+    
+ 
+    
+    if($existingfile){
+        
+        $request->session()->flash('error', 'Folder gagal ditambahkan, nama folder sudah ada.');
+        return redirect(route('admin.folder.index'));
+    }
+
+
+
+
         $loggedInUser = auth()->user();
     $loggedInUsername = $loggedInUser->nama_user; 
         $folder->nama_folder = $request->nama_folder;
@@ -554,7 +590,12 @@ public function tampilfoldergroupadmin ($id) {
         //     ->orderBy('user_groups.created_at', 'desc')
         //     ->get(['user_groups.*']);
 
-        $usergroup = UserGroup::where('cabang_id', $cabang)->get();
+       
+        $role = Auth::user()->role_id;
+        $usergroup = UserGroup::where('cabang_id', $cabang)
+        ->where('role_id', $role)
+        ->get();
+
     $nama = DetailGroup::with('UserGroup')->where('folder_id', $id)->get();
    
     $selectedGroup = $nama->pluck('user_group_id')->toArray();
@@ -570,8 +611,29 @@ public function tampilfoldergroupadmin ($id) {
 }
 
 public function updatefoldergroup(Request $request, $id) {
+    $Cabang = Auth::user()->cabang_id; 
+    $role = Auth::user()->role_id;
+
+    $namafolder = $request -> nama_folder;
    
+
+    $existingfile =  Folder::where('role_id', $role)->where('cabang_id', $Cabang)->where('nama_folder', $namafolder)->whereNull('id_folder_induk')-> whereNot('id', $id)->first();
+    
+ 
+    
+    if($existingfile){
+        
+        $request->session()->flash('error', 'Folder gagal ditambahkan, nama folder sudah ada.');
+        return redirect(route('superadmin.folder.index'));
+    }
+
+
     $folder = Folder::findOrFail($id);
+
+
+
+
+
     $folder->nama_folder = $request->nama_folder;
     $folder->save();
 
@@ -604,7 +666,21 @@ public function updatefoldergroup(Request $request, $id) {
 
 public function updatefoldergroupadmin(Request $request, $id) {
    
-  
+    $Cabang = Auth::user()->cabang_id; 
+    $role = Auth::user()->role_id;
+
+    $namafolder = $request -> nama_folder;
+   
+
+    $existingfile =  Folder::where('role_id', $role)->where('cabang_id', $Cabang)->where('nama_folder', $namafolder)->whereNull('id_folder_induk')-> whereNot('id', $id)->first();
+    
+ 
+    
+    if($existingfile){
+        
+        $request->session()->flash('error', 'Folder gagal ditambahkan, nama folder sudah ada.');
+        return redirect(route('admin.folder.index'));
+    }
     
 
     $folder = Folder::findOrFail($id);

@@ -15,7 +15,7 @@
             <!-- Untuk melindungi dari serangan CSRF -->
             <div class="form-group">
                 <label for="subfolderName">Nama Subfolder</label>
-                <input type="text" class="form-control" id="subfolderName" name="nama_subfolder">
+                <input type="text" class="form-control" id="subfolderName" name="nama_subfolder" required>
             </div>
       </div>
       <div class="modal-footer">

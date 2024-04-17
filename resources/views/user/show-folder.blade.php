@@ -27,7 +27,7 @@
                                     <th scope="col">Nama</th>
                                     <th scope="col">Status</th>
                                     <th scope="col">Date Modified</th>
-                                    <th scope="col">Type</th>
+                                 
 
                                     <th scope="col">Action</th>
                                 </tr>
@@ -44,7 +44,7 @@
                                         </td>
                                         <td></td>
                                         <td>{{$subfolder->updated_at}}</td>
-                                        <td>Folder</td>
+                                       
                                         <td>
                                     @if(auth()->user()->isFolderPinned($subfolder->id))
                                         <button class="btn btn-sm btn-danger" onclick="unpinFolder({{ $subfolder->id }}, 'folder')">Unpin Folder</button>
@@ -74,7 +74,7 @@
             @endif
     </td>
                                         <td>{{$file->updated_at}}</td>
-                                        <td>File</td>
+                                       
                                         <td>
     @if(auth()->user()->isFilePinned($file->id))
         <button class="btn btn-sm btn-danger" onclick="unpinFile({{ $file->id }}, 'file')">Unpin File</button>

@@ -88,7 +88,6 @@
       <label for="exampleFormControlInput1" class="form-label">Status Persetujuan</label>
       <select name="status_persetujuan" class="form-select" aria-label="Default select example">
             <option disabled>Pilih Status Persetujuan</option>
-            <option value="Menunggu Persetujuan" {{$data['status_persetujuan'] == "Menunggu Persetujuan" ? 'selected' : '' }}>Menunggu Persetujuan</option>
             <option value="Disetujui" {{$data['status_persetujuan'] == "Disetujui" ? 'selected' : '' }}>Disetujui</option>
             <option value="Ditolak" {{$data['status_persetujuan'] == "Ditolak" ? 'selected' : '' }}>Ditolak</option>
       </select>

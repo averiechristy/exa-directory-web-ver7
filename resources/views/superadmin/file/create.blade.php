@@ -73,9 +73,7 @@
          <label>Konten</label>
                  <div class="form-group">
      <!-- <textarea name="isi_artikel" class="my-editor form-control {{$errors->has('konten') ? 'is-invalid' : ''}}" style="border-color: #01004C;" id="my-editor" cols="30" rows="10" required>{{old('konten')}}</textarea>                                             -->
-<textarea name="konten" class="my-editor form-control {{$errors->has('konten') ? 'is-invalid' : ''}} " id="my-editor"cols="30" rows="10" style="border-color: #01004C;" value=""  oninvalid="this.setCustomValidity('Isi artikel tidak boleh kosong')" oninput="setCustomValidity('')">{{ old('konten') }}
-
-</textarea>        
+<textarea name="konten" class="my-editor form-control {{$errors->has('konten') ? 'is-invalid' : ''}} " id="my-editor"cols="30" rows="10" style="border-color: #01004C;" value=""  oninvalid="this.setCustomValidity('Isi artikel tidak boleh kosong')" oninput="setCustomValidity('')">{{ old('konten') }}</textarea>        
 </div>
 
 
@@ -84,24 +82,25 @@
     <input class="form-control form-control-sm" id="formFileSm" type="file" name="formFileSm" accept=".pdf">
     </div> -->
 
+    <div id ="file-fields">
     <div class="upload-container">
     <div class="upload-item">
 
     <div class="form-input-item">
         <label for="formFileSm" class="form-label">Upload File / Video / Image / Audio</label>
         <div id="fileInputs">
-            <input class="form-control form-control-sm mb-2" type="file" name="formFileSm[]" onchange="previewFile(this)">
+            <input class="form-control form-control-sm mb-2" type="file" id="fileInput"  name="formFileSm[]" onchange="previewFile(this)">
             <div class="preview-container"></div>
         </div>
 
 
-        <button type="button" class="btn btn-sm btn-danger mb-3" id="removeFileInput" style="float:right;"> Remove </button>
+        <button type="button" class="btn btn-sm btn-danger mb-2 mt-2" id="removeFileInput" style="float:right;"> Remove </button>
     </div>
 
 </div>
 </div>
-
-<button type="button" class="btn btn-sm btn-primary mt-3 mb-3" id="addFileInput">Add More</button>
+</div>
+<button type="button" class="btn btn-sm btn-primary mt-4 mb-3" id="addFileInput">Add More</button>
 
 
 
@@ -131,6 +130,9 @@ var pathFolder = document.forms["saveform"]["path_folder"].value;
     var inlineRadioOptions = document.forms["saveform"]["inlineRadioOptions"].value;
 
     var approval = document.forms["saveform"]['user_approval'].value;
+
+    var konten = document.forms["saveform"]["konten"].value;
+    let fileInput = document.getElementById('fileInput').value;
     
     if (judul == "") {
         alert("Judul tidak boleh kosong");
@@ -140,26 +142,26 @@ var pathFolder = document.forms["saveform"]["path_folder"].value;
     if (pathFolder === "" || pathFolder === "Pilih Path") {
     alert("Path Folder harus dipilih");
     return false;
-}
-
+    }
 
     if (inlineRadioOptions == null || inlineRadioOptions === '') {
         alert("Pilihan status file harus dipilih");
         return false;
     }
+
     if (approval === "" || approval === "Pilih Approval") {
     alert("Approval Line harus dipilih");
     return false;
-}
+    }
 
-    // Mendapatkan nilai status berlaku
-  
+    if (konten === "" && fileInput === "") {
+        alert("Isi konten atau unggah file harus diisi salah satu");
+        return false;
+    }
 
-    // Jika validasi berhasil, kembalikan true
     return true;
 }
 </script>
-
 
 <script>
     
@@ -167,14 +169,27 @@ $(document).ready(function () {
 
     // Fungsi untuk menambah insentif
     $('#addFileInput').click(function () {
-    var insentifContainer = $('.upload-container');
-    var newInsentifItem = $('.upload-item').eq(0).clone();
+   
+    var fileField = `
+    <div class="upload-container">
+    <div class="upload-item">
 
-    // Menghapus kontainer pratinjau file sebelum menambahkan item baru
-    newInsentifItem.find('.preview-container').html('');
+    <div class="form-input-item">
+        <label for="formFileSm" class="form-label">Upload File / Video / Image / Audio</label>
+        <div id="fileInputs">
+            <input class="form-control form-control-sm mb-2" type="file" name="formFileSm[]" onchange="previewFile(this)">
+            <div class="preview-container"></div>
+        </div>
 
-    // Menambah item insentif baru ke dalam kontainer
-    insentifContainer.append(newInsentifItem);
+
+        <button type="button" class="btn btn-sm btn-danger mb-2 mt-2" id="removeFileInput" style="float:right;"> Remove </button>
+    </div>
+
+</div>
+</div>`;
+
+$("#file-fields").append(fileField);
+
 });
 
     // Fungsi untuk menghapus insentif
@@ -186,7 +201,7 @@ $(document).ready(function () {
         if (insentifItems.length > 1) {
             $(this).closest('.upload-item').remove();
         } else {
-            alert("Anda tidak dapat menghapus form pertama.");
+            alert("Anda tidak dapat menghapus form input file pertama.");
         }
     });
 

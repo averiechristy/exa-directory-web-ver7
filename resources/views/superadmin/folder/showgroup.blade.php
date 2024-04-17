@@ -31,7 +31,7 @@
     <label for="" class="form-label" style="font-size: 11pt; font-weight: bold;">Group</label>
     <div class="form-group mb-4">
     @foreach ($usergroup as $key => $item)
-            @if ($key % 5 == 0 && $key != 0)
+            @if ($key % 10 == 0 && $key != 0)
                 </div><div class="form-group mb-4">
             @endif
             <div class="form-check" style="display: inline-block; margin-right: 10px;">

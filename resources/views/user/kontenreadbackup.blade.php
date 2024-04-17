@@ -47,7 +47,7 @@
 
 
 
-
+z
                 @elseif(in_array($extension, ['mp3', 'wav'])) <!-- Audio -->
                     <audio class="mt-3"controls preload="none" controlsList="nodownload"  oncontextmenu="return false;">
                         <source src="{{ asset('storage/files/') }}/{{ $detailFile->file }}" type="audio/mpeg">
