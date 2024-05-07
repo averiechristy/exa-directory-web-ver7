@@ -35,33 +35,38 @@ entries
                       <table class="table table-striped">
                         <thead>
                           <tr>
-                            <th>Nama Group</th>
-                            <th>Member</th>
-                            <th>Created at</th>
-                            <th>Created by</th>
-                            <th>Updated at</th>
-                            <th>Updated by</th>
-                            <th>Action</th>
+                            <th>Nama Group<i class="fa fa-sort"></i></th>
+                            <th>Member<i class="fa fa-sort"></i></th>
+                            <th>Created at<i class="fa fa-sort"></i></th>
+                            <th>Created by<i class="fa fa-sort"></i></th>
+                            <th>Updated at<i class="fa fa-sort"></i></th>
+                            <th>Updated by<i class="fa fa-sort"></i></th>
+                            <th>Action<i class="fa fa-sort"></i></th>
                           </tr>
                         </thead>
                         <tbody>
-                          @foreach ($usergroup as $usergroup)
+                          @foreach ($usergroup as $item)
                           <tr>
-                            <td>{{$usergroup -> nama_group}}</td>
+                            <td>{{$item -> nama_group}}</td>
                             <td> 
-                                <a href="{{ route('admindetailmember', $usergroup->id) }}" class="detail-member">Lihat daftar member</a>
+                                <a href="{{ route('admindetailmember', $item->id) }}" class="detail-member">Lihat daftar member</a>
                             </td>
-                            <td>{{$usergroup->created_at}}</td>
-                            <td>{{$usergroup->created_by}}</td>
-                            <td>{{$usergroup->updated_at}}</td>
-                            <td>{{$usergroup->updated_by}}</td>
+                            <td>{{$item->created_at}}</td>
+                            <td>{{$item->created_by}}</td>
+                            <td>{{$item->updated_at}}</td>
+                            <td>{{$item->updated_by}}</td>
                             <td>
-                            <a  href="{{route('admintampilusergroup', $usergroup->id)}}"data-toggle="tooltip" title='Edit'><button class="btn-edit"><i class="mdi mdi-pencil" style="color:white" ></i></button></a>        
-                            <form method="POST" action="{{ route('admindeleteusergroup', $usergroup->id) }}">
+                                @if ($item -> role_id == 1)
+                                    Action Disabled
+                                @else
+                            <a  href="{{route('admintampilusergroup', $item->id)}}"data-toggle="tooltip" title='Edit'><button class="btn-edit"><i class="mdi mdi-pencil" style="color:white" ></i></button></a>        
+                            <form method="POST" action="{{ route('admindeleteusergroup', $item->id) }}">
                             @csrf
                             <input name="_method" type="hidden" value="DELETE">
                             <button type="submit" class="btn-delete show_confirm mt-1" data-toggle="tooltip" title='Hapus'><i class="mdi mdi-delete" style="color:white;"></i></button>
-                          </form>                       
+                          </form>  
+                          
+                          @endif
                           </td>
                           </tr>
                           @endforeach
@@ -256,6 +261,57 @@ updatePagination();
     // Panggil updatePagination untuk inisialisasi
   
              
+</script>
+
+<script>
+// Tambahkan event listener untuk setiap ikon sort
+document.querySelectorAll('thead th i.fa-sort').forEach(function(icon) {
+    icon.addEventListener('click', function() {
+        // Ambil status sort dari atribut data
+        var sortStatus = this.dataset.sort || 'asc';
+
+        // Hapus kelas active dari semua ikon
+        document.querySelectorAll('thead th i').forEach(function(icon) {
+            icon.classList.remove('fa-sort-up');
+            icon.classList.remove('fa-sort-down');
+        });
+
+        // Periksa status sort dan atur ikon yang sesuai
+        if (sortStatus === 'asc') {
+            this.classList.add('fa-sort-up');
+            this.dataset.sort = 'desc'; // Toggle status sort menjadi 'desc'
+        } else {
+            this.classList.add('fa-sort-down');
+            this.dataset.sort = 'asc'; // Toggle status sort menjadi 'asc'
+        }
+
+        // Ambil indeks kolom yang diurutkan
+        var columnIndex = Array.from(this.parentNode.parentNode.children).indexOf(this.parentNode);
+
+        // Ambil semua baris data
+        var rows = Array.from(document.querySelectorAll('tbody tr'));
+
+        // Lakukan pengurutan data
+        rows.sort(function(rowA, rowB) {
+            var valueA = rowA.children[columnIndex].textContent;
+            var valueB = rowB.children[columnIndex].textContent;
+
+            // Lakukan pengurutan berdasarkan nilai teks
+            if (sortStatus === 'asc') {
+                return valueA.localeCompare(valueB);
+            } else {
+                return valueB.localeCompare(valueA);
+            }
+        });
+
+        // Perbarui tbody dengan baris yang telah diurutkan
+        var tbody = document.querySelector('tbody');
+        rows.forEach(function(row) {
+            tbody.appendChild(row);
+        });
+    });
+});
+
 </script>
 @endsection
 

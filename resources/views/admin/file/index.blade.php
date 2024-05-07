@@ -47,28 +47,28 @@ entries
                         <thead>
                           <tr>
                           
-                            <th>Judul Konten</th>
-                            <th>Path Folder</th>
-                           <th>Isi Konten</th>
-                            <th>Status Persetujuan</th>
-                            <th>Approval Line</th>
-                            <th>Catatan</th>
-                            <th>Status</th>
-                            <!-- <th>Lihat File</th> -->
+                            <th>Judul Konten<i class="fa fa-sort"></i></th>
+                            <th>Path Folder<i class="fa fa-sort"></i></th>
+                           <th>Isi Konten<i class="fa fa-sort"></i></th>
+                            <th>Status Persetujuan<i class="fa fa-sort"></i></th>
+                            <th>Approver<i class="fa fa-sort"></i></th>
+                            <th>Catatan<i class="fa fa-sort"></i></th>
+                            <th>Status<i class="fa fa-sort"></i></th>
+                            <!-- <th>Lihat File<i class="fa fa-sort"></i></th> -->
 
-                            <th>Created at</th>
+                            <th>Created at<i class="fa fa-sort"></i></th>
 
-                            <th>Created by</th>
-                            <th>Updated at</th>
-                            <th>Updated by</th>
+                            <th>Created by<i class="fa fa-sort"></i></th>
+                            <th>Updated at<i class="fa fa-sort"></i></th>
+                            <th>Updated by<i class="fa fa-sort"></i></th>
                             
-                            <th>Action</th>
+                            <th>Action<i class="fa fa-sort"></i></th>
 
                           </tr>
                         </thead>
                         <tbody>
-                        @foreach ($filesByFolder as $folder_id => $files)
-                        @foreach($files as $file)
+                     
+                        @foreach($filesByFolder as $file)
                           <tr>
                         <td>
                         
@@ -146,8 +146,7 @@ entries
                         </td>
                           </tr>
                 @endforeach  
-                @endforeach
-
+             
                 @foreach ($filesByFolderForMember as $folder_id => $files)
                         @foreach($files as $file)
                           <tr>
@@ -437,5 +436,56 @@ updatePagination();
     // Panggil updatePagination untuk inisialisasi
   
              
+</script>
+
+<script>
+// Tambahkan event listener untuk setiap ikon sort
+document.querySelectorAll('thead th i.fa-sort').forEach(function(icon) {
+    icon.addEventListener('click', function() {
+        // Ambil status sort dari atribut data
+        var sortStatus = this.dataset.sort || 'asc';
+
+        // Hapus kelas active dari semua ikon
+        document.querySelectorAll('thead th i').forEach(function(icon) {
+            icon.classList.remove('fa-sort-up');
+            icon.classList.remove('fa-sort-down');
+        });
+
+        // Periksa status sort dan atur ikon yang sesuai
+        if (sortStatus === 'asc') {
+            this.classList.add('fa-sort-up');
+            this.dataset.sort = 'desc'; // Toggle status sort menjadi 'desc'
+        } else {
+            this.classList.add('fa-sort-down');
+            this.dataset.sort = 'asc'; // Toggle status sort menjadi 'asc'
+        }
+
+        // Ambil indeks kolom yang diurutkan
+        var columnIndex = Array.from(this.parentNode.parentNode.children).indexOf(this.parentNode);
+
+        // Ambil semua baris data
+        var rows = Array.from(document.querySelectorAll('tbody tr'));
+
+        // Lakukan pengurutan data
+        rows.sort(function(rowA, rowB) {
+            var valueA = rowA.children[columnIndex].textContent;
+            var valueB = rowB.children[columnIndex].textContent;
+
+            // Lakukan pengurutan berdasarkan nilai teks
+            if (sortStatus === 'asc') {
+                return valueA.localeCompare(valueB);
+            } else {
+                return valueB.localeCompare(valueA);
+            }
+        });
+
+        // Perbarui tbody dengan baris yang telah diurutkan
+        var tbody = document.querySelector('tbody');
+        rows.forEach(function(row) {
+            tbody.appendChild(row);
+        });
+    });
+});
+
 </script>
 @endsection

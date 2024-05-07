@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\AdminController;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
 use App\Models\DetailFile;
 use App\Models\DetailMember;
 use App\Models\File;
 use App\Models\Folder;
 use App\Models\Pin;
 use App\Models\User;
+use App\Models\UserRead;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -21,13 +23,67 @@ class FileController extends Controller
      */
     public function index()
     {
+
+        if (auth()->user()->cabang_id == 1){
         $files = File::with('folder')
         ->orderBy('created_at', 'desc')
         ->get();
-
         return view("superadmin.file.index",[
             "files"=> $files
         ]);
+        }
+        else {
+           
+            $Cabang = Auth::user()->cabang_id;
+            $Role = Auth::user()->role_id;
+              $user = Auth::user();
+              $memberDetails = DetailMember::where('user_id', $user->id)->get();
+            $filesByFolder = File::where('cabang_id_user', $Role)->where('cabang_id', $Cabang)->get();
+
+         
+ 
+    // Logika kedua: Menampilkan file jika dalam folder terdapat member detail dari user yang sedang login
+    $foldersForMember = Folder::whereNull('id_folder_induk')
+        ->whereHas('DetailGroup', function ($query) use ($memberDetails) {
+            $query->whereIn('user_group_id', $memberDetails->pluck('user_group_id')->toArray());
+        })
+        ->orderBy('created_at', 'desc')
+        ->get();
+    
+    
+       
+    
+    
+    $filesByFolderForMember = [];
+    
+    foreach ($foldersForMember as $folder) {
+        $folder_id = $folder->id;
+    
+        $files = File::with('folder')
+            ->whereHas('folder', function ($query) use ($folder_id) {
+                $query->where('id', $folder_id);
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
+    
+        $filesByFolderForMember[$folder_id] = $files;
+    }
+    
+    
+    // Pass the first folder to the view for each logic
+    // $folderAdmin = $foldersByAdmin->first();
+    $folderMember = $foldersForMember->first();
+    
+    
+            return view("superadmin.file.index", [
+               
+                "filesByFolder" => $filesByFolder,
+              
+                "filesByFolderForMember" => $filesByFolderForMember
+            ]);
+        }
+
+        
     }
 
 
@@ -44,8 +100,22 @@ class FileController extends Controller
         $file->status_persetujuan = $request->status_persetujuan;
         $file->catatan = $request->catatan;
 
+        $namafile = $file->nama_file;
+
 
         $file->save();
+
+        ActivityLog::create([
+            'user_id' => Auth::id(),
+            'nama_user' =>  Auth::user()->nama_user,
+            'activity' => 'Approve File',
+            'description' => 'File ' . $file->nama_file .' '. $request->status_persetujuan .' oleh user',
+            'timestamp' => now(),
+            'cabang_id' =>  Auth::user()->cabang_id,
+            'role_id' =>  Auth::user()->role_id,
+        ]);
+
+
 
         $request->session()->flash('success', "Perubahan berhasi disimpan.");
 
@@ -70,6 +140,17 @@ class FileController extends Controller
 
         $file->save();
 
+        ActivityLog::create([
+            'user_id' => Auth::id(),
+            'nama_user' =>  Auth::user()->nama_user,
+            'activity' => 'Approve File',
+            'description' => 'File ' . $file->nama_file .' '. $request->status_persetujuan .' oleh user',
+            'timestamp' => now(),
+            'cabang_id' =>  Auth::user()->cabang_id,
+            'role_id' =>  Auth::user()->role_id,
+        ]);
+
+
         $request->session()->flash('success', "Perubahan berhasi disimpan.");
 
         return redirect(route('admin.approvalpage'));
@@ -92,6 +173,16 @@ class FileController extends Controller
 
         $file->save();
 
+        ActivityLog::create([
+            'user_id' => Auth::id(),
+            'nama_user' =>  Auth::user()->nama_user,
+            'activity' => 'Approve File',
+            'description' => 'File ' . $file->nama_file .' '. $request->status_persetujuan .' oleh user',
+            'timestamp' => now(),
+            'cabang_id' =>  Auth::user()->cabang_id,
+            'role_id' =>  Auth::user()->role_id,
+        ]);
+
         $request->session()->flash('success', "Perubahan berhasil disimpan.");
 
         return redirect(route('user.approvalpage'));
@@ -100,31 +191,32 @@ class FileController extends Controller
 
     public function fileindex()
     {
-        $Cabang = Auth::user()->cabang_id;
+     
       // Logika pertama: Menampilkan file jika folder dibuat oleh cabang admin
-        $user = Auth::user();
-        $memberDetails = DetailMember::where('user_id', $user->id)->get();
+   
 
-        $foldersByAdmin = Folder::where('cabang_id', $Cabang)->get();
+        // $foldersByAdmin = Folder::where('role_id', $Role)->where('cabang_id', $Cabang)->get();
 
       
-        
+        // $filesByFolder = [];
 
+        // foreach ($foldersByAdmin as $folder) {
+        //     $folder_id = $folder->id;
 
-        $filesByFolder = [];
+        //     $files = File::with('folder')
+        //         ->whereHas('folder', function ($query) use ($folder_id) {
+        //             $query->where('id', $folder_id);
+        //         })
+        //         ->orderBy('created_at', 'desc')
+        //         ->get();
 
-        foreach ($foldersByAdmin as $folder) {
-            $folder_id = $folder->id;
-
-            $files = File::with('folder')
-                ->whereHas('folder', function ($query) use ($folder_id) {
-                    $query->where('id', $folder_id);
-                })
-                ->orderBy('created_at', 'desc')
-                ->get();
-
-            $filesByFolder[$folder_id] = $files;
-        }
+        //     $filesByFolder[$folder_id] = $files;
+        // }
+        $Cabang = Auth::user()->cabang_id;
+        $Role = Auth::user()->role_id;
+          $user = Auth::user();
+          $memberDetails = DetailMember::where('user_id', $user->id)->get();
+        $filesByFolder = File::where('cabang_id_user', $Role)->where('cabang_id', $Cabang)->get();
 
 
 // Logika kedua: Menampilkan file jika dalam folder terdapat member detail dari user yang sedang login
@@ -136,6 +228,7 @@ $foldersForMember = Folder::whereNull('id_folder_induk')
     ->get();
 
 
+
 $filesByFolderForMember = [];
 
 foreach ($foldersForMember as $folder) {
@@ -145,6 +238,8 @@ foreach ($foldersForMember as $folder) {
         ->whereHas('folder', function ($query) use ($folder_id) {
             $query->where('id', $folder_id);
         })
+
+        ->where('created_by_id', '!=', Auth::user()->id)
         ->orderBy('created_at', 'desc')
         ->get();
 
@@ -153,10 +248,10 @@ foreach ($foldersForMember as $folder) {
 
 
 // Pass the first folder to the view for each logic
-$folderAdmin = $foldersByAdmin->first();
+// $folderAdmin = $foldersByAdmin->first();
 $folderMember = $foldersForMember->first();
 
-        
+      
         return view("admin.file.index", [
            
             "filesByFolder" => $filesByFolder,
@@ -171,16 +266,42 @@ $folderMember = $foldersForMember->first();
      */
     public function create()
     {
+
+        $loggedInUser = Auth::user();
+        if (auth()->user()->cabang_id == 1){
         $folders = Folder::all();
 
+     
         $user = User::where('is_approval', 1)
         ->where('is_active', '1')
         ->get();
+        }
+        else {
+            
+            $Cabang = Auth::user()->cabang_id; 
+        $role = Auth::user()->role_id;
+
+        $folders = Folder::join('detail_groups', 'folders.id', '=', 'detail_groups.folder_id')
+        ->where('detail_groups.cabang_id', $Cabang)
+        ->orderBy('detail_groups.created_at', 'desc')
+        ->select('folders.*') // Ambil semua kolom dari tabel usergroups
+        ->distinct('detail_groups.id', 'detail_groups.cabang_id')
+        ->get();
+
+        $user = User::where('is_approval', 1)
+        ->where('cabang_id', $Cabang)
+       
+        ->where('is_active', '1')
+        ->get();
+
+        }
+
 
     
         return view("superadmin.file.create",[
             "folders"=> $folders,
             "user" => $user,
+            "loggedInUser" => $loggedInUser,
             
         ]);
     }
@@ -188,7 +309,7 @@ $folderMember = $foldersForMember->first();
 
     public function filecreate()
     {
-
+        $loggedInUser = Auth::user();
         $Cabang = Auth::user()->cabang_id; 
         $role = Auth::user()->role_id;
 
@@ -198,21 +319,25 @@ $folderMember = $foldersForMember->first();
         // ->distinct('detail_groups.id', 'detail_groups.cabang_id')
         // ->get(['folders.*']); 
 
-
         $user = User::where('is_approval', 1)
-        ->where('cabang_id', $Cabang)
-        ->whereNot('role_id', 1)
+        ->whereNot('role_id', 2)
+        ->whereNot('role_id', 3)
         ->where('is_active', '1')
         ->get();
 
- $folders = Folder::where('cabang_id', $Cabang)
- ->where('role_id', $role)
- ->get();
+        $folders = Folder::join('detail_groups', 'folders.id', '=', 'detail_groups.folder_id')
+        ->where('detail_groups.cabang_id', $Cabang)
+        ->orderBy('detail_groups.created_at', 'desc')
+        ->select('folders.*') // Ambil semua kolom dari tabel usergroups
+        ->distinct('detail_groups.id', 'detail_groups.cabang_id')
+        ->get();
 
         return view("admin.file.create",[
             "folders"=> $folders,
-            "user" => $user
+            "user" => $user,
+            "loggedInUser" => $loggedInUser,
         ]);
+        
     }
 
 
@@ -223,11 +348,12 @@ $folderMember = $foldersForMember->first();
     public function store(Request $request)
     {
 
+       
         $validatedData = $request->validate([
             'path_folder' => 'required|exists:folders,id',
             'nama_file' => 'required|string',
             'inlineRadioOptions' => 'required|in:berlaku,tidak_berlaku',
-            'flexCheckIndeterminate' => 'nullable|boolean',
+            // 'flexCheckIndeterminate' => 'nullable|boolean',
             'formFileSm.*' => 'mimes:jpg,jpeg,png,gif,mp4,mov,avi,pdf,mp3,wav',
         
         ]);
@@ -238,6 +364,7 @@ $folderMember = $foldersForMember->first();
         $loggedInUsername = $loggedInUser->nama_user;
 
         $userapproval = $request->user_approval;
+        
         
         $role = $loggedInUser->role_id;
         
@@ -252,7 +379,11 @@ $folderMember = $foldersForMember->first();
         $konten = $request->input('konten');
         $cabang_id_user = $role;
         $formdinamis = $request->file('formFileSm');
+
+
+       
  
+        if (auth()->user()->cabang_id == 1){
         // Create a new File instance and save it to the database
         $file = new File([
             'folder_id' => $folderId,
@@ -264,20 +395,30 @@ $folderMember = $foldersForMember->first();
             'cabang_id_user' => $cabang_id_user,
             'created_by' => $loggedInUsername,
             'user_approval' => $userapproval,
+            'cabang_id' => $cabanglogged,
+            'created_by_id' =>  $loggedInUser->id,
         ]);
 
     
         $file->save();
-        if ($request->hasFile('formFileSm')) {
+        if ($request->hasFile('formFileSm') ) {
         // Handle file uploads
-        foreach ($request->file('formFileSm') as $uploadedFile) {
+        foreach ($request->file('formFileSm') as $key =>  $uploadedFile) {
             // Handle each uploaded file
+
+
+          
+
+          
             $uploadedFileName = $uploadedFile->getClientOriginalName();
             $uploadedFileType = $uploadedFile->getClientOriginalExtension();
             $uploadedFileSize = $uploadedFile->getSize();
     
             // Store the file in the storage path
             $uploadedFile->storeAs('public/files', $uploadedFileName);
+
+            
+            
     
             // Create and save a new detail_file instance
             $detailFile = new DetailFile([
@@ -285,52 +426,19 @@ $folderMember = $foldersForMember->first();
                 'file' => $uploadedFileName,
                 'type' => $uploadedFileType,
                 'size' => $uploadedFileSize,
+                'is_download' => $request->downloadValue[$key],
+                'is_tracking' => $request -> trackingValue[$key],
+                
             ]);
     
             $detailFile->save();
         }
     }
-        // Redirect to a specific route or page after successful submission
-        $request->session()->flash('success', "File berhasil ditambah.");
-    
-        return redirect()->route('superadmin.file.index');
-    }
-    
-    public function filestore(Request $request)
-    {
+}
 
-        
-        $validatedData = $request->validate([
-
-            'path_folder' => 'required|exists:folders,id',
-            'nama_file' => 'required|string',
-            'inlineRadioOptions' => 'required|in:berlaku,tidak_berlaku',
-            'flexCheckIndeterminate' => 'nullable|boolean',
-            'formFileSm.*' => 'mimes:jpg,jpeg,png,gif,mp4,mov,avi,pdf,mp3,wav',
-            
-        ]);
-    
-        // Retrieve necessary user information
-        $loggedInUser = auth()->user();
-        $cabanglogged = $loggedInUser->cabang_id;
-        $loggedInUsername = $loggedInUser->nama_user;
-
-       
-        $role = $loggedInUser->role_id;
-        
-        // Process the form data and store it in the database
-        $folderId = $validatedData['path_folder'];
-        $namaFile = $validatedData['nama_file'];
-        $status = $validatedData['inlineRadioOptions'];
-        $canDownload = $request->has('flexCheckIndeterminate');
-        $konten = $request->input('konten');
-        $cabang_id_user = $cabanglogged;
-        $formdinamis = $request->file('formFileSm');
-
-    $userapproval = $request->user_approval;
-    
-        // Create a new File instance and save it to the database
-        $file = new File([
+else {
+         // Create a new File instance and save it to the database
+         $file = new File([
             'folder_id' => $folderId,
             'nama_file' => $namaFile,
             'status' => $status,
@@ -340,6 +448,8 @@ $folderMember = $foldersForMember->first();
             'cabang_id_user' => $role,
             'created_by' => $loggedInUsername,
             'user_approval' => $userapproval,
+            'cabang_id' => $cabanglogged,
+            
         ]);
     
         $file->save();
@@ -365,11 +475,172 @@ $folderMember = $foldersForMember->first();
             $detailFile->save();
         }
     }
+}
+
+ActivityLog::create([
+    'user_id' => Auth::id(),
+    'nama_user' =>  Auth::user()->nama_user,
+    'activity' => 'Membuat File',
+    'description' => 'User berhasil membuat file ' . $request->nama_file,
+    'timestamp' => now(),
+    'cabang_id' =>  Auth::user()->cabang_id,
+    'role_id' =>  Auth::user()->role_id,
+]);
+        // Redirect to a specific route or page after successful submission
+        $request->session()->flash('success', "File berhasil ditambah.");
+    
+        return redirect()->route('superadmin.file.index');
+    }
+    
+    public function filestore(Request $request)
+    {
+
+      
+        $validatedData = $request->validate([
+            'path_folder' => 'required|exists:folders,id',
+            'nama_file' => 'required|string',
+            'inlineRadioOptions' => 'required|in:berlaku,tidak_berlaku',
+            // 'flexCheckIndeterminate' => 'nullable|boolean',
+            'formFileSm.*' => 'mimes:jpg,jpeg,png,gif,mp4,mov,avi,pdf,mp3,wav',
+        
+        ]);
+            
+        // Retrieve necessary user information
+        $loggedInUser = auth()->user();
+        $cabanglogged = $loggedInUser->cabang_id;
+        $loggedInUsername = $loggedInUser->nama_user;
+
+        $userapproval = $request->user_approval;
+        
+        
+        $role = $loggedInUser->role_id;
+        
+        $path= $request->path_folder;
+        
+        // Process the form data and store it in the database
+        $folderId = $validatedData['path_folder'];
+        $namaFile = $validatedData['nama_file'];
+        $status = $validatedData['inlineRadioOptions'];
+        $canDownload = $request->has('flexCheckIndeterminate');
+       
+        $konten = $request->input('konten');
+        $cabang_id_user = $role;
+        $formdinamis = $request->file('formFileSm');
+
+
+       
+ 
+        if (auth()->user()->cabang_id == 1){
+        // Create a new File instance and save it to the database
+        $file = new File([
+            'folder_id' => $folderId,
+            'nama_file' => $namaFile,
+            'status' => $status,
+            'is_download' => $canDownload,
+            'status_persetujuan' => 'Menunggu Persetujuan',
+            'konten' => $konten,
+            'cabang_id_user' => $cabang_id_user,
+            'created_by' => $loggedInUsername,
+            'user_approval' => $userapproval,
+            'cabang_id' => $cabanglogged,
+            'created_by_id' =>  $loggedInUser->id,
+        ]);
+
+    
+        $file->save();
+        if ($request->hasFile('formFileSm') ) {
+        // Handle file uploads
+        foreach ($request->file('formFileSm') as $key =>  $uploadedFile) {
+            // Handle each uploaded file
+
+
+          
+
+          
+            $uploadedFileName = $uploadedFile->getClientOriginalName();
+            $uploadedFileType = $uploadedFile->getClientOriginalExtension();
+            $uploadedFileSize = $uploadedFile->getSize();
+    
+            // Store the file in the storage path
+            $uploadedFile->storeAs('public/files', $uploadedFileName);
+
+            
+            
+    
+            // Create and save a new detail_file instance
+            $detailFile = new DetailFile([
+                'file_id' => $file->id,
+                'file' => $uploadedFileName,
+                'type' => $uploadedFileType,
+                'size' => $uploadedFileSize,
+                'is_download' => $request->downloadValue[$key],
+                'is_tracking' => $request -> trackingValue[$key],
+                
+            ]);
+    
+            $detailFile->save();
+        }
+    }
+}
+
+else {
+         // Create a new File instance and save it to the database
+         $file = new File([
+            'folder_id' => $folderId,
+            'nama_file' => $namaFile,
+            'status' => $status,
+            'is_download' => $canDownload,
+            'status_persetujuan' => 'Menunggu Persetujuan',
+            'konten' => $konten,
+            'cabang_id_user' => $role,
+            'created_by' => $loggedInUsername,
+            'user_approval' => $userapproval,
+            'cabang_id' => $cabanglogged,
+            
+        ]);
+    
+        $file->save();
+        if ($request->hasFile('formFileSm')) {
+        // Handle file uploads
+        foreach ($request->file('formFileSm') as $uploadedFile) {
+            // Handle each uploaded file
+            $uploadedFileName = $uploadedFile->getClientOriginalName();
+            $uploadedFileType = $uploadedFile->getClientOriginalExtension();
+            $uploadedFileSize = $uploadedFile->getSize();
+    
+            // Store the file in the storage path
+            $uploadedFile->storeAs('public/files', $uploadedFileName);
+    
+            // Create and save a new detail_file instance
+            $detailFile = new DetailFile([
+                'file_id' => $file->id,
+                'file' => $uploadedFileName,
+                'type' => $uploadedFileType,
+                'size' => $uploadedFileSize,
+            ]);
+    
+            $detailFile->save();
+        }
+    }
+}
+
+ActivityLog::create([
+    'user_id' => Auth::id(),
+    'nama_user' =>  Auth::user()->nama_user,
+    'activity' => 'Membuat File',
+    'description' => 'User berhasil membuat file ' . $request->nama_file,
+    'timestamp' => now(),
+    'cabang_id' =>  Auth::user()->cabang_id,
+    'role_id' =>  Auth::user()->role_id,
+]);
+
         // Redirect to a specific route or page after successful submission
         $request->session()->flash('success', "File berhasil ditambah.");
     
         return redirect()->route('admin.file.index');
-    }
+    }    
+    
+  
   
     /**
      * Display the specified resource.
@@ -377,12 +648,28 @@ $folderMember = $foldersForMember->first();
     public function show(string $id)
     {
         $data = File::find($id);
-        $folders = Folder::all();
+       
 
         $nama = DetailFile::with('File')->where('file_id', $id)->get();
+
+        if (auth()->user()->cabang_id == 1){
         $user = User::where('is_approval', 1)
         ->where('is_active', '1')
         ->get();
+        $folders = Folder::all();
+        }
+        else {
+            $Cabang = Auth::user()->cabang_id;
+            $user = User::where('is_approval', 1)
+            ->where('cabang_id', $Cabang)
+            ->where('is_active', '1')
+            ->get();
+            $folders = Folder::join('detail_groups', 'folders.id', '=', 'detail_groups.folder_id')
+            ->where('detail_groups.cabang_id', $Cabang)
+            ->orderBy('detail_groups.created_at', 'desc')
+            ->select('folders.*') // Ambil semua kolom dari tabel usergroups
+            ->distinct('detail_groups.id', 'detail_groups.cabang_id')
+            ->get();        }
         
       
         return view('superadmin.file.edit',[
@@ -400,14 +687,22 @@ $folderMember = $foldersForMember->first();
 
         $data = File::find($id);
      
-        $folders = Folder::where('cabang_id', $Cabang)->get();
+        // $folders = Folder::where('cabang_id', $Cabang)->get();
+
+        $folders = Folder::join('detail_groups', 'folders.id', '=', 'detail_groups.folder_id')
+        ->where('detail_groups.cabang_id', $Cabang)
+        ->orderBy('detail_groups.created_at', 'desc')
+        ->select('folders.*') // Ambil semua kolom dari tabel usergroups
+        ->distinct('detail_groups.id', 'detail_groups.cabang_id')
+        ->get();
 
         $nama = DetailFile::with('File')->where('file_id', $id)->get();
 
 
        $user = User::where('is_approval', 1)
         ->where('cabang_id', $Cabang)
-        ->whereNot('role_id', 1)
+        ->whereNot('role_id', 2)
+        ->whereNot('role_id', 3)
         ->where('is_active', '1')
         ->get();
 
@@ -431,14 +726,17 @@ $folderMember = $foldersForMember->first();
      */
     public function update(Request $request, string $id)
     {      
+
+       
+       
         $request->validate([
             'path_folder' => 'required|exists:folders,id',
             'nama_file' => 'required|string',
             'inlineRadioOptions' => 'required|in:berlaku,tidak_berlaku',
-            'flexCheckIndeterminate' => 'nullable|boolean',
-            'formFileSm.*' => 'mimes:jpg,jpeg,png,gif,mp4,mov,avi,pdf,mp3,wav',        ]);
+           
+            'formFileSm.*' => 'mimes:jpg,jpeg,png,gif,mp4,mov,avi,pdf,mp3,wav',        
+        ]);
             
-
         // Ambil data file yang akan diupdate
         $file = File::find($id);
         
@@ -460,49 +758,67 @@ $folderMember = $foldersForMember->first();
      
         $file->save();
 
+
         $existingfile = $request -> exisiting_file;
        
 if($existingfile){
-    
+ 
+ 
         if (!is_array($existingfile) || count($existingfile) === 1 && $existingfile[0] !== null)
-{
+        {
        
-        
         $filesToDelete = DetailFile::where('file_id', $file->id)
         ->whereNotIn('id', $existingfile)
         ->get();
-
         
         foreach ($filesToDelete as $fileToDelete) {
            
             Storage::delete('public/files/' . $fileToDelete->file);
             $fileToDelete->delete();
+
         }
-    } elseif  (is_array($existingfile) && count($existingfile) === 1 && $existingfile[0] === null) {
+
+        } elseif  (is_array($existingfile) && count($existingfile) === 1 && $existingfile[0] === null) {
 
        
       
         // Ambil semua detail file yang terkait dengan file yang akan diperbarui
         $filesToDelete = DetailFile::where('file_id', $file->id)->get();
     
-        foreach ($filesToDelete as $fileToDelete) {
+            foreach ($filesToDelete as $fileToDelete) {
             // Pastikan file ada di sistem penyimpanan sebelum menghapusnya
             // if (Storage::exists('public/files/' . $fileToDelete->file)) {
             //     // Hapus file dari sistem penyimpanan
             //     Storage::delete('public/files/' . $fileToDelete->file);
             // }
 
-             Storage::delete('public/files/' . $fileToDelete->file);
-            $fileToDelete->delete();
+                 Storage::delete('public/files/' . $fileToDelete->file);
+                $fileToDelete->delete();
     
             // Hapus entri file dari database
-            $fileToDelete->delete();
-        }
-    } 
+                $fileToDelete->delete();
+            }
+        } 
 
-}
+        foreach ($existingfile as  $key => $uploadedFile) {
+            $fileexist = DetailFile::find($uploadedFile);
+
+ 
+            $fileexist->is_download = $request->downloadValue[$key];
+            $fileexist->is_tracking =  $request -> trackingValue[$key];
+            
+            
+            $fileexist->save();
+
+            
+        }
+        
+        }
+
+       
 
 else {
+   
     $filesToDelete = DetailFile::where('file_id', $file->id)->get();
     
     foreach ($filesToDelete as $fileToDelete) {
@@ -526,7 +842,7 @@ else {
 
         if ($request->hasFile('formFileSm')) {
             // Handle file uploads
-            foreach ($request->file('formFileSm') as $uploadedFile) {
+            foreach ($request->file('formFileSm') as  $key => $uploadedFile) {
                 // Handle each uploaded file
                 $uploadedFileName = $uploadedFile->getClientOriginalName();
                 $uploadedFileType = $uploadedFile->getClientOriginalExtension();
@@ -541,14 +857,23 @@ else {
                     'file' => $uploadedFileName,
                     'type' => $uploadedFileType,
                     'size' => $uploadedFileSize,
+                    'is_download' => $request->downloadValue[$key],
+                    'is_tracking' => $request -> trackingValue[$key],
                 ]);
-
-               
+   
                 $uploadData->save();
             }
         }
 
-        
+        ActivityLog::create([
+    'user_id' => Auth::id(),
+    'nama_user' =>  Auth::user()->nama_user,
+    'activity' => 'Update File',
+    'description' => 'User berhasil mengupdate file ' . $file->nama_file,
+    'timestamp' => now(),
+    'cabang_id' =>  Auth::user()->cabang_id,
+    'role_id' =>  Auth::user()->role_id,
+]);
         // Redirect to a specific route or page after successful update
         $request->session()->flash('success', "File berhasil diperbarui.");
     
@@ -557,14 +882,17 @@ else {
 
     public function fileupdate(Request $request, string $id)
     {      
+
+       
+       
         $request->validate([
             'path_folder' => 'required|exists:folders,id',
             'nama_file' => 'required|string',
             'inlineRadioOptions' => 'required|in:berlaku,tidak_berlaku',
-            'flexCheckIndeterminate' => 'nullable|boolean',
-            'formFileSm.*' => 'mimes:jpg,jpeg,png,gif,mp4,mov,avi,pdf,mp3,wav',        ]);
+           
+            'formFileSm.*' => 'mimes:jpg,jpeg,png,gif,mp4,mov,avi,pdf,mp3,wav',        
+        ]);
             
-
         // Ambil data file yang akan diupdate
         $file = File::find($id);
         
@@ -586,49 +914,67 @@ else {
      
         $file->save();
 
+
         $existingfile = $request -> exisiting_file;
        
 if($existingfile){
-    
+ 
+ 
         if (!is_array($existingfile) || count($existingfile) === 1 && $existingfile[0] !== null)
-{
+        {
        
-        
         $filesToDelete = DetailFile::where('file_id', $file->id)
         ->whereNotIn('id', $existingfile)
         ->get();
-
         
         foreach ($filesToDelete as $fileToDelete) {
            
             Storage::delete('public/files/' . $fileToDelete->file);
             $fileToDelete->delete();
+
         }
-    } elseif  (is_array($existingfile) && count($existingfile) === 1 && $existingfile[0] === null) {
+
+        } elseif  (is_array($existingfile) && count($existingfile) === 1 && $existingfile[0] === null) {
 
        
       
         // Ambil semua detail file yang terkait dengan file yang akan diperbarui
         $filesToDelete = DetailFile::where('file_id', $file->id)->get();
     
-        foreach ($filesToDelete as $fileToDelete) {
+            foreach ($filesToDelete as $fileToDelete) {
             // Pastikan file ada di sistem penyimpanan sebelum menghapusnya
             // if (Storage::exists('public/files/' . $fileToDelete->file)) {
             //     // Hapus file dari sistem penyimpanan
             //     Storage::delete('public/files/' . $fileToDelete->file);
             // }
 
-             Storage::delete('public/files/' . $fileToDelete->file);
-            $fileToDelete->delete();
+                 Storage::delete('public/files/' . $fileToDelete->file);
+                $fileToDelete->delete();
     
             // Hapus entri file dari database
-            $fileToDelete->delete();
-        }
-    } 
+                $fileToDelete->delete();
+            }
+        } 
 
-}
+        foreach ($existingfile as  $key => $uploadedFile) {
+            $fileexist = DetailFile::find($uploadedFile);
+
+ 
+            $fileexist->is_download = $request->downloadValue[$key];
+            $fileexist->is_tracking =  $request -> trackingValue[$key];
+            
+            
+            $fileexist->save();
+
+            
+        }
+        
+        }
+
+       
 
 else {
+   
     $filesToDelete = DetailFile::where('file_id', $file->id)->get();
     
     foreach ($filesToDelete as $fileToDelete) {
@@ -652,7 +998,7 @@ else {
 
         if ($request->hasFile('formFileSm')) {
             // Handle file uploads
-            foreach ($request->file('formFileSm') as $uploadedFile) {
+            foreach ($request->file('formFileSm') as  $key => $uploadedFile) {
                 // Handle each uploaded file
                 $uploadedFileName = $uploadedFile->getClientOriginalName();
                 $uploadedFileType = $uploadedFile->getClientOriginalExtension();
@@ -667,14 +1013,24 @@ else {
                     'file' => $uploadedFileName,
                     'type' => $uploadedFileType,
                     'size' => $uploadedFileSize,
+                    'is_download' => $request->downloadValue[$key],
+                    'is_tracking' => $request -> trackingValue[$key],
                 ]);
-
-               
+   
                 $uploadData->save();
             }
         }
 
-        
+        ActivityLog::create([
+            'user_id' => Auth::id(),
+            'nama_user' =>  Auth::user()->nama_user,
+            'activity' => 'Update File',
+            'description' => 'User berhasil mengupdate file ' . $file->nama_file,
+            'timestamp' => now(),
+            'cabang_id' =>  Auth::user()->cabang_id,
+            'role_id' =>  Auth::user()->role_id,
+        ]);
+
         // Redirect to a specific route or page after successful update
         $request->session()->flash('success', "File berhasil diperbarui.");
     
@@ -747,6 +1103,9 @@ else {
     public function destroy(Request $request, $id)
     {
         $file = File::find($id);
+ 
+ $deleteFileName = $file->nama_file;
+
         if (!empty($file)) {
             // Cetak IDs yang akan dihapus
     
@@ -755,21 +1114,34 @@ else {
             // Cetak SQL yang dihasilkan
     
             Pin::whereIn('file_id', $file)->delete();
+
     
+           
             // Cetak SQL yang dihasilkan
             DetailFile::whereIn('file_id', $file)->delete();
           
         }
-
+        ActivityLog::create([
+            'user_id' => Auth::id(),
+            'nama_user' =>  Auth::user()->nama_user,
+            'activity' => 'Hapus File',
+            'description' => "User berhasil menghapus cabang $deleteFileName",
+            'timestamp' => now(),
+            'cabang_id' =>  Auth::user()->cabang_id,
+            'role_id' =>  Auth::user()->role_id,
+        ]);
         $request->session()->flash('error', "File berhasil dihapus.");
 
         return redirect()->route('superadmin.file.index');
     }
 
+    
 
     public function filedestroy(Request $request, $id)
     {
         $file = File::find($id);
+        $deleteFileName = $file->nama_file;
+
 
         if (!empty($file)) {
             // Cetak IDs yang akan dihapus
@@ -785,6 +1157,15 @@ else {
           
         }
       
+        ActivityLog::create([
+            'user_id' => Auth::id(),
+            'nama_user' =>  Auth::user()->nama_user,
+            'activity' => 'Hapus File',
+            'description' => "User berhasil menghapus cabang $deleteFileName",
+            'timestamp' => now(),
+            'cabang_id' =>  Auth::user()->cabang_id,
+            'role_id' =>  Auth::user()->role_id,
+        ]);
 
         $request->session()->flash('error', "File berhasil dihapus.");
 

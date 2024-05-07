@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use Auth;
 use Illuminate\Http\Request;
 
@@ -24,26 +25,58 @@ class AuthController extends Controller
       
         // Attempt to log in the user
         if (Auth::attempt($credentials)) {
-            // Authentication passed...
-
           
-            // Check user role and redirect accordingly
             $user = Auth::user();
 
             if ($user->is_active == 0) {
                 // If the user is not active, log them out and redirect back with a message
-
                 return redirect()->route('login')->with('error', 'Akun Anda tidak aktif. Silakan hubungi administrator.');
             }
     
 
             if ($user->isSuperAdmin()) {
+                ActivityLog::create([
+                    'user_id' => Auth::id(),
+                    'nama_user' =>  Auth::user()->nama_user,
+                    'activity' => 'Login',
+                    'description' => 'User berhasil login',
+                    'timestamp' => now(),
+                    'cabang_id' =>  Auth::user()->cabang_id,
+                    'role_id' =>  Auth::user()->role_id,
+                ]);
                 return redirect()->route('superadmin.dashboard'); // Adjust the route accordingly
             } elseif ($user->isAdmin()) {
+                ActivityLog::create([
+                    'user_id' => Auth::id(),
+                    'nama_user' =>  Auth::user()->nama_user,
+                    'activity' => 'Login',
+                    'description' => 'User berhasil login',
+                    'timestamp' => now(),
+                    'cabang_id' =>  Auth::user()->cabang_id,
+                    'role_id' =>  Auth::user()->role_id,
+                ]);
                 return redirect()->route('admin.dashboard'); // Adjust the route accordingly
             } elseif ($user->isApproval()) {
+                ActivityLog::create([
+                    'user_id' => Auth::id(),
+                    'nama_user' =>  Auth::user()->nama_user,
+                    'activity' => 'Login',
+                    'description' => 'User berhasil login',
+                    'timestamp' => now(),
+                    'cabang_id' =>  Auth::user()->cabang_id,
+                    'role_id' =>  Auth::user()->role_id,
+                ]);
                 return redirect()->route('approval.dashboard'); // Adjust the route accordingly
             } else {
+                ActivityLog::create([
+                    'user_id' => Auth::id(),
+                    'nama_user' =>  Auth::user()->nama_user,
+                    'activity' => 'Login',
+                    'description' => 'User berhasil login',
+                    'timestamp' => now(),
+                    'cabang_id' =>  Auth::user()->cabang_id,
+                    'role_id' =>  Auth::user()->role_id,
+                ]);
                 return redirect()->route('user.home'); // Adjust the route accordingly
             }
 
@@ -54,7 +87,10 @@ class AuthController extends Controller
 
     public function logout()
     {
+        
         Auth::logout();
+
+        
         return redirect()->route('login');
     }
 

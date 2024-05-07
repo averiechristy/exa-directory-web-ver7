@@ -28,6 +28,7 @@ class User extends Authenticatable
         'created_by',
         'is_approved',
         'is_approval',
+        'report_to',
         'is_active',
     ];
 
@@ -80,6 +81,11 @@ class User extends Authenticatable
         return $this->hasMany(Pin::class);
     }
 
+    public function reads()
+    {
+        return $this->hasMany(UserRead::class);
+    }
+
     public function isAdmin()
 {
     $jenis_role = $this->Role->nama_role;
@@ -109,6 +115,9 @@ public function isFilePinned($fileId)
 {
     return $this->pins()->where('file_id', $fileId)->exists();
 }
-
+public function isFileRead($detailfileId)
+{
+    return $this->reads()->where('detail_file_id', $detailfileId)->exists();
+}
 }
 

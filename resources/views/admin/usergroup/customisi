@@ -1,0 +1,26 @@
+<div id="custom" style="display:none;">
+    <div class="form-group mb-4">
+    <label for="" class="form-label" style="font-size: 11pt; font-weight: bold;">Anggota</label>
+    <div id="member-fields-custom-a">
+    <div class="member-container-custom-a">
+    <div class="member-item-custom-a">
+        <select name ="anggotacustom[]" class="form-select form-select-sm mb-3 member-select-custom-a" aria-label=".form-select-lg example" style="border-color: #01004C;  border-radius: 5px;" required>
+            <option selected disabled>Pilih Anggota</option>
+            @foreach ($users as $user)
+                <option value="{{ $user->id }}">{{ $user->nama_user }} - {{$user->no_pegawai}}</option>
+            @endforeach
+        </select>       
+        <div class="form-group mb-4 mt-2" style="display:none;">
+            <button type="button" class="btn btn-sm remove-member-custom-a mb-3" id="remove-member-custom-a"style="float: right; background-color: red; color: white; border-radius: 8px;">Hapus</button>
+        </div> 
+    </div>
+    </div>                  
+    </div>
+
+<div class="form-group mb-4">
+<button type="button" id="add-member-custom-a" class="btn btn-sm" style="background-color: #FF9900; color: white; border-radius: 8px;">
+<i class="fa fa-plus" style="font-size: 14px;"></i> Tambah Anggota
+</button>
+</div>     
+</div>
+</div>

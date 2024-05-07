@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\AdminController;
 
 use App\Http\Controllers\Controller;
+use App\Models\UserRead;
+use Auth;
 use Illuminate\Http\Request;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 class DashboardController extends Controller
 {
@@ -12,9 +16,42 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        return view("superadmin.dashboard");
+        if (auth()->user()->cabang_id == 1) {
+        $dataread = UserRead::all();
+        }
+        else {
+        $Cabang = Auth::user()->cabang_id;
+
+        $dataread = UserRead::select('user_reads.*')
+        ->join('users', 'users.id', '=', 'user_reads.user_id')
+        ->where('users.cabang_id', $Cabang)
+        ->get();
+        }
+
+        return view("superadmin.dashboard",[
+            'dataread' => $dataread,
+        ]);
+
     }
 
+    public function adminindex()
+    {
+    
+        $Cabang = Auth::user()->cabang_id;
+        $dataread = UserRead::select('user_reads.*')
+        ->join('users', 'users.id', '=', 'user_reads.user_id')
+        ->where('users.cabang_id', $Cabang)
+        ->get();
+
+    
+      
+        return view("admin.dashboard",[
+            'dataread' => $dataread,
+        ]);
+
+       
+    }
+   
     /**
      * Show the form for creating a new resource.
      */

@@ -31,9 +31,11 @@
                                         <source src="{{ asset('public/files/') }}/{{ $detailFile->file }}" type="video/mp4">
                                         Your browser does not support the video tag.
                                     </video>
+
                                 @elseif(strtolower($extension) == 'pdf') <!-- PDF -->
-                                <iframe src="https://docs.google.com/viewer?url={{ asset('public/files/') }}/{{ $detailFile->file }}&embedded=true" width="100%" height="100%" style="border: none;"></iframe>
-                                @elseif(in_array(strtolower($extension), ['mp3', 'wav'])) <!-- Audio -->
+                                <iframe src="https://docs.google.com/viewer?url={{ asset('public/files/') }}/{{ $detailFile->file }}&embedded=true" width="100%" height="500px" style="border: none;"></iframe>
+                                
+                                    @elseif(in_array(strtolower($extension), ['mp3', 'wav'])) <!-- Audio -->
                                     <audio controls preload="none" class="file-preview">
                                         <source src="{{ asset('public/files/') }}/{{ $detailFile->file }}" type="audio/mpeg">
                                         Your browser does not support the audio tag.

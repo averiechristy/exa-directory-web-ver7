@@ -13,6 +13,8 @@ class DetailFile extends Model
         'file',
         'size',
         'type',
+        'is_download',
+        'is_tracking',
         
     ];
 
@@ -21,4 +23,10 @@ class DetailFile extends Model
 
         return $this->belongsTo(File::class);
     }
+
+    public function reads()
+{
+    return $this->hasMany(UserRead::class);
+}
+
 }

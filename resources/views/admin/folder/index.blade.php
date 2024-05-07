@@ -34,14 +34,23 @@
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addSubfolderModaladmin{{$folder->id}}">Add Subfolder</a>
                             
-                            
+                            @if ($folder -> role_id == 1)
+                            <a class="dropdown-item edit-group-btn disabled" >Edit Folder</a>
+
+            @else
                             <a class="dropdown-item edit-group-btn" href="{{route('tampilfoldergroupadmin', $folder->id)}}" >Edit Folder</a>
-                       
+                       @endif
+
+                       @if ($folder -> role_id == 1)
+                            <a class="dropdown-item edit-group-btn disabled" >Delete Folder</a>
+
+            @else
                             <form action="{{ route('folder.deleteadmin', ['id' => $folder->id]) }}" method="POST" style="display: inline;">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="dropdown-item" onclick="return confirm('Yakin menghapus folder ini?')">Delete Folder</button>
                             </form>
+                            @endif
                         </div>
                     </div>
                 @else
@@ -52,11 +61,14 @@
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addSubfolderModaladmin{{$folder->id}}">Add Subfolder</a>
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#renameFolderModaladmin{{$folder->id}}">Rename Folder</a>
+                            
                             <form action="{{ route('folder.deleteadmin', ['id' => $folder->id]) }}" method="POST" style="display: inline;">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="dropdown-item" onclick="return confirm('Yakin menghapus folder ini?')">Delete Folder</button>
                             </form>
+
+
                         </div>
                     </div>
                 @endif

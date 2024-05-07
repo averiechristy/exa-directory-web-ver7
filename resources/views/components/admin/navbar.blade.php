@@ -20,7 +20,6 @@
         </ul>
         <ul class="navbar-nav ms-auto">
 
-
         <li class="nav-item dropdown">
             <a class="nav-link count-indicator" id="notificationDropdown" href="#" data-bs-toggle="dropdown">
              <h6>Welcome, {{ auth()->user()->nama_user }}</h6>
@@ -98,6 +97,15 @@
       </ul>
   </div>
 </li>
+
+<li class="nav-item {{  Request::is('admin/logactivity') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('admin.logactivity') }}">
+            <i class=" menu-icon mdi mdi-history"></i>
+            <span class="menu-title">Log Activity</span>
+        </a>
+</li>
+
+
 @if (auth()->user()->is_approval == 1)
     <li class="nav-item {{ Request::is('admin/approvalpage') || Request::is('admin/approvalpage') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('admin.approvalpage') }}">

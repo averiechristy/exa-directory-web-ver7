@@ -6,22 +6,32 @@
                     <i class="mdi mdi-folder me-2 font-24 text-warning"></i>
                 </div>
                 <div class="font-weight-bold folder-name">{{$subfolder->nama_folder}}</div>
+              
             </div>           
         </div>
         <div class="folder-actions">
+            
                     @if (!isset($subfolder) || !$subfolder->id_folder_induk)
+                
                     <div class="btn-group-vertical">
                         <button type="button" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Actions
                         </button>
                         <div class="dropdown-menu">
+                            
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addSubfolderModal{{$subfolder->id}}">Add Subfolder</a>
+                            
+
+
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#renameFolderModal{{$subfolder->id}}">Edit SubFolder</a>      
+                          
+                          
                             <form action="{{ route('folder.deleteadmin', ['id' => $subfolder->id]) }}" method="POST" style="display: inline;">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="dropdown-item" onclick="return confirm('Yakin menghapus folder ini?')">Delete SubFolder</button>
                             </form>
+
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#editgroup{{$subfolder->id}}">Edit Group</a>
                         </div>
                     </div>
@@ -32,12 +42,26 @@
                         </button>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addSubfolderModal{{$subfolder->id}}">Add Subfolder </a>
+
+                            @if ($subfolder -> role_id == 1)
+                            <a class="dropdown-item edit-group-btn disabled" >Edit Subfolder</a>
+
+            @else
+
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#renameFolderModal{{$subfolder->id}}">Edit Subfolder</a>      
+                           @endif
+
+                           @if ($subfolder -> role_id == 1)
+                            <a class="dropdown-item edit-group-btn disabled" >Delete Subfolder</a>
+
+            @else
                             <form action="{{ route('folder.deleteadmin', ['id' => $subfolder->id]) }}" method="POST" style="display: inline;">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="dropdown-item" onclick="return confirm('Yakin menghapus folder ini?')">Delete Subfolder</button>
                             </form>
+
+                            @endif
                         </div>
                     </div>
                  @endif

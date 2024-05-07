@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\AdminController;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
 use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -54,6 +55,18 @@ class PasswordController extends Controller
             $user->update([
                 'password' => Hash::make($request->new_password),
             ]);
+
+
+            ActivityLog::create([
+                'user_id' => Auth::id(),
+                'nama_user' =>  Auth::user()->nama_user,
+                'activity' => 'Mengubah Password',
+                'description' => 'User berhasil melakukan perubahan password',
+                'timestamp' => now(),
+                'cabang_id' =>  Auth::user()->cabang_id,
+                'role_id' =>  Auth::user()->role_id,
+            ]);
+
             return redirect()->route('superadmin.password')->with('success', 'Password berhasil diubah.');
         } else {
             return redirect()->route('superadmin.password');
@@ -89,6 +102,16 @@ class PasswordController extends Controller
         if (Hash::check($request->current_password, $user->password)) {
             $user->update([
                 'password' => Hash::make($request->new_password),
+            ]);
+
+            ActivityLog::create([
+                'user_id' => Auth::id(),
+                'nama_user' =>  Auth::user()->nama_user,
+                'activity' => 'Mengubah Password',
+                'description' => 'User berhasil melakukan perubahan password',
+                'timestamp' => now(),
+                'cabang_id' =>  Auth::user()->cabang_id,
+                'role_id' =>  Auth::user()->role_id,
             ]);
             return redirect()->route('admin.password')->with('success', 'Password berhasil diubah.');
         } else {

@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\AdminController;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
 use App\Models\Cabang;
 use App\Models\DetailGroup;
 use App\Models\DetailMember;
 use App\Models\File;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CabangController extends Controller
 {
@@ -66,7 +68,17 @@ class CabangController extends Controller
            'created_by' => $loggedInUsername,
             
         ]);
-    
+
+        ActivityLog::create([
+            'user_id' => Auth::id(),
+            'nama_user' =>  Auth::user()->nama_user,
+            'activity' => 'Membuat Cabang',
+            'description' => 'User berhasil membuat cabang ' . $request->nama_cabang,
+            'timestamp' => now(),
+            'cabang_id' =>  Auth::user()->cabang_id,
+            'role_id' =>  Auth::user()->role_id,
+        ]);
+        
         $request->session()->flash('success', 'Cabang berhasil ditambahkan.');
     
         return redirect(route('superadmin.cabang.index'));   
@@ -105,7 +117,6 @@ class CabangController extends Controller
         $loggedInUsername = $loggedInUser->nama_user; 
 
 
-
         $namacabang = $request->nama_cabang;
         $kodecabang = $request -> kode_cabang;
 
@@ -136,6 +147,20 @@ class CabangController extends Controller
        
  
         $data->save();
+
+        
+
+        ActivityLog::create([
+            'user_id' => Auth::id(),
+            'nama_user' =>  Auth::user()->nama_user,
+            'activity' => 'Update Cabang',
+            'description' => 'User berhasil mengupdate cabang ' . $data->nama_cabang,
+            'timestamp' => now(),
+            'cabang_id' =>  Auth::user()->cabang_id,
+            'role_id' =>  Auth::user()->role_id,
+        ]);
+
+
         $request->session()->flash('success', "Cabang berhasil diupdate.");
         return redirect(route('superadmin.cabang.index'));
     }
@@ -168,7 +193,19 @@ class CabangController extends Controller
             return redirect()->route('superadmin.cabang.index');
         }
 
+        $deletedCabangName = $cabang->nama_cabang;
+
         $cabang->delete();
+
+        ActivityLog::create([
+            'user_id' => Auth::id(),
+            'nama_user' =>  Auth::user()->nama_user,
+            'activity' => 'Hapus Cabang',
+            'description' => "User berhasil menghapus cabang $deletedCabangName",
+            'timestamp' => now(),
+            'cabang_id' =>  Auth::user()->cabang_id,
+            'role_id' =>  Auth::user()->role_id,
+        ]);
         
         $request->session()->flash('error', "Cabang berhasil dihapus.");
         

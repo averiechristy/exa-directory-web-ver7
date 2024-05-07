@@ -24,6 +24,9 @@ class File extends Model
         'cabang_id_user',
         'catatan',
         'user_approval',
+        'cabang_id',
+        'is_tracking',
+        'created_by_id'
     ];
 
     public function folder()

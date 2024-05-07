@@ -6,8 +6,9 @@
                 <div class="container-fluid">
                 <h4 style="color:#000;">Your Pins</h4>
                     <hr style="border-color:gray;">
+
                     <div class="row">
-                    @foreach($userPins as $pin)
+@foreach($userPins as $pin)
     <div class="col-md-4 mb-4">
         <div class="card bg-white shadow">
             <div class="card-body">
@@ -20,29 +21,11 @@
                     </h5>
                 @elseif($pin->file_id)
                     <h5 class="card-title">
-                        <a href="" style="" data-toggle="modal" data-target="#fileModal{{ $pin->file_id }}" class="see-file">
-                            <i class="fas fa-file"></i>
-                            {{ $pin->file->nama_file }}
+                        <a href="{{ route('user.kontenread', $pin->file->id) }}" style=""  class="see-file">
+                        <i class="fas fa-file"></i>
+                        {{ $pin->file->nama_file }}
                         </a>
                     </h5>
-                    <div class="modal fade" id="fileModal{{ $pin->file_id }}" tabindex="-1" role="dialog" aria-labelledby="fileModalLabel{{ $pin->file_id }}" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered modal-xl" style="margin-top:5px;" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="fileModalLabel{{ $pin->file_id }}"></h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <iframe src="{{ asset('storage/files/' . $pin->file->file) }}" width="100%" height="600px"></iframe>
-                                </div>
-                                <div class="modal-footer">
-                                    {{-- Footer content --}}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 @endif
             </div>
         </div>
@@ -62,7 +45,6 @@
                                 <tr>
                                     <th>Nama</th>
                                     <th>Date Modified</th>
-                                  
                                     <th>Action</th>
                                 </tr>
                             </thead>

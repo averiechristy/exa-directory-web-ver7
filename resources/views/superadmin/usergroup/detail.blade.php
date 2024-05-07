@@ -36,12 +36,12 @@
                         </thead>
                         <tbody>
                          
-                        @foreach ($member as $member)
+                        @foreach ($member as $members)
                           <tr>
                           
-                            <td>{{$member -> User -> nama_user}}</td>
-                            <td>{{$member -> User -> no_pegawai}}</td>
-<td>{{$member -> Cabang -> nama_cabang}}</td>
+                            <td>{{$members -> User -> nama_user}}</td>
+                            <td>{{$members -> User -> no_pegawai}}</td>
+<td>{{$members -> Cabang -> nama_cabang}}</td>
 </tr>
                           @endforeach
                         </tbody>

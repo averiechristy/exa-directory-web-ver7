@@ -11,6 +11,7 @@ use App\Http\Controllers\AdminController\UserController;
 use App\Http\Controllers\AdminController\UserGroupController;
 use App\Http\Controllers\ApprovalController\ApprovalDashboardController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\LogActivityController;
 use App\Http\Controllers\UserController\HomeController;
 use App\Http\Controllers\UserController\KontenReadController;
 use App\Http\Controllers\UserController\PinController;
@@ -119,7 +120,12 @@ Route::post('/logout', [AuthController::class,'logout'])->name('logout');
 // SUPERADMIN ROUTE
 
 Route::middleware('auth')->middleware('ensureUserRole:SUPER ADMIN')->group(function () {
+    Route::get('/export/pdf', [DashboardController::class,'exportPDF'])->name('export.pdf');
 
+    Route::get('/userread/export', [KontenReadController::class,'export'])->name('userread.export');
+
+
+    Route::get('superadmin/logactivity',[LogActivityController::class,'superadminindex'])->name('superadmin.logactivity');
 
 Route::get('superadmin/dashboard',[DashboardController::class,'index'])->name('superadmin.dashboard');
 
@@ -212,6 +218,16 @@ Route::post('/aktifkanuser/{id}',[UserController::class,'aktifkanuser'])->name('
 
 Route::middleware('auth')->middleware('ensureUserRole:ADMIN')->group(function () {
 
+    Route::get('admin/logactivity',[LogActivityController::class,'adminindex'])->name('admin.logactivity');
+
+
+    Route::get('/adminuserread/export', [KontenReadController::class,'adminexport'])->name('adminuserread.export');
+
+
+Route::get('admin/dashboard',[DashboardController::class,'adminindex'])->name('admin.dashboard');
+
+
+
 //ADMIN ROUTE
 Route::get('admin/user/index',[UserController::class,'userindex'])->name('admin.user.index');
 Route::get('admin/user/create',[UserController::class,'usercreate'])->name('admin.user.create');
@@ -288,6 +304,9 @@ Route::post('/pin-file/{fileId}', [PinController::class, 'pinFile'])->name('pin-
 Route::post('/unpin-file/{fileId}', [PinController::class, 'unpinFile'])->name('unpin-file');
 
 
+Route::post('/read-file/{detailfileId}', [KontenReadController::class,'markFileAsRead'])->name('read.file');
+
+
 Route::get('user/changepassword', [UserPasswordController::class,'showChangePasswordFormUser'])->name('user.password');
 Route::post('user/changepassword', [UserPasswordController::class,'userchangePassword'])->name('user-change-password');
 
@@ -313,3 +332,4 @@ Route::middleware('auth')->middleware('ensureUserRole:APPROVAL')->group(function
     Route::get('approval/dashboard',[ApprovalDashboardController::class,'index'])->name('approval.dashboard');
 
 });
+

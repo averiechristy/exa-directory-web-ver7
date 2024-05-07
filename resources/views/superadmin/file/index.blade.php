@@ -3,13 +3,9 @@
 @section('content')
 <div class="main-panel">
 <div class="content-wrapper">
-          
-           
-             
+                    
           <div class="d-sm-flex align-items-center justify-content-between border-bottom">
-           
-           
-            
+        
           </div>
           <div id="content-wrapper" class="d-flex flex-column">
 
@@ -47,25 +43,25 @@ entries
                         <thead>
                           <tr>
                           
-                            <th>Judul Konten</th>
-                            <th>Path Folder</th>
-                           <th>Isi Konten</th>
-                            <th>Status Persetujuan</th>
-                            <th>Approval Line</th>
-                            <th>Catatan</th>
-                            <th>Status</th>
-                            <!-- <th>Lihat File</th> -->
+                            <th>Judul Konten<i class="fa fa-sort"></i></th>
+                            <th>Path Folder<i class="fa fa-sort"></i></th>
+                            <th>Isi Konten<i class="fa fa-sort"></i></th>
+                            <th>Status Persetujuan<i class="fa fa-sort"></i></th>
+                            <th>Approver<i class="fa fa-sort"></i></th>
+                            <th>Catatan<i class="fa fa-sort"></i></th>
+                            <th>Status<i class="fa fa-sort"></i></th>
+                            <!-- <th>Lihat File<i class="fa fa-sort"></i></th> -->
+                            <th>Created at<i class="fa fa-sort"></i></th>
 
-                            <th>Created at</th>
-
-                            <th>Created by</th>
-                            <th>Updated at</th>
-                            <th>Updated by</th>
+                            <th>Created by<i class="fa fa-sort"></i></th>
+                            <th>Updated at<i class="fa fa-sort"></i></th>
+                            <th>Updated by<i class="fa fa-sort"></i></th>
                             
-                            <th>Action</th>
+                            <th>Action<i class="fa fa-sort"></i></th>
 
                           </tr>
                         </thead>
+                        @if (auth()->user()->cabang_id == 1)
                         <tbody>
                         @foreach($files as $file)
                           <tr>
@@ -144,6 +140,168 @@ entries
                           </tr>
                 @endforeach    
                         </tbody>
+
+                        @else
+                        <tbody>
+                     
+                     @foreach($filesByFolder as $file)
+                       <tr>
+                     <td>
+                     
+                           <div class="d-flex align-items-center">
+                               <div><i class="mdi mdi-file me-2 font-24 text-warning "></i>
+                               </div>
+                               <div class="font-weight-bold ">{{$file -> nama_file}}</div>
+                           </div>
+                     
+                     </td>
+                       <td>{{ $file->folder->getFolderPath() }}</td>
+                       <td> <a href="{{ route('tampilkonten', $file->id) }}">Lihat isi konten</a>
+</td>
+                      
+                         <td>
+         @if ($file->status_persetujuan === 'Disetujui')
+             <span class="badge badge-success">Disetujui</span>
+         @elseif ($file->status_persetujuan === 'Ditolak')
+             <span class="badge badge-danger">Ditolak</span>
+             @elseif ($file->status_persetujuan === 'Menunggu Persetujuan')
+             <span class="badge badge-warning">Menunggu Persetujuan</span>
+         @endif
+                         </td>
+                           <td>{{ $file->user->nama_user }}</td>
+                         <td>{{$file -> catatan}}</td>
+                         <td>
+         @if ($file->status === 'berlaku')
+             <span class="badge badge-success">Berlaku</span>
+         @elseif ($file->status === 'tidak_berlaku')
+             <span class="badge badge-danger">Tidak Berlaku</span>
+         @else
+             {{ $file->status }}
+         @endif
+ </td>
+ <!-- <td>
+ <a href="" data-toggle="modal" data-target="#fileModal{{ $file->id }}" class="see-file">Lihat File</a>
+</td> -->
+
+<div class="modal fade" id="fileModal{{ $file->id }}" tabindex="-1" role="dialog" aria-labelledby="fileModalLabel{{ $file->id }}" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered modal-xl"  style="margin-top:5px;" role="document">
+     <div class="modal-content">
+         <div class="modal-header">
+             <h5 class="modal-title" id="fileModalLabel{{ $file->id }}"></h5>
+             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                 <span aria-hidden="true">&times;</span>
+             </button>
+         </div>
+         <div class="modal-body">
+         @if($file->file)
+             <iframe src="{{ asset('storage/files/' . $file->file) }}" width="100%" height="600px"></iframe>
+         @else 
+             <p>Tidak Ada File Tersimpan</p>
+         @endif
+         </div>
+         <div class="modal-footer">           
+         </div>
+     </div>
+ </div>
+</div>
+                         <td>{{$file->created_at}}</td>
+                         <td>{{$file->created_by}}</td>
+                         <td>{{$file->updated_at}}</td>
+                         <td>{{$file->updated_by}}</td>
+                         <td>
+                   
+                          <a  href="{{route('tampilfile', $file->id)}}"data-toggle="tooltip" title='Edit'><button class="btn-edit"><i class="mdi mdi-pencil" style="color:white" ></i></button></a>        
+                          <form method="POST" action="{{ route('deletefile', $file->id) }}">
+                     @csrf
+                         <input name="_method" type="hidden" value="DELETE">
+                         <button type="submit" class="btn-delete show_confirm mt-1" data-toggle="tooltip" title='Hapus'><i class="mdi mdi-delete" style="color:white;"></i></button>
+                     </form>  
+                    
+                     </td>
+                       </tr>
+             @endforeach  
+          
+             @foreach ($filesByFolderForMember as $folder_id => $files)
+                     @foreach($files as $file)
+                       <tr>
+                     <td>
+                 
+                           <div class="d-flex align-items-center">
+                               <div><i class="mdi mdi-file me-2 font-24 text-warning "></i>
+                               </div>
+                               <div class="font-weight-bold ">{{$file -> nama_file}}</div>
+                           </div>
+                     </a>
+                     </td>
+                       <td>{{ $file->folder->getFolderPath() }}</td>
+                       <td> <a href="{{ route('tampilkonten', $file->id) }}">Lihat isi konten</a>
+</td>
+                      
+                         <td>
+         @if ($file->status_persetujuan === 'Disetujui')
+             <span class="badge badge-success">Disetujui</span>
+         @elseif ($file->status_persetujuan === 'Ditolak')
+             <span class="badge badge-danger">Ditolak</span>
+             @elseif ($file->status_persetujuan === 'Menunggu Persetujuan')
+             <span class="badge badge-warning">Menunggu Persetujuan</span>
+         @endif
+                         </td>
+                         <td>{{ $file->user->nama_user }}</td>
+                         <td>{{$file -> catatan}}</td>
+                         <td>
+         @if ($file->status === 'berlaku')
+             <span class="badge badge-success">Berlaku</span>
+         @elseif ($file->status === 'tidak_berlaku')
+             <span class="badge badge-danger">Tidak Berlaku</span>
+         @else
+             {{ $file->status }}
+         @endif
+ </td>
+ <!-- <td>
+ <a href="" data-toggle="modal" data-target="#fileModal{{ $file->id }}" class="see-file">Lihat File</a>
+</td> -->
+
+<div class="modal fade" id="fileModal{{ $file->id }}" tabindex="-1" role="dialog" aria-labelledby="fileModalLabel{{ $file->id }}" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered modal-xl"  style="margin-top:5px;" role="document">
+     <div class="modal-content">
+         <div class="modal-header">
+             <h5 class="modal-title" id="fileModalLabel{{ $file->id }}"></h5>
+             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                 <span aria-hidden="true">&times;</span>
+             </button>
+         </div>
+         <div class="modal-body">
+         @if($file->file)
+             <iframe src="{{ asset('storage/files/' . $file->file) }}" width="100%" height="600px"></iframe>
+         @else 
+             <p>Tidak Ada File Tersimpan</p>
+         @endif
+         </div>
+         <div class="modal-footer">           
+         </div>
+     </div>
+ </div>
+</div>
+                         <td>{{$file->created_at}}</td>
+                         <td>{{$file->created_by}}</td>
+                         <td>{{$file->updated_at}}</td>
+                         <td>{{$file->updated_by}}</td>
+                         <td>
+                    
+                          <a  href="{{route('tampilfile', $file->id)}}"data-toggle="tooltip" title='Edit'><button class="btn-edit"><i class="mdi mdi-pencil" style="color:white" ></i></button></a>        
+                          <form method="POST" action="{{ route('deletefile', $file->id) }}">
+                     @csrf
+                         <input name="_method" type="hidden" value="DELETE">
+                         <button type="submit" class="btn-delete show_confirm mt-1" data-toggle="tooltip" title='Hapus'><i class="mdi mdi-delete" style="color:white;"></i></button>
+                     </form>  
+                    
+                     </td>
+                       </tr>
+             @endforeach  
+             @endforeach
+                     </tbody>
+
+                        @endif
                       </table>
 
                       </div>
@@ -354,5 +512,56 @@ updatePagination();
     // Panggil updatePagination untuk inisialisasi
   
              
+</script>
+
+<script>
+// Tambahkan event listener untuk setiap ikon sort
+document.querySelectorAll('thead th i.fa-sort').forEach(function(icon) {
+    icon.addEventListener('click', function() {
+        // Ambil status sort dari atribut data
+        var sortStatus = this.dataset.sort || 'asc';
+
+        // Hapus kelas active dari semua ikon
+        document.querySelectorAll('thead th i').forEach(function(icon) {
+            icon.classList.remove('fa-sort-up');
+            icon.classList.remove('fa-sort-down');
+        });
+
+        // Periksa status sort dan atur ikon yang sesuai
+        if (sortStatus === 'asc') {
+            this.classList.add('fa-sort-up');
+            this.dataset.sort = 'desc'; // Toggle status sort menjadi 'desc'
+        } else {
+            this.classList.add('fa-sort-down');
+            this.dataset.sort = 'asc'; // Toggle status sort menjadi 'asc'
+        }
+
+        // Ambil indeks kolom yang diurutkan
+        var columnIndex = Array.from(this.parentNode.parentNode.children).indexOf(this.parentNode);
+
+        // Ambil semua baris data
+        var rows = Array.from(document.querySelectorAll('tbody tr'));
+
+        // Lakukan pengurutan data
+        rows.sort(function(rowA, rowB) {
+            var valueA = rowA.children[columnIndex].textContent;
+            var valueB = rowB.children[columnIndex].textContent;
+
+            // Lakukan pengurutan berdasarkan nilai teks
+            if (sortStatus === 'asc') {
+                return valueA.localeCompare(valueB);
+            } else {
+                return valueB.localeCompare(valueA);
+            }
+        });
+
+        // Perbarui tbody dengan baris yang telah diurutkan
+        var tbody = document.querySelector('tbody');
+        rows.forEach(function(row) {
+            tbody.appendChild(row);
+        });
+    });
+});
+
 </script>
 @endsection

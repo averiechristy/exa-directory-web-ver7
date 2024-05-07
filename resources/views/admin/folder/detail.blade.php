@@ -13,7 +13,7 @@
       
       <div class="card mt-5">
         <div class="card-body py-3">
-          <h4 class="card-title"><a href="{{ route('superadmin.folder.index') }}">Folder</a> / Detail Group Folder {{$data->nama_folder}}</h4>
+          <h4 class="card-title"><a href="{{ route('admin.folder.index') }}">Folder</a> / Detail Group Folder {{$data->nama_folder}}</h4>
         </div>
         <div class="card-body">
           <table class="table">
@@ -31,6 +31,7 @@
                 </tr>
               @endforeach
             </tbody>
+
           </table>
         </div>
       </div>

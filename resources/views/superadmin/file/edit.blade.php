@@ -1,6 +1,5 @@
 @extends('layouts.superadmin.app')
 @section('content')
-
 <div class="content-wrapper">
     <div class="d-sm-flex align-items-center justify-content-between border-bottom">
     </div>
@@ -8,11 +7,11 @@
         <!-- Main Content -->
         <div id="content" class="content">
             <div class="card mt-5">
-
+                
                 <div class="card-header">
                     <p class="mt-2">Edit File</p>
-
                 </div>
+
                 <div class="card-body">
                     <form  name="saveform" id ="saveform" action="/updatefile/{{$data->id}}" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
                         @csrf
@@ -31,10 +30,9 @@
             {{ $item->getFolderPath() }}
             </option>
         @endforeach
-                            </select>
+                        </select>
                         </div>
-
-                      
+                     
                         <div class="form-group mb-4">
                         <label for="" class="form-label">Status File</label>
                         <br>
@@ -47,25 +45,15 @@
                                 <label class="form-check-label" style="margin-left: 5px;" for="inlineRadio2">Tidak berlaku</label>
                             </div>
                         </div>
-                        <div class="form-group mb-4">
-                        <label for="" class="form-label">Download File</label>
-                        <br>
-    <div class="form-check">
-        <input class="form-check-input" name="flexCheckIndeterminate" type="checkbox" value="1" id="flexCheckIndeterminate" {{ $data->is_download == 1 ? 'checked' : '' }}>
-        <label class="form-check-label" style="margin-left: 5px;" for="flexCheckIndeterminate">
-            Bisa download
-        </label>
-    </div>
-</div>
-
+                                           
 <div class="form-group mb-4">
-  <label for="" class="form-label">Approval Line</label>
+  <label for="" class="form-label">Approver</label>
       <select id="user_approval"  name="user_approval" class="form-select form-select-sm mb-3" aria-label=".form-select-lg example" style="border-color: #01004C; border-radius: 5px;" required>
-            <option selected disabled>Pilih Approval</option>
+            <option selected disabled>Pilih Approver</option>
             <!-- Loop melalui data folder dari database -->
-            @foreach($user as $user)
-                <option value="{{ $user->id }}" {{ old('user_approval', $data->user_approval) == $user->id ? 'selected' : '' }}>{{ $user->nama_user }}</option>
-            @endforeach
+            @foreach($user as $item)
+                <option value="{{ $item->id }}" {{ old('user_approval', $data->user_approval) == $item->id ? 'selected' : '' }}>{{ $item->nama_user }}</option>
+            @endforeach         
         </select>
 </div>
 
@@ -83,75 +71,113 @@
     <input class="form-control form-control-sm" id="formFileSm" type="file" name="formFileSm" accept=".pdf">
 </div> -->
 
-
 @if ($nama->count() > 0)
-<div class="upload-container">
-@foreach ($nama as $nama)
-<div id ="file-fields">
-    <div class="upload-item">
-        <div class="form-input-item">
-            <label for="formFileSm" class="form-label mt-5">Upload File / Video / Image / Audio</label>
-            <div id="fileInputs">
-            <input class="upload-input form-control form-control-sm mb-2" type="file" name="formFileSm[]" value="{{ asset('public/files/') }}/{{ $nama->file }}" onchange="previewFile(this)">
-            <input type="hidden" name="exisiting_file[]" value="{{ $nama->id }}">
+
+<div class ="file-fields" id ="file-fields">
+@foreach ($nama as $index => $namas)
 
 
+<div class="row upload-container">
+    
+<div class="col-md-6">
+            <div class="form-group mb-2">
+                        <label for="formFileSm" class="form-label">Upload File / Video / Image / Audio</label>
 
+                        <div id="fileInputs">
+            <input class="upload-input form-control form-control-sm mb-2" type="file" name="formFileSm[]" value="{{ asset('public/files/') }}/{{ $namas->file }}" onchange="previewFile(this)">
+            <input type="hidden" name="exisiting_file[]" value="{{ $namas->id }}">
             <div class="preview-container">
                     <!-- Menampilkan pratinjau dari file yang sudah ada -->
         @php
-            $extension = pathinfo($nama->file, PATHINFO_EXTENSION);
+            $extension = pathinfo($namas->file, PATHINFO_EXTENSION);
         @endphp
 
-        @if(in_array($extension, ['jpg', 'jpeg', 'png', 'gif'])) <!-- Gambar -->
-            <img src="{{ asset('public/files/') }}/{{ $nama->file }}" style="max-width: 90%; max-height: 500px;">
-        @elseif(in_array($extension, ['mp4', 'mov', 'avi'])) <!-- Video -->
-            <video width="90%" height="500" controls>
-                <source src="{{ asset('public/files/') }}/{{ $nama->file }}" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-        @elseif($extension == 'pdf') <!-- PDF -->
-            <iframe src="{{ asset('public/files/') }}/{{ $nama->file }}" width="90%" height="500px"></iframe>
+@if(in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'gif'])) <!-- Gambar -->
+    <img src="{{ asset('public/files/') }}/{{ $namas->file }}" style="max-width: 90%; max-height: 500px;">
+@elseif(in_array(strtolower($extension), ['mp4', 'mov', 'avi'])) <!-- Video -->
+    <video width="90%" height="500" controls>
+        <source src="{{ asset('public/files/') }}/{{ $namas->file }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+@elseif(strtolower($extension) == 'pdf') <!-- PDF -->
+    <iframe src="{{ asset('public/files/') }}/{{ $namas->file }}" width="90%" height="500px"></iframe>
    
-        @elseif(in_array($extension, ['mp3', 'wav'])) <!-- Audio -->
-            <audio controls preload="none">
-                <source src="{{ asset('public/files/') }}/{{ $nama->file }}" type="audio/mpeg">
-                Your browser does not support the audio tag.
-            </audio>
-        @else
-            <!-- Tipe file tidak didukung -->
-            <p>Tipe file tidak didukung.</p>
-        @endif
+@elseif(in_array(strtolower($extension), ['mp3', 'wav'])) <!-- Audio -->
+    <audio controls preload="none">
+        <source src="{{ asset('public/files/') }}/{{ $namas->file }}" type="audio/mpeg">
+        Your browser does not support the audio tag.
+    </audio>
+@else
+    <!-- Tipe file tidak didukung -->
+    <p>Tipe file tidak didukung.</p>
+@endif
+
                 </div>
             </div>
 
-            <button type="button" class="btn btn-sm btn-danger mb-3 removeFileInput" id="removeFileInput" style="float:right;"> Remove </button>
+            </div>
+            </div>
 
+    <div class="col-md-2">
+    <div class="form-group mb-4">
+        <label for="" class="form-label">Download File</label>
+        <br>
+        <div class="form-check">
+        <input class="form-check-input" name="flexCheckIndeterminate[]" type="checkbox" value="1" id="flexCheckIndeterminate{{ $index }}" onchange="updateCheckboxValue('flexCheckIndeterminate{{ $index }}', 'downloadValue{{ $index }}')"{{ $namas->is_download == 1 ? 'checked' : '' }}>
+            <label class="form-check-label" style="margin-left: 2px;" for="flexCheckIndeterminate">
+                Bisa download
+            </label>
+            <!-- Hidden input to store checkbox value -->
+            <input  type ="hidden" name="downloadValue[]" id="downloadValue{{ $index }}" value="{{$namas->is_download}}">
         </div>
     </div>
+</div>
+
+<div class="col-md-2">
+    <div class="form-group mb-4">
+        <label for="" class="form-label">Tracking File</label>
+        <br>
+        <div class="form-check">
+        <input class="form-check-input" name="flexCheckIndeterminatetracking[]" type="checkbox" value="1" id="flexCheckIndeterminatetracking{{ $index }}" onchange="updateCheckboxValue('flexCheckIndeterminatetracking{{ $index }}', 'trackingValue{{ $index }}')"{{ $namas->is_tracking == 1 ? 'checked' : '' }}>
+            <label class="form-check-label" style="margin-left: 2px;" for="flexCheckIndeterminatetracking">
+                Bisa tracking
+            </label>
+            <!-- Hidden input to store checkbox value -->
+            <input type ="hidden"name="trackingValue[]" id="trackingValue{{ $index }}" value="{{$namas->is_tracking}}">
+        </div>
     </div>
+</div>
+
+
+<script>
+    // Function to update checkbox value
+    function updateCheckboxValue(checkboxId, hiddenInputId) {
+        var checkbox = document.getElementById(checkboxId);
+        var hiddenInput = document.getElementById(hiddenInputId);
+        if (checkbox.checked) {
+            hiddenInput.value = 1; // Set value to 1 when checked
+        } else {
+            hiddenInput.value = 0; // Set value to 0 when unchecked
+        }
+    }
+    
+</script>
+
+            <div class="col-md-1">
+        <label for="" class="form-label" style="color:black;">Action</label>
+        <button type="button" class="btn btn-sm btn-danger" id="removeFileInput" style="float:right;"> Remove </button>
+        </div>
+    
+</div>
+
 @endforeach
+</div>
+
 
 </div>
 @else
 
-<div id ="file-fields">
-<div class="upload-container">
-    <div class="upload-item">
 
-    <div class="form-input-item">
-        <label for="formFileSm" class="form-label">Upload File / Video / Image / Audio</label>
-        <div id="fileInputs">
-            <input class="form-control form-control-sm mb-2" id="fileInput" type="file" name="formFileSm[]" onchange="previewFile(this)">
-            <div class="preview-container"></div>
-        </div>
-        <button type="button" class="btn btn-sm btn-danger mb-3" id="removeFileInput" style="float:right;"> Remove </button>
-    </div>
-
-</div>
-
-</div>
-</div>
 
 @endif
 <button type="button" class="btn btn-sm btn-primary mb-3 mt-4 addFileInput" id="addFileInput">Add More</button>
@@ -216,42 +242,75 @@ $(document).ready(function () {
 
 // Fungsi untuk menambah insentif
 $('#addFileInput').click(function () {
-  
     var fileField = `
-    <div class="upload-container">
-    <div class="upload-item">
-
-    <div class="form-input-item">
-        <label for="formFileSm" class="form-label">Upload File / Video / Image / Audio</label>
-        <div id="fileInputs">
-            <input class="form-control form-control-sm mb-2" type="file" name="formFileSm[]" onchange="previewFile(this)">
-            <div class="preview-container"></div>
+    <div class="file-fields">
+        <div class="row upload-container">
+            <div class="col-md-6">
+                <div class="form-group mb-2">
+                    <label for="formFileSm" class="form-label">Upload File / Video / Image / Audio</label>
+                    <div id="fileInputs">
+                        <input class="form-control form-control-sm mb-2" type="file" id="fileInput" name="formFileSm[]" onchange="previewFile(this)">
+                        <div class="preview-container"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group mb-4">
+                    <label for="" class="form-label">Download File</label>
+                    <br>
+                    <div class="form-check">
+                        <input class="form-check-input" name="flexCheckIndeterminate[]" type="checkbox" value="" id="flexCheckIndeterminate_${$('.file-fields').length}" onchange="updateCheckboxValue('flexCheckIndeterminate_${$('.file-fields').length}', 'downloadValue_${$('.file-fields').length}')">
+                        <label class="form-check-label" style="margin-left: 2px;" for="flexCheckIndeterminate_${$('.file-fields').length}">
+                            Bisa download
+                        </label>
+                        <input  type ="hidden" name="downloadValue[]" id="downloadValue_${$('.file-fields').length}" value="0">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group mb-4">
+                    <label for="" class="form-label">Tracking File</label>
+                    <br>
+                    <div class="form-check">
+                        <input class="form-check-input" name="flexCheckIndeterminatetracking[]" type="checkbox" value="" id="flexCheckIndeterminatetracking_${$('.file-fields').length}" onchange="updateCheckboxValue('flexCheckIndeterminatetracking_${$('.file-fields').length}', 'trackingValue_${$('.file-fields').length}')">
+                        <label class="form-check-label" style="margin-left: 2px;" for="flexCheckIndeterminatetracking_${$('.file-fields').length}">
+                            Bisa tracking
+                        </label>
+                        <input type ="hidden"  name="trackingValue[]" id="trackingValue_${$('.file-fields').length}" value="0">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-1">
+                <label for="" class="form-label" style="color:black;">Action</label>
+                <button type="button" class="btn btn-sm btn-danger" id="removeFileInput" style="float:right;"> Remove </button>
+            </div>
         </div>
-
-
-        <button type="button" class="btn btn-sm btn-danger mb-2 mt-2" id="removeFileInput" style="float:right;"> Remove </button>
-    </div>
-
-</div>
-</div>`;
-$("#file-fields").append(fileField);
-    
+    </div>`;
+    $("#file-fields").append(fileField);
 });
- 
 
-// Fungsi untuk menghapus insentif
-// Fungsi untuk menghapus insentif
-$(document).on('click', '#removeFileInput', function () {
-    var insentifContainer = $('.upload-container');
-    var insentifItems = insentifContainer.find('.upload-item');
+function updateCheckboxValue(checkboxId, hiddenInputId) {
+    var checkbox = document.getElementById(checkboxId);
+    var hiddenInput = document.getElementById(hiddenInputId);
+    if (checkbox.checked) {
+        hiddenInput.value = 1; // Set value to 1 when checked
+    } else {
+        hiddenInput.value = 0; // Set value to 0 when unchecked
+    }
+}
 
-    // Memastikan ada lebih dari satu item sebelum menghapus
-   
-        $(this).closest('.upload-item').remove();
+// Menggunakan event delegation untuk tombol "Remove"
 
- 
-    saveProductData();
-});
+    // Fungsi untuk menghapus insentif
+    $(document).on('click', '#removeFileInput', function () {
+        var insentifContainer = $('.file-fields');
+        var insentifItems = insentifContainer.find('.upload-container');
+
+        // Memastikan ada lebih dari satu item sebelum menghapus
+       
+            $(this).closest('.upload-container').remove();
+  
+    });
 
 
 

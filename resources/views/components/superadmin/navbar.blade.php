@@ -61,20 +61,22 @@
             <span class="menu-title">Dashboard</span>
           </a>
         </li>
+        
+        @if (auth()->user()->cabang_id == 1)
         <li class="nav-item {{ Request::is('superadmin/cabang/index') || Request::is('superadmin/cabang/create') ? 'active' : '' }}">
           <a class="nav-link" href="{{route('superadmin.cabang.index')}}">
             <i class="menu-icon mdi mdi-office-building"></i>
             <span class="menu-title">Cabang</span>
           </a>
         </li>
+        @endif
+        
         <li class="nav-item {{ Request::is('superadmin/user/index')|| Request::is('superadmin/user/create') ? 'active' : '' }} ">
           <a class="nav-link" href="{{route('superadmin.user.index')}}">
             <i class="menu-icon mdi mdi-account"></i>
             <span class="menu-title">User</span>
           </a>
         </li>
-
-
 
 
         <li class="nav-item {{ Request::is('superadmin/usergroup/index') || Request::is('superadmin/usergroup/create')? 'active' : '' }} ">
@@ -102,6 +104,13 @@
       </ul>
   </div>
 </li>
+
+<li class="nav-item {{  Request::is('superadmin/logactivity') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('superadmin.logactivity') }}">
+            <i class=" menu-icon mdi mdi-history"></i>
+            <span class="menu-title">Log Activity</span>
+        </a>
+    </li>
 
 @if (auth()->user()->is_approval == 1)
     <li class="nav-item {{ Request::is('superadmin/approvalpage') || Request::is('superadmin/approvalpage') ? 'active' : '' }}">

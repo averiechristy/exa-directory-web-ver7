@@ -32,7 +32,7 @@
         <option selected disabled>Pilih Role</option>
 
         @foreach ($role as $item)
-            @if ($item->nama_role === 'Admin' || $item->nama_role === 'User')
+            @if ( $item->nama_role === 'User')
                 <option value="{{ $item->id }}"{{ old('role_id') == $item->id ? 'selected' : '' }}> {{ $item->nama_role }}</option>
             @endif
         @endforeach
@@ -60,7 +60,6 @@
                               @endif -->
                           </div>
                      
-
                           <div class="form-group mb-4">
                               <label for="" class="form-label" style="font-size: 11pt; font-weight: bold;">Email</label>
                               <input name="email" type="email" class="form-control" style="border-color: #01004C;" value=""  />
@@ -79,7 +78,7 @@
                           <div class="form-group mb-4">
                           <div class="form-check form-switch">
   <input class="form-check-input" type="checkbox" role="switch" name="flexCheckIndeterminate" id="flexCheckIndeterminate">
-  <label style=" font-weight: bold; font-size:10pt;">Sebagai Approval</label>
+  <label style=" font-weight: bold; font-size:10pt;">Sebagai Approver</label>
 </div>
 </div>
                            

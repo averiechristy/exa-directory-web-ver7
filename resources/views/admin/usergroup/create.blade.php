@@ -114,6 +114,8 @@
 <script>
 
 $('form').submit(function(e) {
+    var valid = true;
+    var selectedMembers = [];
     var selectedRadio = $('input[name="inlineRadioOptions"]:checked').val();
     var namaGroup = $('input[name="nama_group"]').val();
     var selectedCabangCount = $('.cabang-checkbox:checked').length; 
@@ -136,6 +138,41 @@ $('form').submit(function(e) {
         alert('Anda harus memilih setidaknya satu anggota untuk jenis grup custom.');
         e.preventDefault(); 
     }
+
+ 
+else if (selectedRadio === 'General'){
+
+$('.member-select').each(function() {
+    var selectedMember = $(this).val();
+    if (selectedMember) {
+        if (selectedMembers.includes(selectedMember)) {
+            valid = false;
+            alert("Anggota yang sama tidak boleh dipilih lebih dari satu kali.");
+            return false;
+        } else {
+            selectedMembers.push(selectedMember);
+        }
+    }
+});
+}
+else if (selectedRadio === 'Custom'){
+
+$('.member-select-custom').each(function() {
+var selectedMember = $(this).val();
+if (selectedMember) {
+    if (selectedMembers.includes(selectedMember)) {
+        valid = false;
+        alert("Anggota yang sama tidak boleh dipilih lebih dari satu kali.");
+        return false;
+    } else {
+        selectedMembers.push(selectedMember);
+    }
+}
+});
+
+}
+
+    return valid;
 });
 
     $(document).ready(function() {
@@ -163,49 +200,8 @@ $('form').submit(function(e) {
         $(document).ready(function() {
 
        
-            var selectedMembers = [];
+           
 
-// Event handler untuk perubahan pada select anggota
-$(document).on('change', '.member-select', function() {
-    var selectedMemberId = $(this).val();
-
-    // Periksa apakah ID anggota sudah ada dalam daftar yang dipilih sebelumnya
-    if (selectedMembers.includes(selectedMemberId)) {
-        alert("Anggota ini sudah dipilih sebelumnya. Silakan pilih anggota lain.");
-        // Kembalikan nilai select box ke opsi default
-        $(this).val('');
-        // Hapus nilai yang dipilih dari array selectedMembers
-        var index = selectedMembers.indexOf(selectedMemberId);
-        if (index !== -1) {
-            selectedMembers.splice(index, 1);
-        }
-    } else {
-        // Jika ID anggota belum ada dalam daftar, tambahkan ke daftar
-        selectedMembers.push(selectedMemberId);
-    }
-});
-
-
-var selectedMemberscustom = [];
-// Event handler untuk perubahan pada select anggota
-$(document).on('change', '.member-select-custom', function() {
-    var selectedMemberIdcustom = $(this).val();
-
-    // Periksa apakah ID anggota sudah ada dalam daftar yang dipilih sebelumnya
-    if (selectedMemberscustom.includes(selectedMemberIdcustom)) {
-        alert("Anggota ini sudah dipilih sebelumnya. Silakan pilih anggota lain.");
-        // Kembalikan nilai select box ke opsi default
-        $(this).val('');
-        // Hapus nilai yang dipilih dari array selectedMemberscustom
-        var index = selectedMemberscustom.indexOf(selectedMemberIdcustom);
-        if (index !== -1) {
-            selectedMemberscustom.splice(index, 1);
-        }
-    } else {
-        // Jika ID anggota belum ada dalam daftar, tambahkan ke daftar
-        selectedMemberscustom.push(selectedMemberIdcustom);
-    }
-});
 
 
 
